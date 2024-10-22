@@ -1,5 +1,5 @@
 # SeekFit
-This project is the result of team work as part of the project assignment of the course [Programme Engineering](https://www.fer.unizg.hr/predmet/proinz) at the Faculty of Electrical Engineering and Computing, University of Zagreb.\
+This project is the result of team work as part of the project assignment of the course [Programme Engineering](https://www.fer.unizg.hr/predmet/proinz) at the Faculty of Electrical Engineering and Computing, University of Zagreb.
 # Description of the project
 The goal of this project is to develop an innovative Clothing Management Application designed to simplify wardrobe organization and outfit planning. By offering a seamless way to upload, categorize, and manage clothing items and outfits, users can easily navigate their wardrobe and make informed decisions based on weather and occasion. Features such as photo uploading, detailed tagging, real-time weather-based outfit suggestions, and a social sharing platform make this app a comprehensive solution for fashion enthusiasts and casual users alike. Whether you're planning your next look or coordinating outfits with friends, this app offers everything you need to make wardrobe management easy, efficient, and fun.
 > Considering that this is a default project, also state what you want/have learned.
