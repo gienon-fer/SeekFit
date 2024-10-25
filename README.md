@@ -8,8 +8,19 @@ All functional requirements can be read [here](https://github.com/TeaWhoYou/Seek
 
 
 # Technologies
+|**Category**|**Used Technology**|
+|-----------------------|----------------------|
+|**Mobile Development Framework**|Flutter|
+|**Database**||
+|**Image Storage**|local file system|
+|**User Authentication**|OAuth|
+|**Push Notifications**|Cloud Messaging|
+|**Weather API**|OpenWeatherMap API|
+|**Camera & Media Access**|Camera API (Flutter libraries)|
+|**Scheduling & Calendar Interface**|TableCalendar (Flutter)|
 
 #Installation
+
 # Team members
 - Tia Rapo
 - Cristian Rotar
