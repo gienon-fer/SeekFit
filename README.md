@@ -11,10 +11,10 @@ All functional requirements can be read [here](https://github.com/TeaWhoYou/Seek
 |**Category**|**Used Technology**|
 |-----------------------|----------------------|
 |**Mobile Development Framework**|Flutter|
-|**Database**||
+|**Database**|PostgreSQL for structured data and MongoDB for unstructured|
 |**Image Storage**|local file system|
 |**User Authentication**|OAuth|
-|**Push Notifications**|Cloud Messaging|
+|**Push Notifications**|Firebase Cloud Messaging|
 |**Weather API**|OpenWeatherMap API|
 |**Camera & Media Access**|Camera API (Flutter libraries)|
 |**Scheduling & Calendar Interface**|TableCalendar (Flutter)|
