@@ -27,6 +27,7 @@ All functional requirements can be read [here](https://github.com/TeaWhoYou/Seek
 - Bartul Kajmak
 - Mateusz Juszczak
 - Anna Zalesińska
+- Kyrylo Rotan
 
 # Contributions
 >The rules depend on the organization of the team and are often separated in CONTRIBUTING.md
