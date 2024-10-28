@@ -18,6 +18,7 @@ All functional requirements can be read [here](https://github.com/TeaWhoYou/Seek
 |**Weather API**|OpenWeatherMap API|
 |**Camera & Media Access**|Camera API (Flutter libraries)|
 |**Scheduling & Calendar Interface**|TableCalendar (Flutter)|
+|**Deployment**|Kubernetes and DigitalOcean|
 
 #Installation
 
