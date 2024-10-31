@@ -10,14 +10,14 @@ All functional requirements can be read [here](https://github.com/TeaWhoYou/Seek
 # Technologies
 |**Category**|**Used Technology**|
 |-----------------------|----------------------|
-|**Mobile Development Framework**|Flutter|
+|**Mobile Development Framework**|React Native|
 |**Database**|PostgreSQL for structured data and MongoDB for unstructured|
 |**Image Storage**|local file system|
 |**User Authentication**|OAuth|
 |**Push Notifications**|Firebase Cloud Messaging|
 |**Weather API**|OpenWeatherMap API|
-|**Camera & Media Access**|Camera API (Flutter libraries)|
-|**Scheduling & Calendar Interface**|TableCalendar (Flutter)|
+|**Camera & Media Access**|Camera API (React Native libraries)|
+|**Scheduling & Calendar Interface**|Calendar (React Native)|
 |**Deployment**|Kubernetes and DigitalOcean|
 
 #Installation
