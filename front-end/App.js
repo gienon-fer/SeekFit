@@ -4,11 +4,13 @@ import { View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import Wardrobe from './screens/Wardrobe';
 import AddClothing from './screens/wardrobe/AddClothing';
 import EditClothing from './screens/wardrobe/EditClothing';
 import { ClothingProvider } from './contexts/ClothingContext'; // Import the provider
+import Profile from './screens/Profile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -55,9 +57,47 @@ export default function App() {
     <ClothingProvider>
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="WardrobeTab" component={WardrobeStack} options={{ headerShown: false }} />
-          <Tab.Screen name="Friends" component={ComingSoon} />
-          <Tab.Screen name="Planner" component={ComingSoon} />
+          <Tab.Screen
+              name="Wardrobe"
+              component={WardrobeStack}
+              options={{
+                tabBarLabel: 'Wardrobe',
+                headerShown: false,
+                tabBarIcon: ({ color, size }) => (
+                  <MaterialIcons name="door-sliding" color={color} size={size} />
+                ),
+              }}
+          />
+          <Tab.Screen
+              name="Profile"
+              component={Profile}
+              options={{
+                tabBarLabel: 'Profile',
+                tabBarIcon: ({ color, size }) => (
+                  <MaterialIcons name="person" color={color} size={size} />
+                ),
+              }}
+          />
+          <Tab.Screen
+              name="Friends"
+              component={ComingSoon}
+              options={{
+                tabBarLabel: 'Friends',
+                tabBarIcon: ({ color, size }) => (
+                  <MaterialIcons name="group" color={color} size={size} />
+                ),
+              }}
+            />
+          <Tab.Screen
+              name="Planer"
+              component={ComingSoon}
+              options={{
+                tabBarLabel: 'Planer',
+                tabBarIcon: ({ color, size }) => (
+                  <MaterialIcons name="calendar-month" color={color} size={size} />
+                ),
+              }}
+            />
         </Tab.Navigator>
       </NavigationContainer>
     </ClothingProvider>
