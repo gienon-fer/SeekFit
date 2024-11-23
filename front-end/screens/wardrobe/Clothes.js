@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+// screens/wardrobe/Clothes.js
+import React from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AddClothing from './AddClothing';
+import { useClothing } from '../../contexts/ClothingContext'; // Import the useClothing hook
 
 export default function Clothes() {
-  const [clothes, setClothes] = useState([]); // Stores the clothes
+  const { clothes } = useClothing();  // Get clothing items from context
   const navigation = useNavigation();
 
-  // Function to handle adding new clothes
-  const addClothing = (newClothing) => {
-    setClothes([...clothes, newClothing]);
+  const navigateToEditClothing = (clothing) => {
+    navigation.navigate('EditClothing', { clothingToEdit: clothing });  // Pass clothing to be edited
   };
 
   return (
@@ -17,9 +17,11 @@ export default function Clothes() {
       <FlatList
         data={clothes}
         numColumns={3}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.image}
         renderItem={({ item }) => (
-          <Image source={{ uri: item.image }} style={styles.image} />
+          <TouchableOpacity onPress={() => navigateToEditClothing(item)}>
+            <Image source={{ uri: item.image }} style={styles.image} />
+          </TouchableOpacity>
         )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>Your wardrobe is empty. Add some clothes!</Text>
@@ -27,7 +29,7 @@ export default function Clothes() {
       />
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.navigate('AddClothing', { onSave: addClothing })} // pass a callback
+        onPress={() => navigation.navigate('AddClothing')}
       >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>

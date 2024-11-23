@@ -1,13 +1,14 @@
+// screens/wardrobe/AddClothing.js
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useClothing } from '../../contexts/ClothingContext'; // Import the useClothing hook
 
-export default function AddClothing({ route, navigation }) {
-  const { addClothing } = route.params;  // Get the addClothing function from props
-  const [image, setImage] = useState(null);  // Store the selected image
-  const [description, setDescription] = useState('');  // Store the description
+export default function AddClothing({ navigation }) {
+  const { addClothing } = useClothing();  // Get addClothing function from context
+  const [image, setImage] = useState(null);
+  const [description, setDescription] = useState('');
 
-  // Handle image selection
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -16,22 +17,21 @@ export default function AddClothing({ route, navigation }) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.Images,  // Use the new MediaType API
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);  // Update the state with the selected image
+      setImage(result.assets[0].uri);
     }
   };
 
-  // Handle saving the clothing
   const saveClothing = () => {
     if (image && description) {
       const newClothing = { image, description };
-      addClothing(newClothing);  // Call the addClothing function passed via props
-      navigation.goBack();  // Go back to the previous screen
+      addClothing(newClothing);
+      navigation.goBack();
     } else {
       alert('Please add an image and description.');
     }
@@ -88,12 +88,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   saveButton: {
-    backgroundColor: 'blue',
-    padding: 15,
+    backgroundColor: '#28a745',
+    padding: 10,
     alignItems: 'center',
+    borderRadius: 5,
   },
   saveButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
   },
 });
