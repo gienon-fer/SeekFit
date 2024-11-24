@@ -8,6 +8,36 @@ import {
 } from 'react-native';
 
 const UserProfileScreen = () => {
+  const [height, setHeight] = useState('');
+  const [shoeSize, setShoeSize] = useState('');
+  const [chest, setChest] = useState('');
+  const [waist, setWaist] = useState('');
+  const [hips, setHips] = useState('');
+
+  // Validation function for measurements (maybe could be made better)
+  const validateMeasurement = (value, min, max) => {
+    const num = parseFloat(value);
+    if (isNaN(num) || num < min || num > max) {
+      Alert.alert(
+          'Invalid Input',
+          `Please enter a value between ${min} and ${max}`
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleSave = () => {
+    // Validate measurements
+    if (
+        validateMeasurement(chest, 70, 170) &&
+        validateMeasurement(waist, 50, 125) &&
+        validateMeasurement(hips, 70, 150)
+    ) {
+      Alert.alert('Success', 'Measurements saved successfully!');
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Username Section */}
