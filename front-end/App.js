@@ -1,4 +1,6 @@
 // App.js
+import 'regenerator-runtime/runtime'; // Add this line at the top
+import 'expo-firestore-offline-persistence'; // This MUST be imported first
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -9,7 +11,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Wardrobe from './screens/Wardrobe';
 import AddClothing from './screens/wardrobe/AddClothing';
 import EditClothing from './screens/wardrobe/EditClothing';
-import { ClothingProvider } from './contexts/ClothingContext'; // Import the provider
+import { ClothingProvider } from './contexts/ClothingContext';
+
 import Profile from './screens/Profile';
 
 const Tab = createBottomTabNavigator();
@@ -58,7 +61,7 @@ export default function App() {
       <NavigationContainer>
         <Tab.Navigator>
           <Tab.Screen
-              name="Wardrobe"
+              name="WardrobeTab"
               component={WardrobeStack}
               options={{
                 tabBarLabel: 'Wardrobe',

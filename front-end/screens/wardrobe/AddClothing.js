@@ -27,10 +27,10 @@ export default function AddClothing({ navigation }) {
     }
   };
 
-  const saveClothing = () => {
+  const saveClothing = async () => {
     if (image && description) {
-      const newClothing = { image, description };
-      addClothing(newClothing);
+      const newClothing = { id: new Date().toString(), image, description };  // Generate unique ID
+      await addClothing(newClothing); // Sync with AsyncStorage
       navigation.goBack();
     } else {
       alert('Please add an image and description.');
