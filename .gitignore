@@ -35,4 +35,6 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+#private
+front-end/config/firebase.js
 .idea/

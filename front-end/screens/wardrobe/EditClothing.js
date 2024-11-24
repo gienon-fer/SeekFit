@@ -32,20 +32,19 @@ export default function EditClothing({ route, navigation }) {
   };
 
   // Handle saving changes to the clothing item
-  const saveClothing = () => {
+  const saveClothing = async () => {
     if (image && description) {
       const updatedClothing = { image, description };
-      editClothing(updatedClothing);  // Use the context function to update the clothing item
-      navigation.goBack();  // Navigate back to the wardrobe screen
+      await editClothing(clothingToEdit.id, updatedClothing); // Sync with AsyncStorage
+      navigation.goBack();
     } else {
       alert('Please add an image and description.');
     }
   };
 
-  // Handle deleting the clothing item
-  const deleteClothing = () => {
-    removeClothing(clothingToEdit.image);  // Use the context function to remove the clothing item
-    navigation.goBack();  // Navigate back to the wardrobe screen
+  const deleteClothing = async () => {
+    await removeClothing(clothingToEdit.id); // Sync with AsyncStorage
+    navigation.goBack();
   };
 
   return (
@@ -70,7 +69,7 @@ export default function EditClothing({ route, navigation }) {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.deleteButton} onPress={deleteClothing}>
-        <Text style={styles.deleteButtonText}>DELETE</Text>
+        <Text style={styles.deleteButtonText}>Delete</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -107,17 +106,17 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
+    marginBottom: 20,
   },
   saveButtonText: {
     color: 'white',
     fontSize: 16,
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#dc3545',
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
-    marginTop: 20,
   },
   deleteButtonText: {
     color: 'white',
