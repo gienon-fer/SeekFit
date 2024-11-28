@@ -1,0 +1,164 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:131.0) Gecko/20100101 Firefox/131.0" version="24.8.3">
+  <diagram name="Strona-1" id="NTGjzAoij-4RBShrze8b">
+    <mxGraphModel dx="1941" dy="603" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="vf7bno58fgWeEznr3E9_-9" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="65" y="192" width="20" height="138" as="geometry" />
+        </mxCell>
+        <mxCell id="2" value="User" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
+          <mxGeometry width="150" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="System" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
+          <mxGeometry x="215" width="150" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Firebase&#xa;Cloud Messaging" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" parent="1" vertex="1">
+          <mxGeometry x="430" width="150" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="Accept request to join group" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;exitX=1.125;exitY=0.139;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.083;entryY=0.071;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="vf7bno58fgWeEznr3E9_-9" target="vf7bno58fgWeEznr3E9_-10" edge="1">
+          <mxGeometry x="-0.0659" y="1" relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="74.5" y="212" as="sourcePoint" />
+            <mxPoint x="210" y="200" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6" value="Notify group members" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;entryX=-0.086;entryY=0.079;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1.181;exitY=0.915;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="436.38" y="319.58000000000004" />
+            </Array>
+            <mxPoint x="300.00000000000034" y="319.6300000000001" as="sourcePoint" />
+            <mxPoint x="489.6600000000002" y="320.32000000000005" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7" value="Push notification about new user joining the group" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;endArrow=open;endFill=0;exitX=0;exitY=1;exitDx=0;exitDy=0;" parent="1" source="FH-teB31ZwKQPtfeiBWO-8" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="336" y="364.34000000000003" />
+            </Array>
+            <mxPoint x="572.5" y="364.34000000000003" as="sourcePoint" />
+            <mxPoint x="-135.33333333333326" y="364.34000000000003" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vf7bno58fgWeEznr3E9_-7" value="Group Member User" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" parent="1" vertex="1">
+          <mxGeometry x="-210" width="150" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="vf7bno58fgWeEznr3E9_-8" value="Send join group request" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=open;endFill=0;dashed=1;entryX=0;entryY=0;entryDx=0;entryDy=0;" parent="1" target="vf7bno58fgWeEznr3E9_-9" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-23.5" y="192" />
+            </Array>
+            <mxPoint x="-120" y="192" as="sourcePoint" />
+            <mxPoint x="60" y="192" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vf7bno58fgWeEznr3E9_-10" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="280" y="202" width="20" height="128" as="geometry" />
+        </mxCell>
+        <mxCell id="vf7bno58fgWeEznr3E9_-12" value="Return group invitation link" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;exitX=-0.03;exitY=0.829;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="FH-teB31ZwKQPtfeiBWO-11" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="51.5" y="152" />
+            </Array>
+            <mxPoint x="288" y="152" as="sourcePoint" />
+            <mxPoint x="-125.67647058823536" y="151.9999999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vf7bno58fgWeEznr3E9_-13" value="Request group invitation link" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" parent="1" source="FH-teB31ZwKQPtfeiBWO-10" target="FH-teB31ZwKQPtfeiBWO-11" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="-130" y="110" as="sourcePoint" />
+            <mxPoint x="220" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-8" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="495" y="320" width="20" height="46.34" as="geometry" />
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-10" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="-145" y="100" width="20" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-11" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="280" y="100" width="20" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-13" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.958;entryY=0.603;entryDx=0;entryDy=0;exitX=1.055;exitY=0.336;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" parent="1" target="FH-teB31ZwKQPtfeiBWO-11" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="301.10000000000014" y="117.33000000000003" as="sourcePoint" />
+            <mxPoint x="300" y="142.17" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="450" y="117.67" />
+              <mxPoint x="450" y="136" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-14" value="Generate group invitation link" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="FH-teB31ZwKQPtfeiBWO-13" vertex="1" connectable="0">
+          <mxGeometry x="-0.5" y="-3" relative="1" as="geometry">
+            <mxPoint x="-2" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-15" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.958;entryY=0.603;entryDx=0;entryDy=0;exitX=1.055;exitY=0.336;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="302.10000000000014" y="272" as="sourcePoint" />
+            <mxPoint x="300" y="290.67" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="451" y="272.34000000000003" />
+              <mxPoint x="451" y="290.67" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-16" value="Add user to group" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="FH-teB31ZwKQPtfeiBWO-15" vertex="1" connectable="0">
+          <mxGeometry x="-0.5" y="-3" relative="1" as="geometry">
+            <mxPoint x="-2" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-17" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=30;height=20;" parent="1" vertex="1">
+          <mxGeometry x="-180" y="220" width="740" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-18" value="[user is already in the group]" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-130" y="220" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-20" value="" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=1.042;exitY=0.411;exitDx=0;exitDy=0;exitPerimeter=0;startArrow=open;startFill=0;" parent="1" source="vf7bno58fgWeEznr3E9_-9" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="190" y="220" as="sourcePoint" />
+            <mxPoint x="280" y="249" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-24" value="Notify about failure to join" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="FH-teB31ZwKQPtfeiBWO-20" vertex="1" connectable="0">
+          <mxGeometry x="0.0386" y="-1" relative="1" as="geometry">
+            <mxPoint x="-7" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-21" value="" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0;entryY=0.395;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1.042;exitY=0.411;exitDx=0;exitDy=0;exitPerimeter=0;startArrow=open;startFill=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="86" y="306.34" as="sourcePoint" />
+            <mxPoint x="280" y="306.34" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-26" value="Notify about successfully joining" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="FH-teB31ZwKQPtfeiBWO-21" vertex="1" connectable="0">
+          <mxGeometry x="-0.0309" y="5" relative="1" as="geometry">
+            <mxPoint y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-22" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0.999;entryY=0.185;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.001;exitY=0.197;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="FH-teB31ZwKQPtfeiBWO-17" target="FH-teB31ZwKQPtfeiBWO-17" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="190" y="220" as="sourcePoint" />
+            <mxPoint x="240" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FH-teB31ZwKQPtfeiBWO-23" value="[else]" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-190" y="260" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gZi11fdVMtve-Rw_ZhxZ-7" value="" style="shape=umlDestroy;whiteSpace=wrap;html=1;strokeWidth=3;targetShapes=umlLifeline;" vertex="1" parent="1">
+          <mxGeometry x="-150" y="380" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gZi11fdVMtve-Rw_ZhxZ-9" value="" style="shape=umlDestroy;whiteSpace=wrap;html=1;strokeWidth=3;targetShapes=umlLifeline;" vertex="1" parent="1">
+          <mxGeometry x="60" y="380" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gZi11fdVMtve-Rw_ZhxZ-10" value="" style="shape=umlDestroy;whiteSpace=wrap;html=1;strokeWidth=3;targetShapes=umlLifeline;" vertex="1" parent="1">
+          <mxGeometry x="490" y="380" width="30" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

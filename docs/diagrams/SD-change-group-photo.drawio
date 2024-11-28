@@ -1,0 +1,97 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0" version="24.8.3">
+  <diagram name="Strona-1" id="57ySakz9BWc4AJKgYZRM">
+    <mxGraphModel dx="1000" dy="623" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="Owner" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" parent="1" vertex="1">
+          <mxGeometry width="150" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="Group details" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" parent="1" vertex="1">
+          <mxGeometry x="281" width="150" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="System" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" parent="1" vertex="1">
+          <mxGeometry x="585" width="150" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="" style="points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0}" parent="4" vertex="1">
+          <mxGeometry x="70" y="225" width="10" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ykxgVlXGfNpSxZ2Vyi8j-18" value="" style="points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0}" vertex="1" parent="4">
+          <mxGeometry x="70" y="130" width="10" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="Firebase&#xa;Cloud Messaging" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" parent="1" vertex="1">
+          <mxGeometry x="855" width="150" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="" style="points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0}" parent="5" vertex="1">
+          <mxGeometry x="70" y="311" width="10" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="Opens &quot;group details&quot;" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" parent="1" source="2" target="3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="222" y="109" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9" value="Upload new group photo" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="599.45" y="225" />
+              <mxPoint x="516.45" y="198" />
+            </Array>
+            <mxPoint x="354.997619047619" y="225" as="sourcePoint" />
+            <mxPoint x="659" y="225" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="10" value="Confirm upload" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="280" />
+            </Array>
+            <mxPoint x="655" y="280" as="sourcePoint" />
+            <mxPoint x="355.54761904761904" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11" value="Notify group members" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" parent="1" target="5" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="802" y="311" />
+            </Array>
+            <mxPoint x="659.547619047619" y="311" as="sourcePoint" />
+            <mxPoint x="930" y="351" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12" value="Push notification" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="512" y="366" />
+            </Array>
+            <mxPoint x="925" y="366" as="sourcePoint" />
+            <mxPoint x="74.54761904761904" y="366" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ykxgVlXGfNpSxZ2Vyi8j-12" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="356.997619047619" y="129.9999999999999" as="sourcePoint" />
+            <mxPoint x="660.9499999999998" y="129.9999999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ykxgVlXGfNpSxZ2Vyi8j-14" value="Get group details" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ykxgVlXGfNpSxZ2Vyi8j-12">
+          <mxGeometry x="-0.1289" y="10" relative="1" as="geometry">
+            <mxPoint x="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ykxgVlXGfNpSxZ2Vyi8j-15" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="659.4999999999998" y="168.9999999999999" as="sourcePoint" />
+            <mxPoint x="355.54761904761904" y="168.9999999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ykxgVlXGfNpSxZ2Vyi8j-17" value="Group details response" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ykxgVlXGfNpSxZ2Vyi8j-15">
+          <mxGeometry x="-0.032" y="-10" relative="1" as="geometry">
+            <mxPoint x="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
