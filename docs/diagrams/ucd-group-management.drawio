@@ -48,12 +48,12 @@
                 <mxCell id="Tt-TAS7i6GOdsketkZrf-58" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=open;endFill=0;dashed=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-8" target="Tt-TAS7i6GOdsketkZrf-23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-59" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-58" vertex="1" connectable="0">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-59" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="Tt-TAS7i6GOdsketkZrf-58" vertex="1" connectable="0">
                     <mxGeometry x="0.6667" y="1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-8" value="Create group" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-8" value="Create group&lt;br&gt;UC-GM5" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="350" y="220" width="140" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="Tt-TAS7i6GOdsketkZrf-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=open;endFill=0;dashed=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-20" target="Tt-TAS7i6GOdsketkZrf-56" edge="1">
@@ -64,48 +64,38 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-75" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-71" vertex="1" connectable="0">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-75" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="Tt-TAS7i6GOdsketkZrf-71" vertex="1" connectable="0">
                     <mxGeometry x="-0.6321" relative="1" as="geometry">
                         <mxPoint x="-54" y="-10" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-20" value="Join group" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-20" value="Join group&lt;br&gt;UC-GM4" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="350" y="130" width="140" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;" parent="1" source="Tt-TAS7i6GOdsketkZrf-21" target="Tt-TAS7i6GOdsketkZrf-23" edge="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-21" target="Tt-TAS7i6GOdsketkZrf-23" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="470" y="580"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="6" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-67" vertex="1" connectable="0">
-                    <mxGeometry x="0.0929" y="1" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-21" value="&lt;div&gt;Manage group&lt;/div&gt;&lt;div&gt;members&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-21" value="&lt;div&gt;Manage group&lt;/div&gt;&lt;div&gt;members&lt;/div&gt;&lt;div&gt;UC-GM2&lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="600" y="540" width="140" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;" parent="1" source="Tt-TAS7i6GOdsketkZrf-22" target="Tt-TAS7i6GOdsketkZrf-23" edge="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-22" target="Tt-TAS7i6GOdsketkZrf-23" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="470" y="700"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="7" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-66" vertex="1" connectable="0">
-                    <mxGeometry x="0.0627" y="-3" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-22" value="Manage group details" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-22" value="Manage group details&lt;br&gt;UC-GM3" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="600" y="660" width="140" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-23" value="Manage group" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-23" value="Manage group&lt;br&gt;UC-GM1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="350" y="600" width="140" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-24" value="&lt;div&gt;Generate invitation&lt;/div&gt;&lt;div&gt;link&lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-24" value="&lt;div&gt;Generate&lt;/div&gt;&lt;div&gt;invitation&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;link&lt;/span&gt;&lt;/div&gt;&lt;div&gt;UC-GM6&lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="430" y="310" width="140" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="Tt-TAS7i6GOdsketkZrf-70" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;endArrow=open;endFill=0;dashed=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-26" target="Tt-TAS7i6GOdsketkZrf-56" edge="1">
@@ -116,23 +106,23 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-76" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-70" vertex="1" connectable="0">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-76" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="Tt-TAS7i6GOdsketkZrf-70" vertex="1" connectable="0">
                     <mxGeometry x="-0.6668" y="3" relative="1" as="geometry">
                         <mxPoint y="-7" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-26" value="Leave group" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-26" value="Leave group&lt;br&gt;UC-GM8" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="430" y="450" width="140" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-27" value="View group" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-27" value="View group&lt;br&gt;UC-GM7" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="520" y="380" width="140" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="Tt-TAS7i6GOdsketkZrf-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=open;endFill=0;dashed=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-28" target="Tt-TAS7i6GOdsketkZrf-27" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-64" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-52" vertex="1" connectable="0">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-64" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="Tt-TAS7i6GOdsketkZrf-52" vertex="1" connectable="0">
                     <mxGeometry x="-0.08" y="1" relative="1" as="geometry">
-                        <mxPoint y="-11" as="offset"/>
+                        <mxPoint x="-9" y="-11" as="offset"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="Tt-TAS7i6GOdsketkZrf-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;" parent="1" source="Tt-TAS7i6GOdsketkZrf-28" target="Tt-TAS7i6GOdsketkZrf-56" edge="1">
@@ -143,7 +133,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-77" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-72" vertex="1" connectable="0">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-77" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="Tt-TAS7i6GOdsketkZrf-72" vertex="1" connectable="0">
                     <mxGeometry x="0.34" relative="1" as="geometry">
                         <mxPoint x="6" y="-10" as="offset"/>
                     </mxGeometry>
@@ -151,34 +141,19 @@
                 <mxCell id="Tt-TAS7i6GOdsketkZrf-28" value="Interact with group" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="770" y="380" width="140" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0;entryDx=0;entryDy=0;startArrow=none;startFill=0;endArrow=open;endFill=0;dashed=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-29" target="Tt-TAS7i6GOdsketkZrf-28" edge="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0;entryDx=0;entryDy=0;startArrow=none;startFill=0;endArrow=classic;endFill=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-29" target="Tt-TAS7i6GOdsketkZrf-28" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-53" vertex="1" connectable="0">
-                    <mxGeometry x="0.0285" y="1" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;" parent="1" source="Tt-TAS7i6GOdsketkZrf-31" target="Tt-TAS7i6GOdsketkZrf-28" edge="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-31" target="Tt-TAS7i6GOdsketkZrf-28" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-54" vertex="1" connectable="0">
-                    <mxGeometry x="0.2714" y="-3" relative="1" as="geometry">
-                        <mxPoint x="21" y="3" as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;endArrow=open;endFill=0;dashed=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-51" target="Tt-TAS7i6GOdsketkZrf-28" edge="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-51" target="Tt-TAS7i6GOdsketkZrf-28" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-55" vertex="1" connectable="0">
-                    <mxGeometry x="0.0219" relative="1" as="geometry">
-                        <mxPoint x="1" as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-73" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=open;endFill=0;dashed=1;" parent="1" source="Tt-TAS7i6GOdsketkZrf-56" target="Tt-TAS7i6GOdsketkZrf-23" edge="1">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-73" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;dashed=1;startArrow=open;startFill=0;" parent="1" source="Tt-TAS7i6GOdsketkZrf-56" target="Tt-TAS7i6GOdsketkZrf-23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tt-TAS7i6GOdsketkZrf-74" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="Tt-TAS7i6GOdsketkZrf-73" vertex="1" connectable="0">
+                <mxCell id="Tt-TAS7i6GOdsketkZrf-74" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="Tt-TAS7i6GOdsketkZrf-73" vertex="1" connectable="0">
                     <mxGeometry x="0.6759" y="-1" relative="1" as="geometry">
                         <mxPoint x="-3" y="-9" as="offset"/>
                     </mxGeometry>
