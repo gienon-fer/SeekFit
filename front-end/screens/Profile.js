@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   Button,
+  Alert,
 } from 'react-native';
 
 const UserProfileScreen = () => {
@@ -14,26 +15,38 @@ const UserProfileScreen = () => {
   const [waist, setWaist] = useState('');
   const [hips, setHips] = useState('');
 
-  // Validation function for measurements (maybe could be made better)
-  const validateMeasurement = (value, min, max) => {
+  // Validation function for measurements
+  const validateMeasurement = (value, min, max, fieldName) => {
     const num = parseFloat(value);
-    if (isNaN(num) || num < min || num > max) {
-      Alert.alert(
-          'Invalid Input',
-          `Please enter a value between ${min} and ${max}`
-      );
-      return false;
+	if (isNaN(num)) {
+      return `${fieldName} value must be a number.`;
     }
-    return true;
+    if (num < min || num > max) {
+      return `${fieldName} must be between ${min} and ${max}.`;
+    }
+    return null; // No error
   };
 
   const handleSave = () => {
-    // Validate measurements
-    if (
-        validateMeasurement(chest, 70, 170) &&
-        validateMeasurement(waist, 50, 125) &&
-        validateMeasurement(hips, 70, 150)
-    ) {
+    if (!height || !shoeSize || !chest || !waist || !hips) {
+      Alert.alert('Invalid input', 'All measurement data must be filled.');
+      return;
+    }
+
+    const errors = [];
+
+    errors.push(validateMeasurement(height, 50, 250, 'Height'));
+    errors.push(validateMeasurement(shoeSize, 1, 50, 'Shoe Size'));
+    errors.push(validateMeasurement(chest, 70, 170, 'Chest'));
+    errors.push(validateMeasurement(waist, 50, 125, 'Waist'));
+    errors.push(validateMeasurement(hips, 70, 150, 'Hips'));
+
+    // Filter out null values (valid fields)
+    const errorMessages = errors.filter((error) => error !== null);
+
+    if (errorMessages.length > 0) {
+      Alert.alert('Invalid Input', errorMessages.join('\n'));
+    } else {
       Alert.alert('Success', 'Measurements saved successfully!');
     }
   };
@@ -62,6 +75,8 @@ const UserProfileScreen = () => {
             style={styles.measurementInput}
             placeholder="Enter height"
             keyboardType="numeric"
+            value={height}
+            onChangeText={setHeight}
           />
         </View>
 
@@ -71,7 +86,47 @@ const UserProfileScreen = () => {
             style={styles.measurementInput}
             placeholder="Enter shoe size"
             keyboardType="numeric"
+            value={shoeSize}
+            onChangeText={setShoeSize}
           />
+        </View>
+
+        <View style={styles.measurementRow}>
+          <Text style={styles.measurementLabel}>Chest</Text>
+          <TextInput
+            style={styles.measurementInput}
+            placeholder="Enter chest size"
+            keyboardType="numeric"
+            value={chest}
+            onChangeText={setChest}
+          />
+        </View>
+
+        <View style={styles.measurementRow}>
+          <Text style={styles.measurementLabel}>Waist</Text>
+          <TextInput
+            style={styles.measurementInput}
+            placeholder="Enter waist size"
+            keyboardType="numeric"
+            value={waist}
+            onChangeText={setWaist}
+          />
+        </View>
+
+        <View style={styles.measurementRow}>
+          <Text style={styles.measurementLabel}>Hips</Text>
+          <TextInput
+            style={styles.measurementInput}
+            placeholder="Enter hips size"
+            keyboardType="numeric"
+            value={hips}
+            onChangeText={setHips}
+          />
+        </View>
+
+        {/* Save Button */}
+        <View style={styles.buttonContainer}>
+          <Button title="Save Measurements" onPress={handleSave} />
         </View>
       </View>
     </View>
