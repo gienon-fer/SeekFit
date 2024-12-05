@@ -1,6 +1,6 @@
 # SeekFit
 This project is the result of team work as part of the project assignment of the course [Software Engineering](https://www.fer.unizg.hr/predmet/proinz) at the Faculty of Electrical Engineering and Computing, University of Zagreb.
-# Description of the project
+# Description of the Project
 SeekFit is an innovative clothing management app designed to help users organize their wardrobe, plan outfits, and streamline the decision-making process based on weather and occasion. The app allows users to upload photos of clothing items and outfits, which are organized into a visual inventory for easy browsing. Users can categorize these items by tagging them with predefined or custom labels, such as style, weather suitability, or material, to sort and quickly access them.
 
 SeekFit also features an AI-powered label detection system that automatically detects care labels and populates relevant information, which users can edit as needed. Outfits can be managed by assigning items to them, with the option to view, edit, or delete individual pieces. The app provides robust search and filtering options, allowing users to search for items by tags, exclude unavailable clothing, and find outfits based on item combinations.
@@ -11,8 +11,46 @@ SeekFit enhances the social aspect of clothing management by enabling users to c
 
 In summary, SeekFit is a comprehensive solution for managing wardrobes, planning outfits, staying connected with friends, and taking advantage of real-time weather-based suggestions, making it an essential tool for fashion enthusiasts.
 
-# User instructions
- 
+# Accessing the Application
+
+### Overview
+The application is currently available for manual download as an APK file. Users can download the file and install it on their Android devices following the provided instructions below. Please note that the app is not hosted on the Google Play Store, so installation requires enabling installations from unknown sources.
+
+### Current Version
+- **Version:** 1.0.0 (Initial Release)
+- **Release Date:** 
+
+### Download Links
+- **APK File Download:** 
+- **Repository:** https://github.com/TeaWhoYou/SeekFit
+
+### Installation Instructions
+1. **Download the APK File:**
+   - Use the link provided above to download the APK file onto your Android device or transfer it from another device where you downloaded it.
+
+2. **Enable Unknown Sources:**
+   - Open your Android device’s **Settings**.
+   - Navigate to **Security** or **Privacy** (the menu may vary by device).
+   - Enable the option for **Unknown Sources** to allow installations from outside the Google Play Store.
+
+3. **Install the APK:**
+   - Locate the downloaded APK file in your device’s **Downloads** folder or the location where it was saved.
+   - Tap on the APK file and follow the on-screen prompts to complete the installation.
+
+4. **Run the Application:**
+   - After installation, you can find the application in your device’s app drawer. Tap on the app icon to launch it.
+
+### Important Notes
+- **Permission Settings:** During installation, you may be prompted to grant specific permissions. These permissions are required for the application’s functionality.
+- **Updates:** Ensure you always use the latest version of the application. Refer to the repository or download link for updates.
+
+### Feedback and Support
+- For feedback, bug reports, or additional assistance, please contact us at [Insert Contact Information].
+- Please report any broken links or errors to the development team.
+
+### Disclaimer
+By installing this APK, you acknowledge that the app is not hosted on an official app store and accept any associated risks. We recommend downloading the APK only from the provided official link to ensure safety.
+
 # Functional Requirements
 Here are the core functionalities of this project:
 
