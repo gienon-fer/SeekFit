@@ -1,12 +1,6 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Button,
-  Alert,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 
 const UserProfileScreen = () => {
   const [height, setHeight] = useState('');
@@ -14,17 +8,35 @@ const UserProfileScreen = () => {
   const [chest, setChest] = useState('');
   const [waist, setWaist] = useState('');
   const [hips, setHips] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
 
-  // Validation function for measurements
-  const validateMeasurement = (value, min, max, fieldName) => {
-    const num = parseFloat(value);
-	if (isNaN(num)) {
-      return `${fieldName} value must be a number.`;
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '<292694167327-5s1uh3512vkn2aebclm5hchicokjmpa6.apps.googleusercontent.com>',
+    });
+  }, []);
+
+  const handleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      setUserInfo(userInfo);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+      } else {
+        Alert.alert('Error', error.message);
+      }
     }
-    if (num < min || num > max) {
-      return `${fieldName} must be between ${min} and ${max}.`;
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await GoogleSignin.signOut();
+      setUserInfo(null);
+    } catch (error) {
+      Alert.alert('Error', error.message);
     }
-    return null; // No error
   };
 
   const handleSave = () => {
@@ -34,14 +46,12 @@ const UserProfileScreen = () => {
     }
 
     const errors = [];
-
     errors.push(validateMeasurement(height, 50, 250, 'Height'));
     errors.push(validateMeasurement(shoeSize, 1, 50, 'Shoe Size'));
     errors.push(validateMeasurement(chest, 70, 170, 'Chest'));
     errors.push(validateMeasurement(waist, 50, 125, 'Waist'));
     errors.push(validateMeasurement(hips, 70, 150, 'Hips'));
 
-    // Filter out null values (valid fields)
     const errorMessages = errors.filter((error) => error !== null);
 
     if (errorMessages.length > 0) {
@@ -51,18 +61,33 @@ const UserProfileScreen = () => {
     }
   };
 
+  const validateMeasurement = (value, min, max, fieldName) => {
+    const num = parseFloat(value);
+    if (isNaN(num)) {
+      return `${fieldName} value must be a number.`;
+    }
+    if (num < min || num > max) {
+      return `${fieldName} must be between ${min} and ${max}.`;
+    }
+    return null;
+  };
+
   return (
     <View style={styles.container}>
-      {/* Username Section */}
-      <Text style={styles.username}>Guest User</Text>
+      {/* User info */}
+      {userInfo ? (
+        <>
+          <Text style={styles.username}>{userInfo.user.name}</Text>
+          <Button title="Sign Out" onPress={handleSignOut} />
+        </>
+      ) : (
+        <View style={styles.buttonContainer}>
+          <Button title="Log In" onPress={handleSignIn} />
+        </View>
+      )}
 
       {/* Divider */}
       <View style={styles.divider} />
-
-      {/* Login Button */}
-      <View style={styles.buttonContainer}>
-        <Button title="Log In" onPress={() => {}} />
-      </View>
 
       {/* My Measurements Section */}
       <View style={styles.measurementsContainer}>

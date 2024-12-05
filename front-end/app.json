@@ -7,6 +7,14 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+	"plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.292694167327-5s1uh3512vkn2aebclm5hchicokjmpa6"
+		}
+		]
+	],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
