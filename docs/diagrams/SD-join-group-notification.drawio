@@ -74,7 +74,7 @@
           <mxGeometry x="385" y="225" width="110" height="20" as="geometry" />
         </mxCell>
         <mxCell id="FxCsZlYMo3UDrUaQfflS-24" value="&lt;font&gt;Push notification&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;" vertex="1" parent="1">
-          <mxGeometry x="390" y="255" width="90" height="20" as="geometry" />
+          <mxGeometry x="185" y="260" width="90" height="20" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
