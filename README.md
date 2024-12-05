@@ -94,6 +94,3 @@ All functional requirements (essential and additional) can be read [here](https:
 - Mateusz Juszczak
 - Anna Zalesińska
 - Kyrylo Rotan
-
-# Contributions
->The rules depend on the organization of the team and are often separated in CONTRIBUTING.md
