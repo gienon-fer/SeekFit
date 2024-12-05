@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id("io.freefair.lombok") version "$lombokVersion"
+
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+    implementation platform("org.springframework.boot:spring-boot-dependencies:$springBootDependenciesVersion")
+    implementation platform("org.axonframework:axon-bom:$axonVersion")
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'org.axonframework:axon-spring-boot-starter'
+    implementation 'org.axonframework:axon-tracing-opentelemetry'
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+}
+
+test {
+    useJUnitPlatform()
+}
