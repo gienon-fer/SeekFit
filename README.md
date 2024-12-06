@@ -21,23 +21,25 @@ The application is currently available for manual download as an APK file. Users
 - **Release Date:** 
 
 ### Download Links
-- **APK File Download:** 
+- **APK File Download:** https://drive.google.com/file/d/1FeWQuUDrfH7wG4t3tzueEFD7Eq14-9tJ/view?usp=sharing
 - **Repository:** https://github.com/TeaWhoYou/SeekFit
 
 ### Installation Instructions
 1. **Download the APK File:**
-   - Use the link provided above to download the APK file onto your Android device or transfer it from another device where you downloaded it.
+   - Use the link provided above to download the ZIP file.
+   - Extract it's contents. You should have an APK file.
+   - Transfer the APK file to your Android device.
 
-2. **Enable Unknown Sources:**
+3. **Enable Unknown Sources:**
    - Open your Android device’s **Settings**.
    - Navigate to **Security** or **Privacy** (the menu may vary by device).
    - Enable the option for **Unknown Sources** to allow installations from outside the Google Play Store.
 
-3. **Install the APK:**
+4. **Install the APK:**
    - Locate the downloaded APK file in your device’s **Downloads** folder or the location where it was saved.
    - Tap on the APK file and follow the on-screen prompts to complete the installation.
 
-4. **Run the Application:**
+5. **Run the Application:**
    - After installation, you can find the application in your device’s app drawer. Tap on the app icon to launch it.
 
 ### Important Notes
