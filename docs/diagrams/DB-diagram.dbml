@@ -1,0 +1,94 @@
+Table users {
+  user_id UUID [primary key]
+  email VARCHAR(255)
+  oauth_provider VARCHAR(255)
+  oauth_id VARCHAR(255)
+}
+
+Table sessions {
+  session_id UUID [primary key]
+  user_id UUID [ref: > users.user_id]
+  expires_at DATETIME
+}
+
+
+Table user_profiles {
+  user_id UUID [primary key]
+  profile_picture VARCHAR(255)
+  height FLOAT
+  shoe_size FLOAT
+  chest FLOAT
+  waist FLOAT
+  hips FLOAT
+}
+
+Table wishlists {
+  wishlist_id UUID [primary key]
+  user_id UUID [ref: > user_profiles.user_id]
+  item_name VARCHAR(255)
+  item_url VARCHAR(255)
+}
+
+Table clothing {
+  clothing_id UUID [primary key]
+  user_id UUID
+  photo_id UUID
+  name VARCHAR(255)
+  description TEXT
+}
+
+Table outfits {
+  outfit_id UUID [primary key]
+  user_id UUID
+  photo_id UUID
+  name VARCHAR(255)
+  description TEXT
+}
+
+Table outfit_items {
+  outfit_id UUID [ref: > outfits.outfit_id]
+  clothing_id UUID [ref: > clothing.clothing_id]
+}
+
+Table tags {
+  tag_id UUID [primary key]
+  name VARCHAR(255)
+  type VARCHAR(50)
+}
+
+Table item_tags {
+  item_id UUID [ref: > clothing.clothing_id]
+  tag_id UUID [ref: > tags.tag_id]
+}
+
+Table friendships {
+  user_id1 UUID
+  user_id2 UUID
+  status VARCHAR(50)
+}
+
+Table group_chats {
+  group_id UUID [primary key]
+  name VARCHAR(255)
+  owner_id UUID
+}
+
+Table group_members {
+  group_id UUID [ref: > group_chats.group_id]
+  user_id UUID
+}
+
+Table scheduled_outfits {
+  user_id UUID
+  outfit_id UUID
+  date DATE
+  weather_forecast JSON
+}
+
+Table notifications {
+  notification_id UUID [primary key]
+  user_id UUID
+  type VARCHAR(255)
+  content TEXT
+  sent_at DATETIME
+}
