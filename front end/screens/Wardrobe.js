@@ -1,9 +1,12 @@
+//screens/Wardrobe.js
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Clothes from './wardrobe/Clothes';
 import Outfits from './wardrobe/Outfits';
 
+
 const TopTab = createMaterialTopTabNavigator();
+
 
 export default function Wardrobe() {
   return (
