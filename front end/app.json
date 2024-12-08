@@ -4,7 +4,7 @@
     "slug": "SeekFit",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -12,11 +12,16 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "platforms": [
+      "android"
+    ],
     "ios": {
+      "bundleIdentifier": "com.seekfit.app",
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
+        "package": "com.seekfit.app",
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
@@ -25,10 +30,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "b4615c33-e09d-4537-8e63-c67f6d3dd42a"
-      }
-    }
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }
