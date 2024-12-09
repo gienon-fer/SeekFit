@@ -23,17 +23,17 @@ In summary, SeekFit is a comprehensive solution for managing wardrobes, planning
 The application is currently available for manual download as an APK file. Users can download the file and install it on their Android devices following the provided instructions below. Please note that the app is not hosted on the Google Play Store, so installation requires enabling installations from unknown sources.
 
 ### Current Version
-- **Version:** 1.0.0 (Initial Release)
-- **Release Date:** 
+- **Version:** 0.5.0
+- **Release Date:** 8.12.2024
 
-### Download Links
-- **APK File Download:** https://drive.google.com/file/d/1FeWQuUDrfH7wG4t3tzueEFD7Eq14-9tJ/view?usp=sharing
-- **Repository:** https://github.com/TeaWhoYou/SeekFit
+- [**APK File Download**](https://drive.google.com/drive/folders/1Cm97XrsjIjmAP6FocAjH0pViXGJXNnIm?usp=sharing)
+  - SHA1: 500261b610fd88d2bc38845f636f5c7e9e3470aa  seekfit-0.5.apk
+  - SHA1: 07c1b267f9176cf3e62a090fc8068facebc668df  seekfit-0.5.zip
+
 
 ### Installation Instructions
 1. **Download the APK File:**
-   - Use the link provided above to download the ZIP file.
-   - Extract it's contents. You should have an APK file.
+   - Use the link provided above to download the APK file.
    - Transfer the APK file to your Android device.
 
 3. **Enable Unknown Sources:**
@@ -53,7 +53,7 @@ The application is currently available for manual download as an APK file. Users
 - **Updates:** Ensure you always use the latest version of the application. Refer to the repository or download link for updates.
 
 ### Feedback and Support
-- For feedback, bug reports, or additional assistance, please contact us at [Insert Contact Information].
+- For feedback, bug reports, or additional assistance, please contact us via [Issues](https://github.com/TeaWhoYou/SeekFit/issues).
 - Please report any broken links or errors to the development team.
 
 ### Disclaimer
@@ -97,8 +97,8 @@ All functional requirements (essential and additional) can be read [here](https:
 
 # Team members
 - Tia Rapo
+- Anna Zalesińska
+- Mateusz Juszczak
 - Cristian Rotar
 - Bartul Kajmak
-- Mateusz Juszczak
-- Anna Zalesińska
 - Kyrylo Rotan
