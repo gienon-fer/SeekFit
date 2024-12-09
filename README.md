@@ -1,3 +1,9 @@
+<div style="text-align: right;">
+    <img src="https://github.com/TeaWhoYou/SeekFit/blob/main/docs/images/icon_seekfit.png?raw=true" width="250" style="margin-left: 20px; margin-bottom: 20px; float: right;>
+</div>
+
+<div style="clear: both;"></div>
+
 # SeekFit
 This project is the result of team work as part of the project assignment of the course [Software Engineering](https://www.fer.unizg.hr/predmet/proinz) at the Faculty of Electrical Engineering and Computing, University of Zagreb.
 # Description of the Project
