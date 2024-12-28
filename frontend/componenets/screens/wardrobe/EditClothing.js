@@ -2,17 +2,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useClothing } from '../../../contexts/ClothingContext';  // Import the useClothing hook
+import { useClothing } from '../../../contexts/ClothingContext';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EditClothing({ route, navigation }) {
-  const { clothes, editClothing, removeClothing } = useClothing(); // Get functions from context
-  const { clothingToEdit } = route.params;  // Get clothing to edit from navigation params
+  const { clothes, editClothing, removeClothing } = useClothing(); 
+  const { clothingToEdit } = route.params;  
 
-  const [image, setImage] = useState(clothingToEdit.image);  // Initialize image with existing one
-  const [description, setDescription] = useState(clothingToEdit.description);  // Initialize description with existing one
+  const [image, setImage] = useState(clothingToEdit.image); 
+  const [description, setDescription] = useState(clothingToEdit.description);
 
-  // Handle image selection
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -27,23 +26,22 @@ export default function EditClothing({ route, navigation }) {
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);  // Update the state with the selected image
+      setImage(result.assets[0].uri);  
     }
   };
 
-  // Handle saving changes to the clothing item
   const saveClothing = async () => {
     if (image && description) {
       const updatedClothing = { image, description };
-      await editClothing(clothingToEdit.id, updatedClothing); // Sync with AsyncStorage
+      await editClothing(clothingToEdit.id, updatedClothing); 
       navigation.goBack();
     } else {
-      alert('Please add an image and description.');
+      alert('Please add an image.');
     }
   };
 
   const deleteClothing = async () => {
-    await removeClothing(clothingToEdit.id); // Sync with AsyncStorage
+    await removeClothing(clothingToEdit.id); 
     navigation.goBack();
   };
 

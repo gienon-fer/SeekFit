@@ -29,7 +29,7 @@ export default function AddClothing({ navigation }) {
 
   const saveClothing = async () => {
     if (image) {
-      const newClothing = { id: new Date().toString(), image, description: description || '' };  // If no description, set it to an empty string
+      const newClothing = { id: new Date().toString(), image, description: description || '' };
       await addClothing(newClothing); // Sync with AsyncStorage
       navigation.goBack();
     } else {

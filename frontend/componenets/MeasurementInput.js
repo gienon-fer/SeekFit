@@ -12,9 +12,9 @@ const MeasurementInput = ({ label, value, onChangeValue, min, max, unit }) => {
         'Invalid Input',
         `${label} value should be between ${min} ${unit} and ${max} ${unit}.`
       );
-      setInput(value); // Revert to the previous value if invalid
+      setInput(value); 
     } else {
-      onChangeValue(input); // Update the parent state
+      onChangeValue(input); 
     }
   };
 

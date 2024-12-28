@@ -24,23 +24,20 @@ function WardrobeTabs() {
 export default function Wardrobe() {
   return (
     <Stack.Navigator>
-      {/* Hide the header for the WardrobeTabs screen */}
       <Stack.Screen
         name="WardrobeTabs"
         component={WardrobeTabs}
-        options={{ headerShown: false }} // Hide header for Tab navigator screen
+        options={{ headerShown: false }} 
       />
-
-      {/* Other stack screens */}
       <Stack.Screen
         name="AddClothing"
         component={AddClothing}
-        options={{ headerShown: false }} // Hide header for AddClothing screen
+        options={{ headerShown: false }} 
       />
       <Stack.Screen
         name="EditClothing"
         component={EditClothing}
-        options={{ headerShown: false }} // Hide header for EditClothing screen
+        options={{ headerShown: false }} 
       />
     </Stack.Navigator>
   );

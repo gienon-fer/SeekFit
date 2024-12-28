@@ -1,19 +1,18 @@
 import React from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useClothing } from '../../../contexts/ClothingContext'; // Import the useClothing hook
+import { useClothing } from '../../../contexts/ClothingContext'; 
 
 export default function Clothes() {
-  const { clothes } = useClothing();  // Get clothing items from context
+  const { clothes } = useClothing();  
   const navigation = useNavigation();
 
-  // Get screen width and calculate image size
   const screenWidth = Dimensions.get('window').width;
-  const imageWidth = screenWidth / 3; // Divide screen width by 3 for 3 columns
-  const imageHeight = imageWidth; // Make height equal to width for square images
+  const imageWidth = screenWidth / 3; 
+  const imageHeight = imageWidth; 
 
   const navigateToEditClothing = (clothing) => {
-    navigation.navigate('EditClothing', { clothingToEdit: clothing });  // Pass clothing to be edited
+    navigation.navigate('EditClothing', { clothingToEdit: clothing }); 
   };
 
   return (
@@ -31,7 +30,7 @@ export default function Clothes() {
           <Text style={styles.emptyText}>Your wardrobe is empty. Add some clothes!</Text>
         }
         columnWrapperStyle={{
-          justifyContent: 'space-between', // Evenly space out columns
+          justifyContent: 'space-between', 
         }}
       />
       <TouchableOpacity
@@ -46,7 +45,7 @@ export default function Clothes() {
 
 const styles = StyleSheet.create({
   image: {
-    marginBottom: 0, // Adjust vertical space between images (can also be set to 0 if you want no gap)
+    marginBottom: 0,
   },
   emptyText: {
     textAlign: 'center',
