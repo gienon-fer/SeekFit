@@ -1,8 +1,9 @@
 plugins {
     id 'java'
-    id("io.freefair.lombok") version "$lombokVersion"
+    id("io.freefair.lombok") version "$lombokPluginVersion"
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'org.springdoc.openapi-gradle-plugin' version "${openapiPluginVersion}"
 }
 
 group = 'org.example'
@@ -25,10 +26,35 @@ dependencies {
     implementation 'org.axonframework:axon-spring-boot-starter'
     implementation 'org.axonframework:axon-tracing-opentelemetry'
 
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+    implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springdoc:springdoc-openapi-starter-common:$springdocVersion"
+    runtimeOnly "org.springdoc:springdoc-openapi-starter-webflux-ui:$springdocVersion"
+
+    implementation 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
+
+openApi {
+    outputDir.set(file("$buildDir/api-specification"))
+    groupedApiMappings.set(["http://localhost:8080/social-management/v3/api-docs.yaml/social-management-v1"         : "social-management-v1.yaml",
+                            "http://localhost:8080/social-management/v3/api-docs.yaml/social_management_actuator-v1": "social_management_actuator-v1.yaml"])
+    customBootRun {
+        args.set(["--spring.profiles.active=openApiSpecGeneration"])
+    }
+}
+
 
 test {
     useJUnitPlatform()

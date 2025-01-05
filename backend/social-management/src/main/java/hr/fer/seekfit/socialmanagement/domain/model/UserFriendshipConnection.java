@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.serialization.Revision;
 import org.axonframework.spring.stereotype.Aggregate;
 
@@ -30,6 +31,9 @@ import org.axonframework.spring.stereotype.Aggregate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserFriendshipConnection {
+
+  @AggregateIdentifier
+  private String friendshipConnectionId;
 
   @CommandHandler
   public UserFriendshipConnection(SendFriendRequestCommand cmd) {
