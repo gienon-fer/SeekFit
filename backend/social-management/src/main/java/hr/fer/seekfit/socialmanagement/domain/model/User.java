@@ -5,14 +5,14 @@ import hr.fer.seekfit.socialmanagement.domain.api.command.user.RenameUserCommand
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.serialization.Revision;
 import org.axonframework.spring.stereotype.Aggregate;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Aggregate
 @Revision("1.0")
