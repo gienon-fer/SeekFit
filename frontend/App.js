@@ -11,6 +11,7 @@ import { UserProvider } from './contexts/UserContext';
 
 import Profile from "./componenets/screens/Profile";
 import Wardrobe from "./componenets/screens/Wardrobe";
+import Planner from "./componenets/screens/Planner";
 
 const Tab = createBottomTabNavigator();
 
@@ -60,7 +61,7 @@ export default function App() {
               />
               <Tab.Screen
                 name="Planner"
-                component={ComingSoon}
+                component={Planner}
                 options={{
                   tabBarLabel: 'Planner',
                   tabBarIcon: ({ color, size }) => (
