@@ -1,15 +1,35 @@
 // screens/wardrobe/AddClothing.js
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useClothing } from '../../../contexts/ClothingContext'; // Import the useClothing hook
+import { useClothing } from '../../../contexts/ClothingContext';
 
 export default function AddClothing({ navigation }) {
-  const { addClothing } = useClothing();  // Get addClothing function from context
+  const { addClothing } = useClothing();
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const selectImage = async () => {
+  const takePicture = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission to use camera is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setImage(result.assets[0].uri);
+    }
+    setModalVisible(false);
+  };
+
+  const selectFromGallery = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       alert('Permission to access gallery is required!');
@@ -25,12 +45,13 @@ export default function AddClothing({ navigation }) {
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
     }
+    setModalVisible(false);
   };
 
   const saveClothing = async () => {
     if (image) {
       const newClothing = { id: new Date().toString(), image, description: description || '' };
-      await addClothing(newClothing); // Sync with AsyncStorage
+      await addClothing(newClothing);
       navigation.goBack();
     } else {
       alert('Please add an image.');
@@ -39,13 +60,48 @@ export default function AddClothing({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity style={styles.imagePicker} onPress={selectImage}>
+      <TouchableOpacity 
+        style={styles.imagePicker} 
+        onPress={() => setModalVisible(true)}
+      >
         {image ? (
           <Image source={{ uri: image }} style={styles.image} />
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
         )}
       </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalView}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity 
+              style={styles.modalButton} 
+              onPress={takePicture}
+            >
+              <Text style={styles.modalButtonText}>Take a Picture</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.modalButton} 
+              onPress={selectFromGallery}
+            >
+              <Text style={styles.modalButtonText}>Choose from Gallery</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.modalButton, styles.cancelButton]} 
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <TextInput
         style={styles.input}
@@ -96,5 +152,42 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalButton: {
+    width: '100%',
+    backgroundColor: '#2196F3',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 5,
+  },
+  modalButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  cancelButton: {
+    backgroundColor: '#f8f9fa',
+    marginTop: 10,
+  },
+  cancelButtonText: {
+    color: '#dc3545',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
