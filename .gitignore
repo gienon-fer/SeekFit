@@ -40,3 +40,5 @@ yarn-error.*
 frontend/config/firebase.js
 .idea/
 frontend/.vscode
+
+TODO

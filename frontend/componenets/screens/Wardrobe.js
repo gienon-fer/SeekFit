@@ -4,10 +4,9 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Clothes from './wardrobe/Clothes';
-import EditClothing from './wardrobe/EditClothing';
-import AddClothing from './wardrobe/AddClothing';
+import ClothingForm from './wardrobe/ClothingForm';
 import Outfits from './wardrobe/Outfits';
-
+import SelectTagView from './SelectTagView';
 
 const Stack = createStackNavigator();
 const TopTab = createMaterialTopTabNavigator();
@@ -30,13 +29,8 @@ export default function Wardrobe() {
         options={{ headerShown: false }} 
       />
       <Stack.Screen
-        name="AddClothing"
-        component={AddClothing}
-        options={{ headerShown: false }} 
-      />
-      <Stack.Screen
-        name="EditClothing"
-        component={EditClothing}
+        name="ClothingForm"
+        component={ClothingForm}
         options={{ headerShown: false }} 
       />
     </Stack.Navigator>

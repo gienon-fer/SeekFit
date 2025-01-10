@@ -1,16 +1,20 @@
-// screens/wardrobe/EditClothing.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useClothing } from '../../../contexts/ClothingContext';
 import { useNavigation } from '@react-navigation/native';
+import TagsInput from '../../TagsInput';
 
-export default function EditClothing({ route, navigation }) {
-  const { clothes, editClothing, removeClothing } = useClothing(); 
-  const { clothingToEdit } = route.params;  
+export default function ClothingForm({ route, navigation }) {
+  const { addClothing, editClothing, removeClothing } = useClothing();
+  const { clothingToEdit } = route.params || {};
 
-  const [image, setImage] = useState(clothingToEdit.image); 
-  const [description, setDescription] = useState(clothingToEdit.description);
+  const [image, setImage] = useState(clothingToEdit ? clothingToEdit.image : null);
+  const [description, setDescription] = useState(clothingToEdit ? clothingToEdit.description : '');
+  const [colorTags, setColorTags] = useState(clothingToEdit ? clothingToEdit.colorTags : []);
+  const [weatherTags, setWeatherTags] = useState(clothingToEdit ? clothingToEdit.weatherTags : []);
+  const colorValues = ['Red', 'Blue', 'Green', 'Yellow', 'Black', 'White'];
+  const weatherValues = ['Rain', 'Snow', 'Wind'];
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -26,14 +30,26 @@ export default function EditClothing({ route, navigation }) {
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);  
+      setImage(result.assets[0].uri);
     }
   };
 
   const saveClothing = async () => {
-    if (image && description) {
-      const updatedClothing = { image, description };
-      await editClothing(clothingToEdit.id, updatedClothing); 
+    if (image) {
+      const clothingData = { 
+        image, 
+        description, 
+        colorTags, 
+        weatherTags 
+      };
+
+      if (clothingToEdit) {
+        await editClothing(clothingToEdit.id, clothingData);
+      } else {
+        const newClothing = { id: new Date().toString(), ...clothingData };
+        await addClothing(newClothing);
+      }
+
       navigation.goBack();
     } else {
       alert('Please add an image.');
@@ -41,8 +57,10 @@ export default function EditClothing({ route, navigation }) {
   };
 
   const deleteClothing = async () => {
-    await removeClothing(clothingToEdit.id); 
-    navigation.goBack();
+    if (clothingToEdit) {
+      await removeClothing(clothingToEdit.id);
+      navigation.goBack();
+    }
   };
 
   return (
@@ -61,14 +79,28 @@ export default function EditClothing({ route, navigation }) {
         value={description}
         onChangeText={setDescription}
       />
+      <TagsInput 
+        name={'Color'}
+        tags={colorTags}
+        values={colorValues}
+        onTagsChange={setColorTags}
+      />
+      <TagsInput 
+        name={'Weather Conditions'}
+        tags={weatherTags}
+        values={weatherValues}
+        onTagsChange={setWeatherTags}
+      />
 
       <TouchableOpacity style={styles.saveButton} onPress={saveClothing}>
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.deleteButton} onPress={deleteClothing}>
-        <Text style={styles.deleteButtonText}>Delete</Text>
-      </TouchableOpacity>
+      {clothingToEdit && (
+        <TouchableOpacity style={styles.deleteButton} onPress={deleteClothing}>
+          <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }

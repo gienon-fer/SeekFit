@@ -28,7 +28,7 @@ export function ClothingProvider({ children }) {
 
   const addClothing = async (newClothing) => {
     try {
-      const updatedClothes = [...clothes, newClothing];
+      const updatedClothes = [...clothes, { ...newClothing, id: Date.now().toString() }];
       await AsyncStorage.setItem('clothes', JSON.stringify(updatedClothes)); 
       setClothes(updatedClothes); 
     } catch (err) {
@@ -58,8 +58,17 @@ export function ClothingProvider({ children }) {
     }
   };
 
+  const resetClothing = async () => {
+    try {
+      await AsyncStorage.removeItem('clothes');
+      setClothes([]);
+    } catch (err) {
+      console.error('Error resetting clothes in AsyncStorage:', err);
+    }
+  };
+
   return (
-    <ClothingContext.Provider value={{ clothes, addClothing, removeClothing, editClothing }}>
+    <ClothingContext.Provider value={{ clothes, addClothing, removeClothing, editClothing, resetClothing }}>
       {children}
     </ClothingContext.Provider>
   );
