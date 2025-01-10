@@ -1,3 +1,4 @@
+// screens/wardrobe/EditClothing.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -30,7 +31,7 @@ export default function ClothingForm({ route, navigation }) {
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);  
     }
   };
 
@@ -137,8 +138,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     marginBottom: 20,
+    marginBottom: 20,
   },
   saveButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  deleteButton: {
+    backgroundColor: '#dc3545',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  deleteButtonText: {
     color: 'white',
     fontSize: 16,
   },

@@ -18,6 +18,7 @@ const Auth = () => {
   const handleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
+      await GoogleSignin.signOut();
       const userInfo = await GoogleSignin.signIn();
       const {type, data} = userInfo;
       const {scopes, serverAuthCode, idToken, user} = data;
