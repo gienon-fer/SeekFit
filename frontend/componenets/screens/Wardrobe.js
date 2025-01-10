@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Clothes from './wardrobe/Clothes';
 import ClothingForm from './wardrobe/ClothingForm';
 import Outfits from './wardrobe/Outfits';
+import OutfitForm from './wardrobe/OutfitForm';
 import SelectTagView from './SelectTagView';
 
 const Stack = createStackNavigator();
@@ -31,6 +32,11 @@ export default function Wardrobe() {
       <Stack.Screen
         name="ClothingForm"
         component={ClothingForm}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="OutfitForm"
+        component={OutfitForm}
         options={{ headerShown: false }} 
       />
     </Stack.Navigator>
