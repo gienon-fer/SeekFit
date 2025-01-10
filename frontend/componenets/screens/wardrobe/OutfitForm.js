@@ -10,8 +10,15 @@ export default function OutfitForm({ route, navigation }) {
 
   const [image, setImage] = useState(outfitToEdit ? outfitToEdit.image : null);
   const [description, setDescription] = useState(outfitToEdit ? outfitToEdit.description : '');
-  const [tags, setTags] = useState(outfitToEdit ? outfitToEdit.tags : []);
-  const tagValues = ['Casual', 'Formal', 'Sport', 'Party'];
+  const [styleTags, setStyleTags] = useState(outfitToEdit ? outfitToEdit.tags.style : []);
+  const [occasionTags, setOccasionTags] = useState(outfitToEdit ? outfitToEdit.tags.occasion : []);
+  const [temperatureTags, setTemperatureTags] = useState(outfitToEdit ? outfitToEdit.tags.temperature : []);
+  const [weatherTags, setWeatherTags] = useState(outfitToEdit ? outfitToEdit.tags.weather : []);
+
+  const styleValues = ['Casual', 'Formal', 'Sport', 'Party'];
+  const occasionValues = ['Work', 'Date', 'Wedding', 'Birthday'];
+  const temperatureValues = ['Below 0°C (Freezing)', '0°C to 10°C (Cold)', '10°C to 15°C (Cool)', '15°C to 20°C (Mild)', '20°C to 25°C (Warm)', '25°C to 30°C (Hot)', 'Above 30°C (Very Hot)'];
+  const weatherValues = ['Rain', 'Snow', 'Wind'];
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -33,7 +40,16 @@ export default function OutfitForm({ route, navigation }) {
 
   const saveOutfit = async () => {
     if (image) {
-      const outfitData = { image, description, tags };
+      const outfitData = {
+        image,
+        description,
+        tags: {
+          style: styleTags,
+          occasion: occasionTags,
+          temperature: temperatureTags,
+          weather: weatherTags,
+        },
+      };
 
       if (outfitToEdit) {
         await editOutfit(outfitToEdit.id, outfitData);
@@ -72,10 +88,28 @@ export default function OutfitForm({ route, navigation }) {
         onChangeText={setDescription}
       />
       <TagsInput 
-        name={'Tags'}
-        tags={tags}
-        values={tagValues}
-        onTagsChange={setTags}
+        name={'Style'}
+        tags={styleTags}
+        values={styleValues}
+        onTagsChange={setStyleTags}
+      />
+      <TagsInput 
+        name={'Occasion'}
+        tags={occasionTags}
+        values={occasionValues}
+        onTagsChange={setOccasionTags}
+      />
+      <TagsInput
+        name={'Temperature'}
+        tags={temperatureTags}
+        values={temperatureValues}
+        onTagsChange={setTemperatureTags}
+      />
+      <TagsInput
+        name={'Weather'}
+        tags={weatherTags}
+        values={weatherValues}
+        onTagsChange={setWeatherTags}
       />
 
       <TouchableOpacity style={styles.saveButton} onPress={saveOutfit}>

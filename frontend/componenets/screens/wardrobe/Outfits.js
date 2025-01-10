@@ -11,7 +11,7 @@ export default function Outfits() {
 
   const screenWidth = Dimensions.get('window').width;
   const imageWidth = screenWidth / numColumns;
-  const imageHeight = imageWidth;
+  const imageHeight = imageWidth * 1.75; 
 
   const navigateToOutfitForm = (outfit) => {
     navigation.navigate('OutfitForm', { outfitToEdit: outfit });
