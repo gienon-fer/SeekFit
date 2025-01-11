@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   scrollView: {
-    flex: 1
+    flex: 1,
+    marginBottom: -10,
   },
   scrollViewContent: {
     paddingBottom: 20,
@@ -34,8 +35,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   cancelButtonContainer: {
-    position: 'absolute',
-    bottom: 0,
     width: '100%',
     padding: 10,
     backgroundColor: '#fff',

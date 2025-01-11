@@ -4,7 +4,7 @@ import SelectTagView from './screens/SelectTagView.js';
 
 const TagsInput = ({ name, tags, values = [], onTagsChange }) => {
   const [showSelectTagView, setShowSelectTagView] = useState(false);
-  const [currentTags, setCurrentTags] = useState(tags);
+  const [currentTags, setCurrentTags] = useState(tags || []);
 
   useEffect(() => {
     onTagsChange(currentTags);
@@ -33,27 +33,29 @@ const TagsInput = ({ name, tags, values = [], onTagsChange }) => {
 
   return (
     <View style={styles.container}>
-      {showSelectTagView && availableValues.length > 0 ? (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity onPress={handleAddButtonPress}>
+          <Text style={styles.addButton}>+</Text>
+        </TouchableOpacity>
+        {name && <Text style={styles.name}>{name}</Text>}
+      </View>
+      <View style={styles.divider} />
+      <View style={styles.tagsInputContainer}>
+        {currentTags.length === 0 ? (
+          <Text style={styles.placeholder}>Press + to add tags</Text>
+        ) : (
+          currentTags.map((tag, index) => (
+            <View key={index} style={styles.tagItem}>
+              <Text style={styles.text}>{tag}</Text>
+              <TouchableOpacity onPress={() => removeTag(index)}>
+                <Text style={styles.close}>&times;</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
+      </View>
+      {showSelectTagView && availableValues.length > 0 && (
         <SelectTagView values={availableValues} onCancel={handleCancel} onSelect={handleSelect} />
-      ) : (
-        <>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={handleAddButtonPress}>
-              <Text style={styles.addButton}>+</Text>
-            </TouchableOpacity>
-            {name && <Text style={styles.name}>{name}</Text>}
-          </View>
-          <View style={styles.tagsInputContainer}>
-            {currentTags.map((tag, index) => (
-              <View key={index} style={styles.tagItem}>
-                <Text style={styles.text}>{tag}</Text>
-                <TouchableOpacity onPress={() => removeTag(index)}>
-                  <Text style={styles.close}>&times;</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        </>
       )}
     </View>
   );
@@ -67,6 +69,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
+    marginBottom: 15
   },
   tagsInput: {
     flex: 1,
@@ -83,6 +86,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     margin: 5,
+    backgroundColor: '#cccccc', 
+    borderRadius: 10,
+    padding: 5,
   },
   text: {
     marginRight: 5,
@@ -95,6 +101,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginRight: 10,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 10,
+    marginBottom: 3,
+    marginTop: 0,
+  },
+  placeholder: {
+    color: '#ccc',
+    fontStyle: 'italic',
   },
 });
 

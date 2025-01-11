@@ -6,7 +6,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Clothes from './wardrobe/Clothes';
 import ClothingForm from './wardrobe/ClothingForm';
 import Outfits from './wardrobe/Outfits';
-import SelectTagView from './SelectTagView';
+import OutfitForm from './wardrobe/OutfitForm';
+import FilterClothing from './wardrobe/FilterClothing'; 
+import FilterOutfit from './wardrobe/FilterOutfit'; // Import the new filtering screen for outfits
 
 const Stack = createStackNavigator();
 const TopTab = createMaterialTopTabNavigator();
@@ -31,6 +33,21 @@ export default function Wardrobe() {
       <Stack.Screen
         name="ClothingForm"
         component={ClothingForm}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="OutfitForm"
+        component={OutfitForm}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="FilterClothing"
+        component={FilterClothing}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="FilterOutfit"
+        component={FilterOutfit}
         options={{ headerShown: false }} 
       />
     </Stack.Navigator>
