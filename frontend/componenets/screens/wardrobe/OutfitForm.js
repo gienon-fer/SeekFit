@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView 
 import * as ImagePicker from 'expo-image-picker';
 import { useOutfit } from '../../../contexts/OutfitContext';
 import TagsInput from '../../TagsInput';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function OutfitForm({ route, navigation }) {
   const { addOutfit, editOutfit, removeOutfit } = useOutfit();
@@ -112,15 +113,17 @@ export default function OutfitForm({ route, navigation }) {
         onTagsChange={setWeatherTags}
       />
 
-      <TouchableOpacity style={styles.saveButton} onPress={saveOutfit}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
-
-      {outfitToEdit && (
-        <TouchableOpacity style={styles.deleteButton} onPress={deleteOutfit}>
-          <Text style={styles.deleteButtonText}>Delete</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.saveButton} onPress={saveOutfit}>
+          <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
-      )}
+
+        {outfitToEdit && (
+          <TouchableOpacity style={styles.deleteButton} onPress={deleteOutfit}>
+            <Ionicons name="trash" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
     </ScrollView>
   );
 }
@@ -151,12 +154,17 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   saveButton: {
     backgroundColor: '#28a745',
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
-    marginBottom: 20,
+    width: '80%',
   },
   saveButtonText: {
     color: 'white',
@@ -167,6 +175,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
+    width: '18%',
   },
   deleteButtonText: {
     color: 'white',

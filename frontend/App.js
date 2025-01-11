@@ -10,6 +10,9 @@ import { ClothingProvider } from './contexts/ClothingContext';
 import { UserProvider } from './contexts/UserContext';
 import { OutfitProvider } from './contexts/OutfitContext';
 import { ClothingTagValuesProvider } from './contexts/ClothingTagValuesContext'; 
+import { ClothingFilterProvider } from './contexts/ClothingFilterContext'; 
+import { OutfitTagValuesProvider } from './contexts/OutfitTagValuesContext'; // Import OutfitTagValuesProvider
+import { OutfitFilterProvider } from './contexts/OutfitFilterContext'; // Import OutfitFilterProvider
 
 import Profile from "./componenets/screens/Profile";
 import Wardrobe from "./componenets/screens/Wardrobe";
@@ -51,50 +54,56 @@ export default function App() {
         <ClothingProvider>
           <OutfitProvider>
             <ClothingTagValuesProvider>
-              <NavigationContainer>
-                <Tab.Navigator>
-                  <Tab.Screen
-                    name="Wardrobe"
-                    component={Wardrobe}
-                    options={{
-                      tabBarLabel: 'Wardrobe',
-                      tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="door-sliding" color={color} size={size} />
-                      )
-                    }}
-                  />
-                  <Tab.Screen
-                    name="Planner"
-                    component={Planner}
-                    options={{
-                      tabBarLabel: 'Planner',
-                      tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="calendar-month" color={color} size={size} />
-                      ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="Friends"
-                    component={ComingSoon}
-                    options={{
-                      tabBarLabel: 'Friends',
-                      tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="group" color={color} size={size} />
-                      ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="Profile"
-                    component={Profile}
-                    options={{
-                      tabBarLabel: 'Profile',
-                      tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="person" color={color} size={size} />
-                      ),
-                    }}
-                  />
-                </Tab.Navigator>
-              </NavigationContainer>
+              <ClothingFilterProvider>
+                <OutfitTagValuesProvider>
+                  <OutfitFilterProvider>
+                    <NavigationContainer>
+                      <Tab.Navigator>
+                        <Tab.Screen
+                          name="Wardrobe"
+                          component={Wardrobe}
+                          options={{
+                            tabBarLabel: 'Wardrobe',
+                            tabBarIcon: ({ color, size }) => (
+                              <MaterialIcons name="door-sliding" color={color} size={size} />
+                            )
+                          }}
+                        />
+                        <Tab.Screen
+                          name="Planner"
+                          component={Planner}
+                          options={{
+                            tabBarLabel: 'Planner',
+                            tabBarIcon: ({ color, size }) => (
+                              <MaterialIcons name="calendar-month" color={color} size={size} />
+                            ),
+                          }}
+                        />
+                        <Tab.Screen
+                          name="Friends"
+                          component={ComingSoon}
+                          options={{
+                            tabBarLabel: 'Friends',
+                            tabBarIcon: ({ color, size }) => (
+                              <MaterialIcons name="group" color={color} size={size} />
+                            ),
+                          }}
+                        />
+                        <Tab.Screen
+                          name="Profile"
+                          component={Profile}
+                          options={{
+                            tabBarLabel: 'Profile',
+                            tabBarIcon: ({ color, size }) => (
+                              <MaterialIcons name="person" color={color} size={size} />
+                            ),
+                          }}
+                        />
+                      </Tab.Navigator>
+                    </NavigationContainer>
+                  </OutfitFilterProvider>
+                </OutfitTagValuesProvider>
+              </ClothingFilterProvider>
             </ClothingTagValuesProvider>
           </OutfitProvider>
         </ClothingProvider>

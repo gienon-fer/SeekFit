@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useClothing } from '../../../contexts/ClothingContext';
-import { clothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
 import TagsInput from '../../TagsInput';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -17,10 +17,23 @@ export default function ClothingForm({ route, navigation }) {
   const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.materialTags : []);
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
   
-  const colorValues = clothingTagValues.Color;
-  const materialValues = clothingTagValues.Material;
-  const statusValues = clothingTagValues.Status;
-  const typeValues = clothingTagValues.Type;
+  const colorValues = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Black', 'White', 'Grey', 'Brown', 'Beige'];
+  const materialValues = ['Cotton', 'Polyester', 'Wool', 'Silk', 'Linen', 'Leather'];
+  const statusValues = ['Borrowed', 'In Wash', 'Unavailable'];
+  const typeValues = [
+    "Tops",
+    "Trousers and shorts",
+    "Footwear",
+    "Dresses",
+    "Coats",
+    "Jackets",
+    "Skirts",
+    "Sportswear",
+    "Suits",
+    "Handwear",
+    "Accessories",
+    "Outerwear"
+];
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -112,15 +125,17 @@ export default function ClothingForm({ route, navigation }) {
         onTagsChange={setStatusTags}
       />
 
-      <TouchableOpacity style={styles.saveButton} onPress={saveClothing}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
-
-      {clothingToEdit && (
-        <TouchableOpacity style={styles.deleteButton} onPress={deleteClothing}>
-          <Text style={styles.deleteButtonText}>Delete</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.saveButton} onPress={saveClothing}>
+          <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
-      )}
+
+        {clothingToEdit && (
+          <TouchableOpacity style={styles.deleteButton} onPress={deleteClothing}>
+            <Ionicons name="trash" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
     </ScrollView>
   );
 }
@@ -156,8 +171,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
-    marginBottom: 20,
-    marginBottom: 20,
+    width: '80%',
   },
   saveButtonText: {
     color: 'white',
@@ -168,19 +182,11 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
+    width: '18%',
   },
-  deleteButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  deleteButton: {
-    backgroundColor: '#dc3545',
-    padding: 10,
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontSize: 16,
   },
 });

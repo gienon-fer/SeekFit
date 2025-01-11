@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useClothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
-import { useActiveClothingFilters, useSetActiveClothingFilters } from '../../../contexts/ClothingFilterContext';
+import { useOutfitTagValues } from '../../../contexts/OutfitTagValuesContext'; // Import useOutfitTagValues
+import { useActiveOutfitFilters, useSetActiveOutfitFilters } from '../../../contexts/OutfitFilterContext'; // Import outfit filter context
 
-export default function FilterClothing() {
+export default function FilterOutfit() {
   const navigation = useNavigation();
-  const clothingTagValues = useClothingTagValues(); 
-  const activeFilters = useActiveClothingFilters(); 
-  const setActiveFilters = useSetActiveClothingFilters(); 
+  const outfitTagValues = useOutfitTagValues(); // Use the hook to get tag values
+  const activeFilters = useActiveOutfitFilters(); // Use the hook to get active filters
+  const setActiveFilters = useSetActiveOutfitFilters(); // Use the hook to set active filters
   const [selectedTags, setSelectedTags] = useState(activeFilters || {});
 
   useEffect(() => {
@@ -57,11 +57,11 @@ export default function FilterClothing() {
       <TouchableOpacity style={styles.clearButton} onPress={clearFilters}>
         <Text style={styles.buttonText}>Clear Filters</Text>
       </TouchableOpacity>
-      {Object.keys(clothingTagValues).map((category) => (
+      {Object.keys(outfitTagValues).map((category) => (
         <View key={category} style={styles.categoryContainer}>
           <Text style={styles.categoryName}>{category}</Text>
           <View style={styles.tagContainer}>
-            {clothingTagValues[category].map((value) => (
+            {outfitTagValues[category].map((value) => (
               <TouchableOpacity
                 key={value}
                 style={[

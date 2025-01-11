@@ -1,13 +1,21 @@
-import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useClothing } from '../../../contexts/ClothingContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useActiveClothingFilters, useSetActiveClothingFilters } from '../../../contexts/ClothingFilterContext'; // Import clothing filter context
 
 export default function Clothes() {
-  const { clothes, resetClothing } = useClothing();
+  const { clothes, removeClothing } = useClothing();
   const navigation = useNavigation();
   const numColumns = 4;
+
+  const activeFilters = useActiveClothingFilters();
+  const [filteredClothes, setFilteredClothes] = useState(clothes);
+
+  useEffect(() => {
+    applyFilters();
+  }, [clothes, activeFilters]);
 
   const screenWidth = Dimensions.get('window').width;
   const imageWidth = screenWidth / numColumns;
@@ -21,14 +29,50 @@ export default function Clothes() {
     navigation.navigate('FilterClothing');
   };
 
+  const applyFilters = () => {
+    if (Object.keys(activeFilters).length === 0) {
+      setFilteredClothes(clothes);
+      return;
+    }
+
+    const filtered = clothes.filter((item) => {
+      return Object.keys(activeFilters).every((category) => {
+        const categoryTags = activeFilters[category];
+        return categoryTags.every((tag) => item[`${category.toLowerCase()}Tags`]?.includes(tag));
+      });
+    });
+
+    setFilteredClothes(filtered);
+  };
+
+  const handlePress = (clothing) => {
+    navigation.navigate('ClothingForm', { clothingToEdit: clothing });
+  };
+
+  const handleLongPress = (clothing) => {
+    Alert.alert(
+      'What do you want to do?',
+      '',
+      [
+        { text: 'Delete', onPress: () => removeClothing(clothing.id) },
+        { text: 'Edit', onPress: () => navigateToClothingForm(clothing) },
+        { text: 'Cancel', style: 'cancel' },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={clothes}
+        data={filteredClothes}
         numColumns={numColumns}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigateToClothingForm(item)}>
+          <TouchableOpacity
+            onPress={() => handlePress(item)}
+            onLongPress={() => handleLongPress(item)}
+          >
             <Image source={{ uri: item.image }} style={[styles.image, { width: imageWidth, height: imageHeight }]} />
           </TouchableOpacity>
         )}
@@ -38,7 +82,7 @@ export default function Clothes() {
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={styles.filterButton}
+          style={Object.keys(activeFilters).length > 0 ? styles.activeFilterButton : styles.filterButton}
           onPress={openFilter}
         >
           <Ionicons name="filter" size={30} color="white" />
@@ -84,6 +128,15 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     backgroundColor: 'blue',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  activeFilterButton: {
+    backgroundColor: 'darkblue',
     width: 50,
     height: 50,
     borderRadius: 25,
