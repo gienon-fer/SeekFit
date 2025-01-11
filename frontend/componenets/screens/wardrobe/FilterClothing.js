@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   clearButton: {
-    backgroundColor: '#ffc107',
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
@@ -132,14 +132,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#dc3545',
     padding: 10,
     borderRadius: 5,
+    width: '28%',
   },
   applyButton: {
     backgroundColor: '#28a745',
     padding: 10,
     borderRadius: 5,
+    width: '68%',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
+    textAlign: 'center',
   },
 });

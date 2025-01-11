@@ -76,8 +76,12 @@ export default function Clothes() {
             <Image source={{ uri: item.image }} style={[styles.image, { width: imageWidth, height: imageHeight }]} />
           </TouchableOpacity>
         )}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>Your wardrobe is empty. Add some clothes!</Text>
+        LListEmptyComponent={
+          <Text style={styles.emptyText}>
+            {Object.keys(activeFilters).length > 0 
+              ? "You don't have any clothes with these filters..." 
+              : "You don't have any clothes...\n Add some by pressing '+'!"}
+          </Text>
         }
       />
       <View style={styles.buttonContainer}>
@@ -104,7 +108,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    marginTop: 20,
+    color: 'gray',
+    marginTop: 30,
     fontSize: 16,
   },
   buttonContainer: {

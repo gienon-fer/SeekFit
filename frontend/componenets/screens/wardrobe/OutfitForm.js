@@ -113,8 +113,8 @@ export default function OutfitForm({ route, navigation }) {
         onTagsChange={setWeatherTags}
       />
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.saveButton} onPress={saveOutfit}>
+      <View style={outfitToEdit ? styles.buttonContainer : styles.singleButtonContainer}>
+        <TouchableOpacity style={outfitToEdit ? styles.saveButton : styles.fullWidthSaveButton} onPress={saveOutfit}>
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
 
@@ -159,12 +159,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  singleButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   saveButton: {
     backgroundColor: '#28a745',
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
     width: '80%',
+  },
+  fullWidthSaveButton: {
+    backgroundColor: '#28a745',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    width: '100%',
   },
   saveButtonText: {
     color: 'white',

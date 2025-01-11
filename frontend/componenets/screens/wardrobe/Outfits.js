@@ -11,7 +11,7 @@ export default function Outfits() {
   const navigation = useNavigation();
   const numColumns = 4;
 
-  const activeFilters = useActiveOutfitFilters(); // Use the hook to get active filters
+  const activeFilters = useActiveOutfitFilters(); 
   const [filteredOutfits, setFilteredOutfits] = useState(outfits);
 
   useEffect(() => {
@@ -78,7 +78,11 @@ export default function Outfits() {
           </TouchableOpacity>
         )}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>Your wardrobe is empty. Add some outfits!</Text>
+          <Text style={styles.emptyText}>
+            {Object.keys(activeFilters).length > 0 
+              ? "You don't have any outfits with these filters..." 
+              : "You don't have any outfits...\n Add some by pressing '+'!"}
+          </Text>
         }
       />
       <View style={styles.buttonContainer}>
@@ -105,7 +109,10 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'gray',
+    marginTop: 30,
     fontSize: 16,
   },
   buttonContainer: {

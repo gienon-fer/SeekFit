@@ -125,8 +125,8 @@ export default function ClothingForm({ route, navigation }) {
         onTagsChange={setStatusTags}
       />
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.saveButton} onPress={saveClothing}>
+      <View style={clothingToEdit ? styles.buttonContainer : styles.singleButtonContainer}>
+        <TouchableOpacity style={clothingToEdit ? styles.saveButton : styles.fullWidthSaveButton} onPress={saveClothing}>
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
 
@@ -173,6 +173,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '80%',
   },
+  fullWidthSaveButton: {
+    backgroundColor: '#28a745',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    width: '100%',
+  },
   saveButtonText: {
     color: 'white',
     fontSize: 16,
@@ -187,6 +194,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  singleButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
   },
 });
