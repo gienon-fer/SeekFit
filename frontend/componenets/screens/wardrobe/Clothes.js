@@ -1,28 +1,31 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions, Button } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useClothing } from '../../../contexts/ClothingContext'; 
+import { useClothing } from '../../../contexts/ClothingContext';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Clothes() {
-  const { clothes, resetClothing } = useClothing();  
+  const { clothes, resetClothing } = useClothing();
   const navigation = useNavigation();
   const numColumns = 4;
 
   const screenWidth = Dimensions.get('window').width;
-  const imageWidth = screenWidth / numColumns; 
+  const imageWidth = screenWidth / numColumns;
   const imageHeight = imageWidth * 1.75;
 
   const navigateToClothingForm = (clothing) => {
-    navigation.navigate('ClothingForm', { clothingToEdit: clothing }); 
+    navigation.navigate('ClothingForm', { clothingToEdit: clothing });
   };
 
-  //console.log('Clothing IDs:', clothes.map(item => item.id));
+  const openFilter = () => {
+    navigation.navigate('FilterClothing');
+  };
 
   return (
     <View style={{ flex: 1 }}>
       <FlatList
         data={clothes}
-        numColumns={numColumns}  // 3 columns for the images
+        numColumns={numColumns}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigateToClothingForm(item)}>
@@ -33,12 +36,20 @@ export default function Clothes() {
           <Text style={styles.emptyText}>Your wardrobe is empty. Add some clothes!</Text>
         }
       />
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => navigateToClothingForm(null)}
-      >
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={openFilter}
+        >
+          <Ionicons name="filter" size={30} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigateToClothingForm(null)}
+        >
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -52,19 +63,32 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
   },
-  addButton: {
+  buttonContainer: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: 10,
+    flexDirection: 'row',
+  },
+  addButton: {
     backgroundColor: 'blue',
     width: 50,
     height: 50,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10,
   },
   addButtonText: {
     color: 'white',
     fontSize: 30,
+  },
+  filterButton: {
+    backgroundColor: 'blue',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
   },
 });

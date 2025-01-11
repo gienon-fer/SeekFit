@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ClothingProvider } from './contexts/ClothingContext';
 import { UserProvider } from './contexts/UserContext';
 import { OutfitProvider } from './contexts/OutfitContext';
+import { ClothingTagValuesProvider } from './contexts/ClothingTagValuesContext'; 
 
 import Profile from "./componenets/screens/Profile";
 import Wardrobe from "./componenets/screens/Wardrobe";
@@ -49,50 +50,52 @@ export default function App() {
       <UserProvider>
         <ClothingProvider>
           <OutfitProvider>
-            <NavigationContainer>
-              <Tab.Navigator>
-                <Tab.Screen
-                  name="Wardrobe"
-                  component={Wardrobe}
-                  options={{
-                    tabBarLabel: 'Wardrobe',
-                    tabBarIcon: ({ color, size }) => (
-                      <MaterialIcons name="door-sliding" color={color} size={size} />
-                    )
-                  }}
-                />
-                <Tab.Screen
-                  name="Planner"
-                  component={Planner}
-                  options={{
-                    tabBarLabel: 'Planner',
-                    tabBarIcon: ({ color, size }) => (
-                      <MaterialIcons name="calendar-month" color={color} size={size} />
-                    ),
-                  }}
-                />
-                <Tab.Screen
-                  name="Friends"
-                  component={ComingSoon}
-                  options={{
-                    tabBarLabel: 'Friends',
-                    tabBarIcon: ({ color, size }) => (
-                      <MaterialIcons name="group" color={color} size={size} />
-                    ),
-                  }}
-                />
-                <Tab.Screen
-                  name="Profile"
-                  component={Profile}
-                  options={{
-                    tabBarLabel: 'Profile',
-                    tabBarIcon: ({ color, size }) => (
-                      <MaterialIcons name="person" color={color} size={size} />
-                    ),
-                  }}
-                />
-              </Tab.Navigator>
-            </NavigationContainer>
+            <ClothingTagValuesProvider>
+              <NavigationContainer>
+                <Tab.Navigator>
+                  <Tab.Screen
+                    name="Wardrobe"
+                    component={Wardrobe}
+                    options={{
+                      tabBarLabel: 'Wardrobe',
+                      tabBarIcon: ({ color, size }) => (
+                        <MaterialIcons name="door-sliding" color={color} size={size} />
+                      )
+                    }}
+                  />
+                  <Tab.Screen
+                    name="Planner"
+                    component={Planner}
+                    options={{
+                      tabBarLabel: 'Planner',
+                      tabBarIcon: ({ color, size }) => (
+                        <MaterialIcons name="calendar-month" color={color} size={size} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="Friends"
+                    component={ComingSoon}
+                    options={{
+                      tabBarLabel: 'Friends',
+                      tabBarIcon: ({ color, size }) => (
+                        <MaterialIcons name="group" color={color} size={size} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="Profile"
+                    component={Profile}
+                    options={{
+                      tabBarLabel: 'Profile',
+                      tabBarIcon: ({ color, size }) => (
+                        <MaterialIcons name="person" color={color} size={size} />
+                      ),
+                    }}
+                  />
+                </Tab.Navigator>
+              </NavigationContainer>
+            </ClothingTagValuesProvider>
           </OutfitProvider>
         </ClothingProvider>
       </UserProvider>

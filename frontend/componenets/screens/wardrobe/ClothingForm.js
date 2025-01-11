@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useClothing } from '../../../contexts/ClothingContext';
+import { clothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
 import TagsInput from '../../TagsInput';
 
 export default function ClothingForm({ route, navigation }) {
@@ -16,23 +17,10 @@ export default function ClothingForm({ route, navigation }) {
   const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.materialTags : []);
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
   
-  const colorValues = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Black', 'White', 'Grey', 'Brown', 'Beige'];
-  const materialValues = ['Cotton', 'Polyester', 'Wool', 'Silk', 'Linen', 'Leather'];
-  const statusValues = ['Borrowed', 'In Wash', 'Unavailable'];
-  const typeValues = [
-    "Tops",
-    "Trousers and shorts",
-    "Footwear",
-    "Dresses",
-    "Coats",
-    "Jackets",
-    "Skirts",
-    "Sportswear",
-    "Suits",
-    "Handwear",
-    "Accessories",
-    "Outerwear"
-];
+  const colorValues = clothingTagValues.Color;
+  const materialValues = clothingTagValues.Material;
+  const statusValues = clothingTagValues.Status;
+  const typeValues = clothingTagValues.Type;
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();

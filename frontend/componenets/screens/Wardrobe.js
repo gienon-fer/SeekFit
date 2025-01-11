@@ -7,7 +7,7 @@ import Clothes from './wardrobe/Clothes';
 import ClothingForm from './wardrobe/ClothingForm';
 import Outfits from './wardrobe/Outfits';
 import OutfitForm from './wardrobe/OutfitForm';
-import SelectTagView from './SelectTagView';
+import FilterClothing from './wardrobe/FilterClothing'; 
 
 const Stack = createStackNavigator();
 const TopTab = createMaterialTopTabNavigator();
@@ -37,6 +37,11 @@ export default function Wardrobe() {
       <Stack.Screen
         name="OutfitForm"
         component={OutfitForm}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="FilterClothing"
+        component={FilterClothing}
         options={{ headerShown: false }} 
       />
     </Stack.Navigator>
