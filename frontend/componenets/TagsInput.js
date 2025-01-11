@@ -4,7 +4,7 @@ import SelectTagView from './screens/SelectTagView.js';
 
 const TagsInput = ({ name, tags, values = [], onTagsChange }) => {
   const [showSelectTagView, setShowSelectTagView] = useState(false);
-  const [currentTags, setCurrentTags] = useState(tags);
+  const [currentTags, setCurrentTags] = useState(tags || []);
 
   useEffect(() => {
     onTagsChange(currentTags);
