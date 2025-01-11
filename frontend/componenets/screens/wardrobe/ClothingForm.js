@@ -1,6 +1,7 @@
 // screens/wardrobe/EditClothing.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useClothing } from '../../../contexts/ClothingContext';
 import { useNavigation } from '@react-navigation/native';
@@ -16,6 +17,15 @@ export default function ClothingForm({ route, navigation }) {
   const [weatherTags, setWeatherTags] = useState(clothingToEdit ? clothingToEdit.weatherTags : []);
   const colorValues = ['Red', 'Blue', 'Green', 'Yellow', 'Black', 'White'];
   const weatherValues = ['Rain', 'Snow', 'Wind'];
+  const [size, setSize] = useState(clothingToEdit ? clothingToEdit.size : null);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: 'XS', value: 'XS' },
+    { label: 'S', value: 'S' },
+    { label: 'M', value: 'M' },
+    { label: 'L', value: 'L' },
+    { label: 'XL', value: 'XL' },
+  ]);
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -31,7 +41,7 @@ export default function ClothingForm({ route, navigation }) {
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);  
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -41,7 +51,8 @@ export default function ClothingForm({ route, navigation }) {
         image, 
         description, 
         colorTags, 
-        weatherTags 
+        weatherTags, 
+        size
       };
 
       if (clothingToEdit) {
@@ -93,6 +104,18 @@ export default function ClothingForm({ route, navigation }) {
         onTagsChange={setWeatherTags}
       />
 
+      <DropDownPicker
+        open={open}
+        value={size}
+        items={items}
+        setOpen={setOpen}
+        setValue={setSize}
+        setItems={setItems}
+        placeholder="Select a size"
+        containerStyle={{ marginBottom: 20 }}
+        zIndex={5000}
+      />
+
       <TouchableOpacity style={styles.saveButton} onPress={saveClothing}>
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
@@ -138,19 +161,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     marginBottom: 20,
-    marginBottom: 20,
   },
   saveButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  deleteButton: {
-    backgroundColor: '#dc3545',
-    padding: 10,
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  deleteButtonText: {
     color: 'white',
     fontSize: 16,
   },
