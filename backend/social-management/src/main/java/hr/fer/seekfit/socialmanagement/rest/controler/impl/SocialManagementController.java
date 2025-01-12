@@ -1,20 +1,22 @@
-package hr.fer.seekfit.socialmanagement.rest.impl;
+package hr.fer.seekfit.socialmanagement.rest.controler.impl;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
 import hr.fer.seekfit.socialmanagement.mapper.FriendshipMapper;
 import hr.fer.seekfit.socialmanagement.mapper.GroupMapper;
 import hr.fer.seekfit.socialmanagement.mapper.UserMapper;
-import hr.fer.seekfit.socialmanagement.rest.api.SocialManagementControllerApiDocks;
+import hr.fer.seekfit.socialmanagement.rest.controler.api.SocialManagementControllerApiDocks;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.AcceptFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.FriendshipIdDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.IgnoreFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.RemoveFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.SendFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.AddGroupMemberRequest;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.CancelInviteRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.ChangeGroupDetailsRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.CreateGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.GroupIdDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.InviteUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.JoinGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.LeaveGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.RemoveGroupMemberRequest;
@@ -38,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/social/v1")
+@RequestMapping("/api/v1")
 public class SocialManagementController implements SocialManagementControllerApiDocks {
 
   private final CommandGateway commandGateway;
@@ -66,7 +68,6 @@ public class SocialManagementController implements SocialManagementControllerApi
     return new UserIdDto(request.getUserId());
   }
 
-  /* ------------------- Group Commands -------------------- */
   @Override
   @PostMapping("/create-group")
   @ResponseStatus(ACCEPTED)
@@ -104,25 +105,51 @@ public class SocialManagementController implements SocialManagementControllerApi
     return new GroupIdDto(request.getGroupId());
   }
 
+  /**
+   * Invite a user to a group.
+   */
+  @Override
+  @PostMapping("/invite-user")
+  @ResponseStatus(ACCEPTED)
+  public void inviteUser(@Valid @RequestBody InviteUserRequest request) {
+    var command = groupMapper.toInviteUserCommand(request);
+    commandGateway.sendAndWait(command);
+  }
+
+  /**
+   * Cancel a user's invitation to a group.
+   */
+  @Override
+  @PostMapping("/cancel-invite")
+  @ResponseStatus(ACCEPTED)
+  public void cancelInvite(@Valid @RequestBody CancelInviteRequest request) {
+    var command = groupMapper.toCancelInviteCommand(request);
+    commandGateway.sendAndWait(command);
+  }
+
+  /**
+   * Join a group via an invitation link.
+   */
   @Override
   @PostMapping("/join-group")
   @ResponseStatus(ACCEPTED)
-  public GroupIdDto joinGroup(@Valid @RequestBody JoinGroupRequest request) {
+  public void joinGroup(@Valid @RequestBody JoinGroupRequest request) {
     var command = groupMapper.toJoinGroupCommand(request);
     commandGateway.sendAndWait(command);
-    return new GroupIdDto(request.getGroupId());
   }
 
+  /**
+   * Leave a group.
+   */
   @Override
   @PostMapping("/leave-group")
   @ResponseStatus(ACCEPTED)
-  public GroupIdDto leaveGroup(@Valid @RequestBody LeaveGroupRequest request) {
+  public void leaveGroup(@Valid @RequestBody LeaveGroupRequest request) {
     var command = groupMapper.toLeaveGroupCommand(request);
     commandGateway.sendAndWait(command);
-    return new GroupIdDto(request.getGroupId());
   }
 
-  /* ---------------- Friendship Commands ------------------ */
+
   @Override
   @PostMapping("/send-friend-request")
   @ResponseStatus(ACCEPTED)

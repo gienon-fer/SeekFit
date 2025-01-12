@@ -3,14 +3,18 @@ package hr.fer.seekfit.socialmanagement.mapper;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 import hr.fer.seekfit.socialmanagement.domain.api.command.group.AddGroupMemberCommand;
+import hr.fer.seekfit.socialmanagement.domain.api.command.group.CancelInviteCommand;
 import hr.fer.seekfit.socialmanagement.domain.api.command.group.ChangeGroupDetailsCommand;
 import hr.fer.seekfit.socialmanagement.domain.api.command.group.CreateGroupCommand;
+import hr.fer.seekfit.socialmanagement.domain.api.command.group.InviteUserCommand;
 import hr.fer.seekfit.socialmanagement.domain.api.command.group.JoinGroupCommand;
 import hr.fer.seekfit.socialmanagement.domain.api.command.group.LeaveGroupCommand;
 import hr.fer.seekfit.socialmanagement.domain.api.command.group.RemoveGroupMemberCommand;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.AddGroupMemberRequest;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.CancelInviteRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.ChangeGroupDetailsRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.CreateGroupRequest;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.InviteUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.JoinGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.LeaveGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.RemoveGroupMemberRequest;
@@ -29,9 +33,13 @@ public interface GroupMapper {
 
   AddGroupMemberCommand toAddGroupMemberCommand(AddGroupMemberRequest request);
 
-  RemoveGroupMemberCommand toRemoveGroupMemberCommand(RemoveGroupMemberRequest request);
+    RemoveGroupMemberCommand toRemoveGroupMemberCommand(RemoveGroupMemberRequest request);
 
   JoinGroupCommand toJoinGroupCommand(JoinGroupRequest request);
 
   LeaveGroupCommand toLeaveGroupCommand(LeaveGroupRequest request);
+
+  InviteUserCommand toInviteUserCommand(InviteUserRequest request);
+
+  CancelInviteCommand toCancelInviteCommand(CancelInviteRequest request);
 }

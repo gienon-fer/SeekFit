@@ -4,12 +4,18 @@ spring:
     web-application-type: REACTIVE
   webflux:
     base-path: /social-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/social_management_db
+    username: postgres
+    password: postgres
+#    liquibase:
+#      enabled: true
 management:
   endpoints:
     enabled-by-default: true
     web:
       exposure:
-        include: health,info
+        include: health,info,mappings
   health:
     defaults:
       enabled: true
