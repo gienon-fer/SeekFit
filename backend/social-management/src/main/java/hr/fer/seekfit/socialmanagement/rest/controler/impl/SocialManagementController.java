@@ -2,20 +2,29 @@ package hr.fer.seekfit.socialmanagement.rest.controler.impl;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
+import hr.fer.seekfit.socialmanagement.domain.api.query.friendship.GetFriendshipByIdQuery;
+import hr.fer.seekfit.socialmanagement.domain.api.query.friendship.GetUserFriendsQuery;
+import hr.fer.seekfit.socialmanagement.domain.api.query.group.GetGroupByIdQuery;
+import hr.fer.seekfit.socialmanagement.domain.api.query.group.GetGroupMembersQuery;
+import hr.fer.seekfit.socialmanagement.domain.api.query.user.GetUserByIdQuery;
 import hr.fer.seekfit.socialmanagement.mapper.FriendshipMapper;
 import hr.fer.seekfit.socialmanagement.mapper.GroupMapper;
 import hr.fer.seekfit.socialmanagement.mapper.UserMapper;
 import hr.fer.seekfit.socialmanagement.rest.controler.api.SocialManagementControllerApiDocks;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.AcceptFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.FriendshipIdDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.friendship.FriendshipResponseDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.IgnoreFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.RemoveFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.SendFriendRequest;
+import hr.fer.seekfit.socialmanagement.rest.dto.friendship.UserFriendsListDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.AddGroupMemberRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.CancelInviteRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.ChangeGroupDetailsRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.CreateGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.GroupIdDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.GroupMembersListDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.GroupResponseDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.InviteUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.JoinGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.LeaveGroupRequest;
@@ -23,11 +32,15 @@ import hr.fer.seekfit.socialmanagement.rest.dto.group.RemoveGroupMemberRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.user.RegisterUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.user.RenameUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.user.UserIdDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.user.UserResponseDto;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,10 +60,11 @@ public class SocialManagementController implements SocialManagementControllerApi
   private final UserMapper userMapper;
   private final GroupMapper groupMapper;
   private final FriendshipMapper friendshipMapper;
+  private final QueryGateway queryGateway;
 
   /* -------------------- User Commands -------------------- */
   @Override
-  @PostMapping("/register-user")
+  @PostMapping("/users/register")
   @ResponseStatus(ACCEPTED)
   public UserIdDto registerUser(@Valid @RequestBody RegisterUserRequest request) {
     var userId = UUID.randomUUID().toString();
@@ -60,7 +74,7 @@ public class SocialManagementController implements SocialManagementControllerApi
   }
 
   @Override
-  @PostMapping("/rename-user")
+  @PostMapping("/users/rename")
   @ResponseStatus(ACCEPTED)
   public UserIdDto renameUser(@Valid @RequestBody RenameUserRequest request) {
     var command = userMapper.toRenameUserCommand(request);
@@ -68,8 +82,9 @@ public class SocialManagementController implements SocialManagementControllerApi
     return new UserIdDto(request.getUserId());
   }
 
+  /* -------------------- Group Commands -------------------- */
   @Override
-  @PostMapping("/create-group")
+  @PostMapping("/groups/create")
   @ResponseStatus(ACCEPTED)
   public GroupIdDto createGroup(@Valid @RequestBody CreateGroupRequest request) {
     var groupId = UUID.randomUUID().toString();
@@ -79,7 +94,7 @@ public class SocialManagementController implements SocialManagementControllerApi
   }
 
   @Override
-  @PostMapping("/change-group-details")
+  @PostMapping("/groups/change-details")
   @ResponseStatus(ACCEPTED)
   public GroupIdDto changeGroupDetails(@Valid @RequestBody ChangeGroupDetailsRequest request) {
     var command = groupMapper.toChangeGroupDetailsCommand(request);
@@ -88,7 +103,7 @@ public class SocialManagementController implements SocialManagementControllerApi
   }
 
   @Override
-  @PostMapping("/add-group-member")
+  @PostMapping("/groups/add-member")
   @ResponseStatus(ACCEPTED)
   public GroupIdDto addGroupMember(@Valid @RequestBody AddGroupMemberRequest request) {
     var command = groupMapper.toAddGroupMemberCommand(request);
@@ -97,7 +112,7 @@ public class SocialManagementController implements SocialManagementControllerApi
   }
 
   @Override
-  @PostMapping("/remove-group-member")
+  @PostMapping("/groups/remove-member")
   @ResponseStatus(ACCEPTED)
   public GroupIdDto removeGroupMember(@Valid @RequestBody RemoveGroupMemberRequest request) {
     var command = groupMapper.toRemoveGroupMemberCommand(request);
@@ -105,53 +120,41 @@ public class SocialManagementController implements SocialManagementControllerApi
     return new GroupIdDto(request.getGroupId());
   }
 
-  /**
-   * Invite a user to a group.
-   */
   @Override
-  @PostMapping("/invite-user")
+  @PostMapping("/groups/invite-user")
   @ResponseStatus(ACCEPTED)
   public void inviteUser(@Valid @RequestBody InviteUserRequest request) {
     var command = groupMapper.toInviteUserCommand(request);
     commandGateway.sendAndWait(command);
   }
 
-  /**
-   * Cancel a user's invitation to a group.
-   */
   @Override
-  @PostMapping("/cancel-invite")
+  @PostMapping("/groups/cancel-invite")
   @ResponseStatus(ACCEPTED)
   public void cancelInvite(@Valid @RequestBody CancelInviteRequest request) {
     var command = groupMapper.toCancelInviteCommand(request);
     commandGateway.sendAndWait(command);
   }
 
-  /**
-   * Join a group via an invitation link.
-   */
   @Override
-  @PostMapping("/join-group")
+  @PostMapping("/groups/join")
   @ResponseStatus(ACCEPTED)
   public void joinGroup(@Valid @RequestBody JoinGroupRequest request) {
     var command = groupMapper.toJoinGroupCommand(request);
     commandGateway.sendAndWait(command);
   }
 
-  /**
-   * Leave a group.
-   */
   @Override
-  @PostMapping("/leave-group")
+  @PostMapping("/groups/leave")
   @ResponseStatus(ACCEPTED)
   public void leaveGroup(@Valid @RequestBody LeaveGroupRequest request) {
     var command = groupMapper.toLeaveGroupCommand(request);
     commandGateway.sendAndWait(command);
   }
 
-
+  /* -------------------- Friendship Commands -------------------- */
   @Override
-  @PostMapping("/send-friend-request")
+  @PostMapping("/friendships/send-request")
   @ResponseStatus(ACCEPTED)
   public FriendshipIdDto sendFriendRequest(@Valid @RequestBody SendFriendRequest request) {
     var friendshipId = UUID.randomUUID().toString();
@@ -161,7 +164,7 @@ public class SocialManagementController implements SocialManagementControllerApi
   }
 
   @Override
-  @PostMapping("/accept-friend-request")
+  @PostMapping("/friendships/accept-request")
   @ResponseStatus(ACCEPTED)
   public FriendshipIdDto acceptFriendRequest(@Valid @RequestBody AcceptFriendRequest request) {
     var command = friendshipMapper.toAcceptFriendRequestCommand(request);
@@ -170,7 +173,7 @@ public class SocialManagementController implements SocialManagementControllerApi
   }
 
   @Override
-  @PostMapping("/ignore-friend-request")
+  @PostMapping("/friendships/ignore-request")
   @ResponseStatus(ACCEPTED)
   public FriendshipIdDto ignoreFriendRequest(@Valid @RequestBody IgnoreFriendRequest request) {
     var command = friendshipMapper.toIgnoreFriendRequestCommand(request);
@@ -179,11 +182,47 @@ public class SocialManagementController implements SocialManagementControllerApi
   }
 
   @Override
-  @PostMapping("/remove-friend")
+  @PostMapping("/friendships/remove")
   @ResponseStatus(ACCEPTED)
   public FriendshipIdDto removeFriend(@Valid @RequestBody RemoveFriendRequest request) {
     var command = friendshipMapper.toRemoveFriendCommand(request);
     commandGateway.sendAndWait(command);
     return new FriendshipIdDto(request.getFriendshipId());
+  }
+
+  /* -------------------- Query Endpoints -------------------- */
+  @Override
+  @GetMapping("/users/{userId}")
+  @ResponseStatus(ACCEPTED)
+  public UserResponseDto getUserById(@PathVariable String userId) {
+    return queryGateway.query(new GetUserByIdQuery(userId), UserResponseDto.class).join();
+  }
+
+  @Override
+  @GetMapping("/users/{userId}/friends")
+  @ResponseStatus(ACCEPTED)
+  public UserFriendsListDto getUserFriends(@PathVariable String userId) {
+    return queryGateway.query(new GetUserFriendsQuery(userId), UserFriendsListDto.class).join();
+  }
+
+  @Override
+  @GetMapping("/groups/{groupId}")
+  @ResponseStatus(ACCEPTED)
+  public GroupResponseDto getGroupById(@PathVariable String groupId) {
+    return queryGateway.query(new GetGroupByIdQuery(groupId), GroupResponseDto.class).join();
+  }
+
+  @Override
+  @GetMapping("/groups/{groupId}/members")
+  @ResponseStatus(ACCEPTED)
+  public GroupMembersListDto getGroupMembers(@PathVariable String groupId) {
+    return queryGateway.query(new GetGroupMembersQuery(groupId), GroupMembersListDto.class).join();
+  }
+
+  @Override
+  @GetMapping("/friendships/{friendshipId}")
+  @ResponseStatus(ACCEPTED)
+  public FriendshipResponseDto getFriendshipById(@PathVariable String friendshipId) {
+    return queryGateway.query(new GetFriendshipByIdQuery(friendshipId), FriendshipResponseDto.class).join();
   }
 }

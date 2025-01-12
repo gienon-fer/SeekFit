@@ -23,7 +23,7 @@ public class OpenApiSpecGenerationConfiguration {
   @Bean
   public SocialManagementControllerApiDocks socialManagementController() {
     log.info("Build Social Management V1 controller for OpenAPI spec generation");
-    return new SocialManagementController(null,null,null, null);
+    return new SocialManagementController(null,null,null,null, null);
   }
 
 }

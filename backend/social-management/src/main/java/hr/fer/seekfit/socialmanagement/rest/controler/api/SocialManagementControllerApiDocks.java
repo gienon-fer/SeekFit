@@ -2,20 +2,25 @@ package hr.fer.seekfit.socialmanagement.rest.controler.api;
 
 import static hr.fer.seekfit.socialmanagement.rest.Constants.ACCEPTED;
 import static hr.fer.seekfit.socialmanagement.rest.Constants.BAD_REQUEST;
+import static hr.fer.seekfit.socialmanagement.rest.Constants.OK;
 import static hr.fer.seekfit.socialmanagement.rest.Constants.SERVER_ERROR;
 import static hr.fer.seekfit.socialmanagement.rest.Constants.SERVER_ERROR_MESSAGE;
 
 import hr.fer.seekfit.socialmanagement.rest.dto.ErrorDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.AcceptFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.FriendshipIdDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.friendship.FriendshipResponseDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.IgnoreFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.RemoveFriendRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.friendship.SendFriendRequest;
+import hr.fer.seekfit.socialmanagement.rest.dto.friendship.UserFriendsListDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.AddGroupMemberRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.CancelInviteRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.ChangeGroupDetailsRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.CreateGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.GroupIdDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.GroupMembersListDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.group.GroupResponseDto;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.InviteUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.JoinGroupRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.group.LeaveGroupRequest;
@@ -23,6 +28,7 @@ import hr.fer.seekfit.socialmanagement.rest.dto.group.RemoveGroupMemberRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.user.RegisterUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.user.RenameUserRequest;
 import hr.fer.seekfit.socialmanagement.rest.dto.user.UserIdDto;
+import hr.fer.seekfit.socialmanagement.rest.dto.user.UserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,6 +36,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "Social Management API", description = "API for managing social interactions")
 public interface SocialManagementControllerApiDocks {
@@ -239,5 +246,67 @@ public interface SocialManagementControllerApiDocks {
     FriendshipIdDto removeFriend(
         @RequestBody(description = "DTO for removing a friend.", required = true)
         RemoveFriendRequest request);
+
+    /* ---------------- Query Endpoints ---------------- */
+
+    @Operation(summary = "Retrieve user by ID", tags = USER_TAG, description = "Fetches user details by their unique ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = OK, description = "User details retrieved."),
+        @ApiResponse(responseCode = BAD_REQUEST, description = "Invalid user ID provided.",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = SERVER_ERROR, description = SERVER_ERROR_MESSAGE,
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class)))
+    })
+    UserResponseDto getUserById(@PathVariable String userId);
+
+    @Operation(summary = "Retrieve user's friends list", tags = USER_TAG, description = "Fetches the list of friends for a user.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = OK, description = "Friends list retrieved."),
+        @ApiResponse(responseCode = BAD_REQUEST, description = "Invalid user ID provided.",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = SERVER_ERROR, description = SERVER_ERROR_MESSAGE,
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class)))
+    })
+    UserFriendsListDto getUserFriends(@PathVariable String userId);
+
+    @Operation(summary = "Retrieve group by ID", tags = GROUP_TAG, description = "Fetches group details by its unique ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = OK, description = "Group details retrieved."),
+        @ApiResponse(responseCode = BAD_REQUEST, description = "Invalid group ID provided.",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = SERVER_ERROR, description = SERVER_ERROR_MESSAGE,
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class)))
+    })
+    GroupResponseDto getGroupById(@PathVariable String groupId);
+
+    @Operation(summary = "Retrieve group members", tags = GROUP_TAG, description = "Fetches the list of members for a group.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = OK, description = "Group members retrieved."),
+        @ApiResponse(responseCode = BAD_REQUEST, description = "Invalid group ID provided.",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = SERVER_ERROR, description = SERVER_ERROR_MESSAGE,
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class)))
+    })
+    GroupMembersListDto getGroupMembers(@PathVariable String groupId);
+
+    @Operation(summary = "Retrieve friendship by ID", tags = FRIENDSHIP_TAG, description = "Fetches friendship details by its unique ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = OK, description = "Friendship details retrieved."),
+        @ApiResponse(responseCode = BAD_REQUEST, description = "Invalid friendship ID provided.",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = SERVER_ERROR, description = SERVER_ERROR_MESSAGE,
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDto.class)))
+    })
+    FriendshipResponseDto getFriendshipById(@PathVariable String friendshipId);
 
 }
