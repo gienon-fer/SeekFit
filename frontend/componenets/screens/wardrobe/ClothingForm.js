@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useClothing } from '../../../contexts/ClothingContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -16,7 +17,16 @@ export default function ClothingForm({ route, navigation }) {
   const [typeTags, setTypeTags] = useState(clothingToEdit ? clothingToEdit.weatherTags : []);
   const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.materialTags : []);
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
-  
+  const [size, setSize] = useState(clothingToEdit ? clothingToEdit.size : null);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: 'XS', value: 'XS' },
+    { label: 'S', value: 'S' },
+    { label: 'M', value: 'M' },
+    { label: 'L', value: 'L' },
+    { label: 'XL', value: 'XL' },
+  ]);
+
   const colorValues = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Black', 'White', 'Grey', 'Brown', 'Beige'];
   const materialValues = ['Cotton', 'Polyester', 'Wool', 'Silk', 'Linen', 'Leather'];
   const statusValues = ['Borrowed', 'In Wash', 'Unavailable'];
@@ -33,7 +43,7 @@ export default function ClothingForm({ route, navigation }) {
     "Handwear",
     "Accessories",
     "Outerwear"
-];
+  ];
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -61,7 +71,8 @@ export default function ClothingForm({ route, navigation }) {
         colorTags, 
         typeTags,
         materialTags,
-        statusTags
+        statusTags,
+        size
       };
 
       if (clothingToEdit) {
@@ -123,6 +134,18 @@ export default function ClothingForm({ route, navigation }) {
         tags={statusTags}
         values={statusValues}
         onTagsChange={setStatusTags}
+      />
+
+      <DropDownPicker
+        open={open}
+        value={size}
+        items={items}
+        setOpen={setOpen}
+        setValue={setSize}
+        setItems={setItems}
+        placeholder="Select a size"
+        containerStyle={{ marginBottom: 20 }}
+        zIndex={5000}
       />
 
       <View style={clothingToEdit ? styles.buttonContainer : styles.singleButtonContainer}>
