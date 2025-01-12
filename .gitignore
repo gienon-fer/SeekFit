@@ -42,3 +42,5 @@ frontend/config/firebase.js
 frontend/.vscode
 
 TODO
+.venv
+.vscode
