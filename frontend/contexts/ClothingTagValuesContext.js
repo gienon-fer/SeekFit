@@ -20,6 +20,7 @@ export const clothingTagValues = {
   Color: ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Black', 'White', 'Grey', 'Beige'],
   Material: ['Cotton', 'Polyester', 'Wool', 'Silk', 'Linen', 'Leather'],
   Status: ['Borrowed', 'In Wash', 'Unavailable'],
+  Size: ['XS', 'S', 'M', 'L', 'XL'],
 };
 
 export const ClothingTagValuesProvider = ({ children }) => {

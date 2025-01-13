@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useClothing } from '../../../contexts/ClothingContext';
+import { useClothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -19,31 +20,8 @@ export default function ClothingForm({ route, navigation }) {
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
   const [size, setSize] = useState(clothingToEdit ? clothingToEdit.size : null);
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: 'XS', value: 'XS' },
-    { label: 'S', value: 'S' },
-    { label: 'M', value: 'M' },
-    { label: 'L', value: 'L' },
-    { label: 'XL', value: 'XL' },
-  ]);
-
-  const colorValues = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Black', 'White', 'Grey', 'Brown', 'Beige'];
-  const materialValues = ['Cotton', 'Polyester', 'Wool', 'Silk', 'Linen', 'Leather'];
-  const statusValues = ['Borrowed', 'In Wash', 'Unavailable'];
-  const typeValues = [
-    "Tops",
-    "Trousers and shorts",
-    "Footwear",
-    "Dresses",
-    "Coats",
-    "Jackets",
-    "Skirts",
-    "Sportswear",
-    "Suits",
-    "Handwear",
-    "Accessories",
-    "Outerwear"
-  ];
+  const clothingTagValues = useClothingTagValues(); 
+  const [items, setItems] = useState(clothingTagValues.Size.map(size => ({ label: size, value: size })));
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -114,25 +92,25 @@ export default function ClothingForm({ route, navigation }) {
       <TagsInput 
         name={'Type'}
         tags={typeTags}
-        values={typeValues}
+        values={clothingTagValues.Type}
         onTagsChange={setTypeTags}
       />
       <TagsInput 
         name={'Color'}
         tags={colorTags}
-        values={colorValues}
+        values={clothingTagValues.Color}
         onTagsChange={setColorTags}
       />
       <TagsInput 
         name={'Material'}
         tags={materialTags}
-        values={materialValues}
+        values={clothingTagValues.Material}
         onTagsChange={setMaterialTags}
       />
       <TagsInput 
         name={'Status'}
         tags={statusTags}
-        values={statusValues}
+        values={clothingTagValues.Status}
         onTagsChange={setStatusTags}
       />
 

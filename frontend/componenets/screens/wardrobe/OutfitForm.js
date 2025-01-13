@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useOutfit } from '../../../contexts/OutfitContext';
+import { useOutfitTagValues } from '../../../contexts/OutfitTagValuesContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -16,10 +17,7 @@ export default function OutfitForm({ route, navigation }) {
   const [temperatureTags, setTemperatureTags] = useState(outfitToEdit ? outfitToEdit.tags.temperature : []);
   const [weatherTags, setWeatherTags] = useState(outfitToEdit ? outfitToEdit.tags.weather : []);
 
-  const styleValues = ['Casual', 'Formal', 'Sport', 'Party'];
-  const occasionValues = ['Work', 'Date', 'Wedding', 'Birthday'];
-  const temperatureValues = ['Below 0°C (Freezing)', '0°C to 10°C (Cold)', '10°C to 15°C (Cool)', '15°C to 20°C (Mild)', '20°C to 25°C (Warm)', '25°C to 30°C (Hot)', 'Above 30°C (Very Hot)'];
-  const weatherValues = ['Rain', 'Snow', 'Wind'];
+  const outfitTagValues = useOutfitTagValues();
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -91,25 +89,25 @@ export default function OutfitForm({ route, navigation }) {
       <TagsInput 
         name={'Style'}
         tags={styleTags}
-        values={styleValues}
+        values={outfitTagValues.Style}
         onTagsChange={setStyleTags}
       />
       <TagsInput 
         name={'Occasion'}
         tags={occasionTags}
-        values={occasionValues}
+        values={outfitTagValues.Occasion}
         onTagsChange={setOccasionTags}
       />
       <TagsInput
         name={'Temperature'}
         tags={temperatureTags}
-        values={temperatureValues}
+        values={outfitTagValues.Temperature}
         onTagsChange={setTemperatureTags}
       />
       <TagsInput
         name={'Weather'}
         tags={weatherTags}
-        values={weatherValues}
+        values={outfitTagValues.Weather}
         onTagsChange={setWeatherTags}
       />
 
