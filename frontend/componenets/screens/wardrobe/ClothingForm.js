@@ -1,11 +1,11 @@
 // screens/wardrobe/EditClothing.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView} from 'react-native';
 import { useClothing } from '../../../contexts/ClothingContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
+import ImageSelectionModal from '../../ImageSelectionModal';
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -18,6 +18,7 @@ export default function ClothingForm({ route, navigation }) {
   const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.materialTags : []);
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
   const [size, setSize] = useState(clothingToEdit ? clothingToEdit.size : null);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
     { label: 'XS', value: 'XS' },
@@ -45,22 +46,8 @@ export default function ClothingForm({ route, navigation }) {
     "Outerwear"
   ];
 
-  const selectImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Permission to access gallery is required!');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);  
-    }
+  const handleImageSelected = (selectedImage) => {
+    setImage(selectedImage);
   };
 
   const saveClothing = async () => {
@@ -97,13 +84,22 @@ export default function ClothingForm({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity style={styles.imagePicker} onPress={selectImage}>
+      <TouchableOpacity 
+        style={styles.imagePicker} 
+        onPress={() => setIsImageModalVisible(true)}
+      >
         {image ? (
           <Image source={{ uri: image }} style={styles.image} />
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
         )}
       </TouchableOpacity>
+
+      <ImageSelectionModal
+        visible={isImageModalVisible}
+        onClose={() => setIsImageModalVisible(false)}
+        onImageSelected={handleImageSelected}
+      />
 
       <TextInput
         style={styles.input}
@@ -149,7 +145,10 @@ export default function ClothingForm({ route, navigation }) {
       />
 
       <View style={clothingToEdit ? styles.buttonContainer : styles.singleButtonContainer}>
-        <TouchableOpacity style={clothingToEdit ? styles.saveButton : styles.fullWidthSaveButton} onPress={saveClothing}>
+        <TouchableOpacity 
+          style={clothingToEdit ? styles.saveButton : styles.fullWidthSaveButton} 
+          onPress={saveClothing}
+        >
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
 
@@ -173,6 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    borderRadius: 10,
   },
   imagePickerText: {
     fontSize: 16,
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 10,
     marginBottom: 20,
+    borderRadius: 5,
   },
   saveButton: {
     backgroundColor: '#28a745',
