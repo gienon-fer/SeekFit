@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import { useOutfit } from '../../../contexts/OutfitContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
+import ImageSelectionModal from '../../ImageSelectionModal';
 
 export default function OutfitForm({ route, navigation }) {
   const { addOutfit, editOutfit, removeOutfit } = useOutfit();
   const { outfitToEdit } = route.params || {};
 
   const [image, setImage] = useState(outfitToEdit ? outfitToEdit.image : null);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [description, setDescription] = useState(outfitToEdit ? outfitToEdit.description : '');
   const [styleTags, setStyleTags] = useState(outfitToEdit ? outfitToEdit.tags.style : []);
   const [occasionTags, setOccasionTags] = useState(outfitToEdit ? outfitToEdit.tags.occasion : []);
@@ -21,22 +22,8 @@ export default function OutfitForm({ route, navigation }) {
   const temperatureValues = ['Below 0°C (Freezing)', '0°C to 10°C (Cold)', '10°C to 15°C (Cool)', '15°C to 20°C (Mild)', '20°C to 25°C (Warm)', '25°C to 30°C (Hot)', 'Above 30°C (Very Hot)'];
   const weatherValues = ['Rain', 'Snow', 'Wind'];
 
-  const selectImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Permission to access gallery is required!');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);
-    }
+  const handleImageSelected = (selectedImage) => {
+    setImage(selectedImage);
   };
 
   const saveOutfit = async () => {
@@ -74,13 +61,22 @@ export default function OutfitForm({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity style={styles.imagePicker} onPress={selectImage}>
+      <TouchableOpacity 
+        style={styles.imagePicker} 
+        onPress={() => setIsImageModalVisible(true)}
+      >
         {image ? (
           <Image source={{ uri: image }} style={styles.image} />
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
         )}
       </TouchableOpacity>
+
+      <ImageSelectionModal
+        visible={isImageModalVisible}
+        onClose={() => setIsImageModalVisible(false)}
+        onImageSelected={handleImageSelected}
+      />
 
       <TextInput
         style={styles.input}
@@ -138,6 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    borderRadius: 10,
   },
   imagePickerText: {
     fontSize: 16,
@@ -153,6 +150,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 10,
     marginBottom: 20,
+    borderRadius: 5,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -188,9 +186,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     width: '18%',
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontSize: 16,
   },
 });
