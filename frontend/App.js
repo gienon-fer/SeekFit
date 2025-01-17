@@ -112,14 +112,18 @@ export default function App() {
                       <Tab.Navigator screenOptions={({ route }) => ({
                         tabBarStyle: ((route) => {
                           const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-                          if (routeName === 'ClothingForm' || routeName === 'OutfitForm') {
+                          if (routeName === 'ClothingForm' || routeName === 'OutfitForm' 
+                            || routeName == 'FilterClothing' || routeName == 'FilterOutfit') 
+                          {
                             return { display: "none" };
                           }
                           return;
                         })(route),
                         headerShown: ((route) => {
                           const routeName = getFocusedRouteNameFromRoute(route) ?? "";
-                          if (routeName === 'ClothingForm' || routeName === 'OutfitForm') {
+                          if (routeName === 'ClothingForm' || routeName === 'OutfitForm'
+                            || routeName == 'FilterClothing' || routeName == 'FilterOutfit'
+                          ) {
                             return false;
                           }
                           return true;
