@@ -51,8 +51,8 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <UserProvider>
-        <ClothingProvider>
-          <OutfitProvider>
+        <OutfitProvider>
+          <ClothingProvider>
             <ClothingTagValuesProvider>
               <ClothingFilterProvider>
                 <OutfitTagValuesProvider>
@@ -105,8 +105,8 @@ export default function App() {
                 </OutfitTagValuesProvider>
               </ClothingFilterProvider>
             </ClothingTagValuesProvider>
-          </OutfitProvider>
-        </ClothingProvider>
+          </ClothingProvider>
+        </OutfitProvider>
       </UserProvider>
     </SafeAreaProvider>
   );

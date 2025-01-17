@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useOutfitTagValues } from '../../../contexts/OutfitTagValuesContext'; // Import useOutfitTagValues
 import { useActiveOutfitFilters, useSetActiveOutfitFilters } from '../../../contexts/OutfitFilterContext'; // Import outfit filter context
+import { useClothing } from '../../../contexts/ClothingContext'; // Import useClothing
 
 export default function FilterOutfit() {
   const navigation = useNavigation();
   const outfitTagValues = useOutfitTagValues(); // Use the hook to get tag values
   const activeFilters = useActiveOutfitFilters(); // Use the hook to get active filters
   const setActiveFilters = useSetActiveOutfitFilters(); // Use the hook to set active filters
+  const { clothes } = useClothing(); // Use the hook to get clothing items
   const [selectedTags, setSelectedTags] = useState(activeFilters || {});
+  const [selectedClothing, setSelectedClothing] = useState(activeFilters.clothing || []);
 
   useEffect(() => {
     setSelectedTags(activeFilters);
+    setSelectedClothing(activeFilters.clothing || []);
   }, [activeFilters]);
 
   const toggleTag = (category, value) => {
@@ -32,16 +36,25 @@ export default function FilterOutfit() {
     });
   };
 
+  const toggleClothingSelection = (item) => {
+    if (selectedClothing.some(clothing => clothing.id === item.id)) {
+      setSelectedClothing(selectedClothing.filter(clothing => clothing.id !== item.id));
+    } else {
+      setSelectedClothing([...selectedClothing, item]);
+    }
+  };
+
   const applyFilters = () => {
     const isEmpty = Object.keys(selectedTags).every(
       (category) => selectedTags[category].length === 0
-    );
+    ) && selectedClothing.length === 0;
 
     if (isEmpty) {
       setSelectedTags({});
+      setSelectedClothing([]);
       setActiveFilters({});
     } else {
-      setActiveFilters(selectedTags);
+      setActiveFilters({ ...selectedTags, clothing: selectedClothing });
     }
 
     navigation.goBack();
@@ -49,6 +62,7 @@ export default function FilterOutfit() {
 
   const clearFilters = () => {
     setSelectedTags({});
+    setSelectedClothing([]);
     setActiveFilters({});
   };
 
@@ -76,6 +90,22 @@ export default function FilterOutfit() {
           </View>
         </View>
       ))}
+      <View style={styles.categoryContainer}>
+        <Text style={styles.categoryName}>Clothing</Text>
+        <View style={styles.clothingContainer}>
+          {clothes.map((item) => (
+            <TouchableOpacity key={item.id} onPress={() => toggleClothingSelection(item)}>
+              <Image
+                source={{ uri: item.image }}
+                style={[
+                  styles.clothingImage,
+                  selectedClothing.some(clothing => clothing.id === item.id) && styles.selectedClothingImage
+                ]}
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Cancel</Text>
@@ -122,6 +152,19 @@ const styles = StyleSheet.create({
   },
   tagButtonText: {
     color: 'white',
+  },
+  clothingContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  clothingImage: {
+    width: 100,
+    height: 100,
+    margin: 5,
+  },
+  selectedClothingImage: {
+    borderWidth: 2,
+    borderColor: 'blue',
   },
   buttonContainer: {
     flexDirection: 'row',

@@ -1,6 +1,7 @@
 // contexts/ClothingContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { useOutfit } from './OutfitContext'; // Import useOutfit
 
 const ClothingContext = createContext();
 
@@ -10,6 +11,8 @@ export function useClothing() {
 
 export function ClothingProvider({ children }) {
   const [clothes, setClothes] = useState([]);
+  const outfitContext = useOutfit(); // Get the outfit context
+  const { outfits, editOutfit } = outfitContext || {}; // Destructure outfits and editOutfit from outfitContext
 
   useEffect(() => {
     const loadClothes = async () => {
@@ -41,6 +44,16 @@ export function ClothingProvider({ children }) {
       const updatedClothes = clothes.filter((item) => item.id !== id);
       await AsyncStorage.setItem('clothes', JSON.stringify(updatedClothes)); 
       setClothes(updatedClothes); 
+
+      // Iterate over outfits and delete the clothing tags that point to the removed item
+      if (outfits) {
+        outfits.forEach(async (outfit) => {
+          const updatedClothing = outfit.clothing.filter((clothing) => clothing.id !== id);
+          if (updatedClothing.length !== outfit.clothing.length) {
+            await editOutfit(outfit.id, { clothing: updatedClothing });
+          }
+        });
+      }
     } catch (err) {
       console.error('Error removing clothing from AsyncStorage:', err);
     }

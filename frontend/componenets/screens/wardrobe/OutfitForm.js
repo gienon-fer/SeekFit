@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView, Modal, FlatList, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useOutfit } from '../../../contexts/OutfitContext';
+import { useClothing } from '../../../contexts/ClothingContext';
 import { useOutfitTagValues } from '../../../contexts/OutfitTagValuesContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function OutfitForm({ route, navigation }) {
   const { addOutfit, editOutfit, removeOutfit } = useOutfit();
+  const { clothes } = useClothing();
   const { outfitToEdit } = route.params || {};
 
   const [image, setImage] = useState(outfitToEdit ? outfitToEdit.image : null);
@@ -16,8 +19,37 @@ export default function OutfitForm({ route, navigation }) {
   const [occasionTags, setOccasionTags] = useState(outfitToEdit ? outfitToEdit.tags.occasion : []);
   const [temperatureTags, setTemperatureTags] = useState(outfitToEdit ? outfitToEdit.tags.temperature : []);
   const [weatherTags, setWeatherTags] = useState(outfitToEdit ? outfitToEdit.tags.weather : []);
+  const [selectedClothing, setSelectedClothing] = useState(outfitToEdit ? outfitToEdit.clothing : []);
+  const [showClothingSelector, setShowClothingSelector] = useState(false);
+  const [tempSelectedClothing, setTempSelectedClothing] = useState([...selectedClothing]);
+  const [initialAnimation, setInitialAnimation] = useState(true);
 
   const outfitTagValues = useOutfitTagValues();
+  const numColumns = 5;
+  const screenWidth = Dimensions.get('window').width;
+  const flatListWidth = screenWidth * 0.9;
+  const imageWidth = (flatListWidth - 4) / numColumns;
+  const imageHeight = imageWidth * 1.75;
+
+  useFocusEffect(
+    useCallback(() => {
+      if (outfitToEdit) {
+        setImage(outfitToEdit.image);
+        setDescription(outfitToEdit.description);
+        setStyleTags(outfitToEdit.tags.style);
+        setOccasionTags(outfitToEdit.tags.occasion);
+        setTemperatureTags(outfitToEdit.tags.temperature);
+        setWeatherTags(outfitToEdit.tags.weather);
+        
+        // Update selected clothing with the most current images
+        const updatedClothing = outfitToEdit.clothing.map(clothingItem => {
+          const updatedItem = clothes.find(item => item.id === clothingItem.id);
+          return updatedItem ? { ...clothingItem, image: updatedItem.image } : clothingItem;
+        });
+        setSelectedClothing(updatedClothing);
+      }
+    }, [outfitToEdit, clothes])
+  );
 
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -48,6 +80,7 @@ export default function OutfitForm({ route, navigation }) {
           temperature: temperatureTags,
           weather: weatherTags,
         },
+        clothing: selectedClothing,
       };
 
       if (outfitToEdit) {
@@ -57,7 +90,7 @@ export default function OutfitForm({ route, navigation }) {
         await addOutfit(newOutfit);
       }
 
-      navigation.goBack();
+      navigation.popToTop();
     } else {
       alert('Please add an image.');
     }
@@ -66,9 +99,79 @@ export default function OutfitForm({ route, navigation }) {
   const deleteOutfit = async () => {
     if (outfitToEdit) {
       await removeOutfit(outfitToEdit.id);
-      navigation.goBack();
+      navigation.popToTop();
     }
   };
+
+  const toggleClothingSelection = (item) => {
+    if (tempSelectedClothing.some(clothing => clothing.id === item.id)) {
+      setTempSelectedClothing(tempSelectedClothing.filter(clothing => clothing.id !== item.id));
+    } else {
+      setTempSelectedClothing([...tempSelectedClothing, item]);
+    }
+  };
+
+  const removeClothingItem = (index) => {
+    const updatedClothing = selectedClothing.filter((_, i) => i !== index);
+    setSelectedClothing(updatedClothing);
+    setTempSelectedClothing(updatedClothing);
+  };
+
+  const ClothingSelector = () => (
+    <Modal
+      visible={showClothingSelector}
+      animationType="fade"
+      animationInTiming={0.00001}
+      animationOutTiming={0.00001}
+      onRequestClose={() => {
+        setShowClothingSelector(false);
+        setInitialAnimation(false);
+      }}
+    >
+      <View style={styles.clothingSelectorContainer}>
+        <FlatList
+          data={clothes}
+          numColumns={numColumns}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => toggleClothingSelection(item)}>
+              <Image
+                source={{ uri: item.image }}
+                style={[
+                  styles.clothingImage,
+                  { width: imageWidth, height: imageHeight },
+                  tempSelectedClothing.some(clothing => clothing.id === item.id) && styles.selectedClothingImage
+                ]}
+              />
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={{ width: flatListWidth }}
+        />
+        <View style={styles.clothingSelectorButtons}>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => {
+              setSelectedClothing(tempSelectedClothing);
+              setShowClothingSelector(false);
+              setInitialAnimation(true);
+            }}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.discardButton}
+            onPress={() => {
+              setTempSelectedClothing([...selectedClothing]);
+              setShowClothingSelector(false);
+              setInitialAnimation(true);
+            }}
+          >
+            <Text style={styles.discardButtonText}>Discard</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -111,6 +214,30 @@ export default function OutfitForm({ route, navigation }) {
         onTagsChange={setWeatherTags}
       />
 
+      <View style={styles.clothingInputContainer}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => setShowClothingSelector(true)}>
+            <Text style={styles.addButton}>+</Text>
+          </TouchableOpacity>
+          <Text style={styles.name}>Clothing</Text>
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.clothingTagsContainer}>
+          {selectedClothing.length === 0 ? (
+            <Text style={styles.placeholder}>Press + to add clothing</Text>
+          ) : (
+            selectedClothing.map((item, index) => (
+              <View key={index} style={styles.clothingTagItem}>
+                <Image source={{ uri: item.image }} style={styles.clothingTagImage} />
+                <TouchableOpacity onPress={() => removeClothingItem(index)}>
+                  <Text style={styles.close}>&times;</Text>
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
+        </View>
+      </View>
+
       <View style={outfitToEdit ? styles.buttonContainer : styles.singleButtonContainer}>
         <TouchableOpacity style={outfitToEdit ? styles.saveButton : styles.fullWidthSaveButton} onPress={saveOutfit}>
           <Text style={styles.saveButtonText}>Save</Text>
@@ -122,6 +249,8 @@ export default function OutfitForm({ route, navigation }) {
           </TouchableOpacity>
         )}
       </View>
+
+      <ClothingSelector />
     </ScrollView>
   );
 }
@@ -151,6 +280,54 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 10,
     marginBottom: 20,
+  },
+  clothingInputContainer: {
+    marginBottom: 20,
+  },
+  addButton: {
+    fontSize: 24,
+    color: '#007BFF',
+    paddingRight: 10,
+    marginBottom: 10,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 10,
+    marginBottom: 3,
+    marginTop: 0,
+  },
+  clothingTagsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  clothingTagItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin: 5,
+    backgroundColor: '#cccccc',
+    borderRadius: 10,
+    padding: 5,
+  },
+  clothingTagImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  close: {
+    color: '#888',
+    fontSize: 18,
+  },
+  placeholder: {
+    color: '#ccc',
+    fontStyle: 'italic',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -187,7 +364,33 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '18%',
   },
-  deleteButtonText: {
+  clothingSelectorContainer: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+  },
+  clothingImage: {
+    width: '100%',
+    height: 100,
+    margin: 0.2,
+  },
+  selectedClothingImage: {
+    borderWidth: 2,
+    borderColor: 'blue',
+  },
+  clothingSelectorButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  discardButton: {
+    backgroundColor: '#dc3545',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    width: '25%',
+  },
+  discardButtonText: {
     color: 'white',
     fontSize: 16,
   },

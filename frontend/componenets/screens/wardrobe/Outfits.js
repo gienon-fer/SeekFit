@@ -37,10 +37,17 @@ export default function Outfits() {
     }
 
     const filtered = outfits.filter((item) => {
-      return Object.keys(activeFilters).every((category) => {
+      const matchesTags = Object.keys(activeFilters).every((category) => {
+        if (category === 'clothing') return true;
         const categoryTags = activeFilters[category];
         return categoryTags.every((tag) => item.tags[category.toLowerCase()]?.includes(tag));
       });
+
+      const matchesClothing = activeFilters.clothing?.every((filterClothing) =>
+        item.clothing.some((outfitClothing) => outfitClothing.id === filterClothing.id)
+      );
+
+      return matchesTags && matchesClothing;
     });
 
     setFilteredOutfits(filtered);
