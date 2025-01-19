@@ -1,4 +1,3 @@
-// screens/wardrobe/EditClothing.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView} from 'react-native';
 import { useClothing } from '../../../contexts/ClothingContext';
@@ -6,6 +5,9 @@ import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ImageSelectionModal from '../../ImageSelectionModal';
+import * as ImageManipulator from 'expo-image-manipulator';
+import ImagePicker from 'react-native-image-crop-picker';
+
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -50,6 +52,29 @@ export default function ClothingForm({ route, navigation }) {
     setImage(selectedImage);
   };
 
+  const handleCropImage = async () => {
+    if (!image) {
+      alert('Please select an image first.');
+      return;
+    }
+  
+    try {
+      const croppedImage = await ImagePicker.openCropper({
+        path: image,  
+        width: 300,   
+        height: 300,  
+        cropping: true,
+      });
+  
+      if (croppedImage) {
+        setImage(croppedImage.path);  // Update image state with cropped image
+      }
+    } catch (error) {
+      console.log('Error cropping image:', error);
+      alert('Could not crop the image');
+    }
+  };
+
   const saveClothing = async () => {
     if (image) {
       const clothingData = { 
@@ -89,7 +114,15 @@ export default function ClothingForm({ route, navigation }) {
         onPress={() => setIsImageModalVisible(true)}
       >
         {image ? (
-          <Image source={{ uri: image }} style={styles.image} />
+          <>
+            <Image source={{ uri: image }} style={styles.image} />
+            <TouchableOpacity 
+              style={styles.cropButton} 
+              onPress={handleCropImage}
+            >
+              <Text style={styles.cropButtonText}>Crop</Text>
+            </TouchableOpacity>
+          </>
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
         )}
@@ -165,6 +198,20 @@ export default function ClothingForm({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+  },
+  cropButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'rgba(33, 150, 243, 0.9)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  cropButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
   },
   imagePicker: {
     height: 600,

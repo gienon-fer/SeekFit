@@ -4,6 +4,7 @@ import { useOutfit } from '../../../contexts/OutfitContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
 import ImageSelectionModal from '../../ImageSelectionModal';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function OutfitForm({ route, navigation }) {
   const { addOutfit, editOutfit, removeOutfit } = useOutfit();
@@ -24,6 +25,29 @@ export default function OutfitForm({ route, navigation }) {
 
   const handleImageSelected = (selectedImage) => {
     setImage(selectedImage);
+  };
+
+  const handleCropImage = async () => {
+    if (!image) {
+      alert('Please select an image first.');
+      return;
+    }
+  
+    try {
+      const croppedImage = await ImagePicker.openCropper({
+        path: image,  
+        width: 300,   
+        height: 300,  
+        cropping: true,
+      });
+
+      if (croppedImage) {
+        setImage(croppedImage.path);
+      }
+    } catch (error) {
+      console.log('Error cropping image:', error);
+      alert('Could not crop the image');
+    }
   };
 
   const saveOutfit = async () => {
@@ -66,12 +90,20 @@ export default function OutfitForm({ route, navigation }) {
         onPress={() => setIsImageModalVisible(true)}
       >
         {image ? (
-          <Image source={{ uri: image }} style={styles.image} />
+          <>
+            <Image source={{ uri: image }} style={styles.image} />
+            <TouchableOpacity
+              style={styles.cropButton} 
+              onPress={handleCropImage}
+            >
+              <Text style={styles.cropButtonText}>Crop</Text>
+            </TouchableOpacity>  
+          </>
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
-        )}
+        )}  
       </TouchableOpacity>
-
+      
       <ImageSelectionModal
         visible={isImageModalVisible}
         onClose={() => setIsImageModalVisible(false)}
@@ -144,6 +176,20 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 10,
+  },
+  cropButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'rgba(33, 150, 243, 0.9)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  cropButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
   },
   input: {
     borderWidth: 1,
