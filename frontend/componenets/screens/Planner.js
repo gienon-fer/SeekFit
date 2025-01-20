@@ -20,7 +20,7 @@ import { useActiveOutfitFilters } from '../../contexts/OutfitFilterContext';
 
 const PlannerScreen = () => {
   const navigation = useNavigation();
-  const { outfits, removeOutfit } = useOutfit();
+  const { outfits, addOutfit, removeOutfit } = useOutfit();
   const activeFilters = useActiveOutfitFilters();
   
   const [weatherData, setWeatherData] = useState(null);
@@ -101,17 +101,41 @@ const PlannerScreen = () => {
     setSixDayForecast(Object.values(uniqueDays).slice(0, 6));
   };
 
-  const handleDayPress = (day) => {
-    setSelectedDate(day.dateString);
-    setShowOutfitPicker(true);
+  const handleDayPress = (date) => {
+    if (calendarOutfits[date]) {
+      // If an outfit exists, show the menu
+      Alert.alert(
+        'Manage Outfit',
+        `Options for ${date}`,
+        [
+          { text: 'Change Outfit', onPress: () => setShowOutfitPicker(true) },
+          { text: 'Delete Outfit', onPress: () => handleOutfitDelete(date) },
+          { text: 'Cancel', style: 'cancel' },
+        ],
+        { cancelable: true }
+      );
+    } else {
+      // If no outfit, directly open outfit picker
+      setSelectedDate(date);
+      setShowOutfitPicker(true);
+    }
+  };
+
+  const handleOutfitDelete = (date) => {
+    setCalendarOutfits((prev) => {
+      const updated = { ...prev };
+      delete updated[date];
+      return updated;
+    });
   };
 
   const handleOutfitSelect = (outfit) => {
-    setCalendarOutfits(prev => ({
+    setCalendarOutfits((prev) => ({
       ...prev,
-      [selectedDate]: outfit
+      [selectedDate]: outfit, // Save the outfit for this date
     }));
-    setShowOutfitPicker(false);
+  
+    setShowOutfitPicker(false); // Close modal after selection
   };
 
   const handleOutfitLongPress = (outfit) => {
@@ -150,8 +174,8 @@ const PlannerScreen = () => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => handleOutfitSelect(item)}
-              onLongPress={() => handleOutfitLongPress(item)}
+              onPress={() => handleOutfitSelect(item)} // Select the outfit
+              onLongPress={() => handleOutfitLongPress(item)} // Edit or delete outfit
             >
               <Image 
                 source={{ uri: item.image }} 
@@ -169,7 +193,7 @@ const PlannerScreen = () => {
     </Modal>
   );
 
-  // Weather forecast render
+  // Render weather forecast
   const renderWeatherForecast = () => (
     <View style={styles.forecastContainer}>
       <Text style={styles.forecastTitle}>6-Day Forecast</Text>
@@ -195,38 +219,69 @@ const PlannerScreen = () => {
     </View>
   );
 
+  const renderCalendar = () => (
+    <Calendar
+      style={styles.calendar}
+      theme={{
+        backgroundColor: '#ffffff',
+        calendarBackground: '#ffffff',
+        textSectionTitleColor: '#b6c1cd',
+        selectedDayBackgroundColor: '#00adf5',
+        selectedDayTextColor: '#ffffff',
+        todayTextColor: '#00adf5',
+        dayTextColor: '#2d4150',
+        textDisabledColor: '#d9e1e8',
+        arrowColor: '#00adf5',
+        monthTextColor: '#2d4150',
+        textDayFontSize: 16,
+        textMonthFontSize: 16,
+        textDayHeaderFontSize: 16,
+      }}
+      dayComponent={({ date, state }) => {
+        const outfit = calendarOutfits[date.dateString];
+  
+        return (
+          <TouchableOpacity onPress={() => handleDayPress(date.dateString)}>
+            <View style={styles.calendarCell}>
+              {/* Date number positioned at top-left */}
+              <Text
+                style={{
+                  position: 'absolute',
+                  top: 3,
+                  left: 5,
+                  color: state === 'disabled' ? '#d9e1e8' : '#2d4150',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                }}
+              >
+                {date.day}
+              </Text>
+  
+              {/* Image placeholder to maintain spacing */}
+              <View style={styles.outfitContainer}>
+                {outfit ? (
+                  <Image
+                    source={{ uri: outfit.image }}
+                    style={styles.outfitImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={styles.emptyOutfitPlaceholder} />
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
+        );
+      }}
+    />
+  );
+  
+  
   return (
     <View style={styles.container}>
       <ScrollView>
         {renderWeatherForecast()}
-        <Calendar
-          style={styles.calendar}
-          theme={{
-            backgroundColor: '#ffffff',
-            calendarBackground: '#ffffff',
-            textSectionTitleColor: '#b6c1cd',
-            selectedDayBackgroundColor: '#00adf5',
-            selectedDayTextColor: '#ffffff',
-            todayTextColor: '#00adf5',
-            dayTextColor: '#2d4150',
-            textDisabledColor: '#d9e1e8',
-            dotColor: '#00adf5',
-            selectedDotColor: '#ffffff',
-            arrowColor: '#00adf5',
-            monthTextColor: '#2d4150',
-            textDayFontSize: 16,
-            textMonthFontSize: 16,
-            textDayHeaderFontSize: 16
-          }}
-          markedDates={{
-            ...Object.keys(calendarOutfits).reduce((acc, date) => ({
-              ...acc,
-              [date]: { marked: true, dotColor: '#2ecc71' }
-            }), {})
-          }}
-          onDayPress={handleDayPress}
-          enableSwipeMonths={true}
-        />
+        {renderCalendar()}
       </ScrollView>
       <OutfitPickerModal />
     </View>
@@ -314,6 +369,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 5,
+  },
+  calendarCell: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 60, // Ensure consistent width
+    height: 80, // Ensure consistent height
+  },
+  outfitContainer: {
+    marginTop: 5,
+    width: 60,
+    height: 80, // Keep cell size consistent even if no image is present
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  outfitImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 5,
+  },
+  emptyOutfitPlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent', // Keep it invisible but maintaining spacing
   },
 });
 
