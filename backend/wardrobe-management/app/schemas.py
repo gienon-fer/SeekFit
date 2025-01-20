@@ -2,8 +2,9 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 class ClothingBase(BaseModel):
-    name: str
     description: Optional[str] = None
+    image: Optional[str] = None
+    tags: Optional[dict] = None
 
 class ClothingCreate(ClothingBase):
     pass
@@ -13,13 +14,15 @@ class ClothingUpdate(ClothingBase):
 
 class Clothing(ClothingBase):
     id: int
-
+    owner_id: int
+    
     class Config:
         orm_mode: True
 
 class OutfitBase(BaseModel):
-    name: str
     description: Optional[str] = None
+    image: Optional[str] = None
+    tags: Optional[dict] = None
 
 class OutfitCreate(OutfitBase):
     pass
@@ -29,6 +32,8 @@ class OutfitUpdate(OutfitBase):
 
 class Outfit(OutfitBase):
     id: int
+    owner_id: int
+    clothing: List[Clothing]
 
     class Config:
         orm_mode: True

@@ -5,7 +5,7 @@ from datetime import datetime
 class NotificationBase(BaseModel):
     title: str
     message: str
-    user_ids: List[str]  # Change from single user_id to list of user_ids
+    user_ids: List[str]
 
 class NotificationCreate(NotificationBase):
     pass

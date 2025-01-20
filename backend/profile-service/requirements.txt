@@ -2,9 +2,8 @@ fastapi
 uvicorn
 sqlalchemy
 pydantic
-google-auth
+firebase-admin
 pytest
 httpx
 alembic
 psycopg2-binary
-requests
