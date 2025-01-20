@@ -20,6 +20,35 @@ export const clothingTagValues = {
   Color: ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Black', 'White', 'Grey', 'Beige'],
   Material: ['Cotton', 'Polyester', 'Wool', 'Silk', 'Linen', 'Leather'],
   Status: ['Borrowed', 'In Wash', 'Unavailable'],
+  Size: ['XS', 'S', 'M', 'L', 'XL', 'unspecified'],
+  Washing: [
+    { label: "Hand wash", image: require('../assets/icon.png') },
+    { label: "Machine wash", image: require('../assets/icon.png') },
+    { label: "Do not wash", image: require('../assets/icon.png') },
+    { label: "Dry clean only", image: require('../assets/icon.png') },
+  ],
+  Bleaching: [
+    { label: "Do not bleach", image: require('../assets/icon.png') },
+    { label: "Bleach when needed", image: require('../assets/icon.png') },
+    { label: "Non-chlorine bleach only", image: require('../assets/icon.png') },
+  ],
+  Drying: [
+    { label: "Tumble dry", image: require('../assets/icon.png') },
+    { label: "Do not tumble dry", image: require('../assets/icon.png') },
+    { label: "Line dry", image: require('../assets/icon.png') },
+    { label: "Dry flat", image: require('../assets/icon.png') },
+  ],
+  Ironing: [
+    { label: "Iron", image: require('../assets/ironing_iron.png') },
+    { label: "Iron at low temperature", image: require('../assets/ironing_iron1.png') },
+    { label: "Iron at medium temperature", image: require('../assets/ironing_iron2.png') },
+    { label: "Iron at high temperature", image: require('../assets/ironing_iron3.png') },
+  ],
+  ProfessionalTextileCare: [
+    { label: "Professional dry clean", image: require('../assets/icon.png') },
+    { label: "Do not dry clean", image: require('../assets/icon.png') },
+    { label: "Professional wet clean", image: require('../assets/icon.png') },
+  ],
 };
 
 export const ClothingTagValuesProvider = ({ children }) => {

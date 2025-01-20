@@ -3,22 +3,31 @@ import { Text, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import { ClothingProvider } from './contexts/ClothingContext';
 import { UserProvider } from './contexts/UserContext';
 import { OutfitProvider } from './contexts/OutfitContext';
 import { ClothingTagValuesProvider } from './contexts/ClothingTagValuesContext'; 
 import { ClothingFilterProvider } from './contexts/ClothingFilterContext'; 
-import { OutfitTagValuesProvider } from './contexts/OutfitTagValuesContext'; // Import OutfitTagValuesProvider
-import { OutfitFilterProvider } from './contexts/OutfitFilterContext'; // Import OutfitFilterProvider
+import { OutfitTagValuesProvider } from './contexts/OutfitTagValuesContext'; 
+import { OutfitFilterProvider } from './contexts/OutfitFilterContext'; 
 
 import Profile from "./componenets/screens/Profile";
-import Wardrobe from "./componenets/screens/Wardrobe";
 import Planner from "./componenets/screens/Planner";
+import Clothes from './componenets/screens/wardrobe/Clothes';
+import ClothingForm from './componenets/screens/wardrobe/ClothingForm';
+import Outfits from './componenets/screens/wardrobe/Outfits';
+import OutfitForm from './componenets/screens/wardrobe/OutfitForm';
+import FilterClothing from './componenets/screens/wardrobe/FilterClothing'; 
+import FilterOutfit from './componenets/screens/wardrobe/FilterOutfit';
 
 const Tab = createBottomTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
+const Stack = createStackNavigator();
 
 const ComingSoon = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -41,6 +50,47 @@ const SplashScreen = ({ onFinish }) => {
   );
 };
 
+function WardrobeTabs() {
+  return (
+    <TopTab.Navigator>
+      <TopTab.Screen name="Clothes" component={Clothes} />
+      <TopTab.Screen name="Outfits" component={Outfits} />
+    </TopTab.Navigator>
+  );
+}
+
+function WardrobeStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="WardrobeTabs"
+        component={WardrobeTabs}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="ClothingForm"
+        component={ClothingForm}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="OutfitForm"
+        component={OutfitForm}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="FilterClothing"
+        component={FilterClothing}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen
+        name="FilterOutfit"
+        component={FilterOutfit}
+        options={{ headerShown: false }} 
+      />
+    </Stack.Navigator>
+  );
+}
+
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -51,22 +101,42 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <UserProvider>
-        <ClothingProvider>
-          <OutfitProvider>
+        <OutfitProvider>
+          <ClothingProvider>
             <ClothingTagValuesProvider>
               <ClothingFilterProvider>
                 <OutfitTagValuesProvider>
                   <OutfitFilterProvider>
                     <NavigationContainer>
-                      <Tab.Navigator>
+                      <Tab.Navigator screenOptions={({ route }) => ({
+                        tabBarStyle: ((route) => {
+                          const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+                          if (routeName === 'ClothingForm' || routeName === 'OutfitForm' 
+                            || routeName == 'FilterClothing' || routeName == 'FilterOutfit') 
+                          {
+                            return { display: "none" };
+                          }
+                          return;
+                        })(route),
+                        headerShown: ((route) => {
+                          const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+                          if (routeName === 'ClothingForm' || routeName === 'OutfitForm'
+                            || routeName == 'FilterClothing' || routeName == 'FilterOutfit'
+                          ) {
+                            return false;
+                          }
+                          return true;
+                        })(route),
+                      })}>
                         <Tab.Screen
                           name="Wardrobe"
-                          component={Wardrobe}
+                          component={WardrobeStack}
                           options={{
                             tabBarLabel: 'Wardrobe',
                             tabBarIcon: ({ color, size }) => (
                               <MaterialIcons name="door-sliding" color={color} size={size} />
-                            )
+                            ),
+                            headerTitle: 'Wardrobe'
                           }}
                         />
                         <Tab.Screen
@@ -105,8 +175,8 @@ export default function App() {
                 </OutfitTagValuesProvider>
               </ClothingFilterProvider>
             </ClothingTagValuesProvider>
-          </OutfitProvider>
-        </ClothingProvider>
+          </ClothingProvider>
+        </OutfitProvider>
       </UserProvider>
     </SafeAreaProvider>
   );

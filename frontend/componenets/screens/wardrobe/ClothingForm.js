@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Platform } from 'react-native';
 import { useClothing } from '../../../contexts/ClothingContext';
+import { useClothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
 import TagsInput from '../../TagsInput';
+import ImageTagsInput from '../../ImageTagsInput'; // Import ImageTagsInput
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ImageSelectionModal from '../../ImageSelectionModal';
 import * as ImageManipulator from 'expo-image-manipulator';
 import ImagePicker from 'react-native-image-crop-picker';
-
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -19,59 +22,39 @@ export default function ClothingForm({ route, navigation }) {
   const [typeTags, setTypeTags] = useState(clothingToEdit ? clothingToEdit.weatherTags : []);
   const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.materialTags : []);
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
-  const [size, setSize] = useState(clothingToEdit ? clothingToEdit.size : null);
-  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const [sizeTags, setSizeTags] = useState(clothingToEdit ? clothingToEdit.sizeTags : []);
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: 'XS', value: 'XS' },
-    { label: 'S', value: 'S' },
-    { label: 'M', value: 'M' },
-    { label: 'L', value: 'L' },
-    { label: 'XL', value: 'XL' },
-  ]);
+  const clothingTagValues = useClothingTagValues(); 
+  const [items, setItems] = useState(clothingTagValues.Size.map(size => ({ label: size, value: size })));
 
-  const colorValues = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Black', 'White', 'Grey', 'Brown', 'Beige'];
-  const materialValues = ['Cotton', 'Polyester', 'Wool', 'Silk', 'Linen', 'Leather'];
-  const statusValues = ['Borrowed', 'In Wash', 'Unavailable'];
-  const typeValues = [
-    "Tops",
-    "Trousers and shorts",
-    "Footwear",
-    "Dresses",
-    "Coats",
-    "Jackets",
-    "Skirts",
-    "Sportswear",
-    "Suits",
-    "Handwear",
-    "Accessories",
-    "Outerwear"
-  ];
+  const [washingTags, setWashingTags] = useState(clothingToEdit?.tags?.washingTags || []);
+  const [bleachingTags, setBleachingTags] = useState(clothingToEdit?.tags?.bleachingTags || []);
+  const [dryingTags, setDryingTags] = useState(clothingToEdit?.tags?.dryingTags || []);
+  const [ironingTags, setIroningTags] = useState(clothingToEdit?.tags?.ironingTags || []);
+  const [professionalTextileCareTags, setProfessionalTextileCareTags] = useState(clothingToEdit?.tags?.professionalTextileCareTags || []);
 
-  const handleImageSelected = (selectedImage) => {
-    setImage(selectedImage);
-  };
-
-  const handleCropImage = async () => {
-    if (!image) {
-      alert('Please select an image first.');
-      return;
-    }
-  
+  const selectImage = async () => {
     try {
-      const croppedImage = await ImagePicker.openCropper({
-        path: image,  
-        width: 300,   
-        height: 300,  
-        cropping: true,
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        console.log('Permission status:', status);
+        if (status !== 'granted') {
+          alert('Permission to access gallery is required!');
+          return;
+        }
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 1,
       });
-  
-      if (croppedImage) {
-        setImage(croppedImage.path);  // Update image state with cropped image
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setImage(result.assets[0].uri);
+        console.log('Image URI:', result.assets[0].uri);
       }
     } catch (error) {
-      console.log('Error cropping image:', error);
-      alert('Could not crop the image');
+      console.error('Error selecting image:', error);
     }
   };
 
@@ -80,11 +63,18 @@ export default function ClothingForm({ route, navigation }) {
       const clothingData = { 
         image, 
         description, 
-        colorTags, 
-        typeTags,
-        materialTags,
-        statusTags,
-        size
+        tags:{
+          washingTags,
+          bleachingTags,
+          dryingTags,
+          ironingTags,
+          professionalTextileCareTags,
+          colorTags, 
+          typeTags,
+          materialTags,
+          statusTags,
+          sizeTags,
+        }
       };
 
       if (clothingToEdit) {
@@ -128,10 +118,16 @@ export default function ClothingForm({ route, navigation }) {
         )}
       </TouchableOpacity>
 
-      <ImageSelectionModal
-        visible={isImageModalVisible}
-        onClose={() => setIsImageModalVisible(false)}
-        onImageSelected={handleImageSelected}
+      <DropDownPicker
+        open={open}
+        value={sizeTags}
+        items={items}
+        setOpen={setOpen}
+        setValue={setSizeTags}
+        setItems={setItems}
+        placeholder="Select a size"
+        containerStyle={{ marginBottom: 20 }}
+        zIndex={6000}
       />
 
       <TextInput
@@ -140,41 +136,55 @@ export default function ClothingForm({ route, navigation }) {
         value={description}
         onChangeText={setDescription}
       />
+
       <TagsInput 
         name={'Type'}
         tags={typeTags}
-        values={typeValues}
+        values={clothingTagValues.Type}
         onTagsChange={setTypeTags}
       />
       <TagsInput 
         name={'Color'}
         tags={colorTags}
-        values={colorValues}
+        values={clothingTagValues.Color}
         onTagsChange={setColorTags}
       />
       <TagsInput 
         name={'Material'}
         tags={materialTags}
-        values={materialValues}
+        values={clothingTagValues.Material}
         onTagsChange={setMaterialTags}
       />
       <TagsInput 
         name={'Status'}
         tags={statusTags}
-        values={statusValues}
+        values={clothingTagValues.Status}
         onTagsChange={setStatusTags}
       />
-
-      <DropDownPicker
-        open={open}
-        value={size}
-        items={items}
-        setOpen={setOpen}
-        setValue={setSize}
-        setItems={setItems}
-        placeholder="Select a size"
-        containerStyle={{ marginBottom: 20 }}
-        zIndex={5000}
+      <ImageTagsInput
+        name={'Washing'}
+        tags={washingTags}
+        onTagsChange={setWashingTags}
+      />
+      <ImageTagsInput
+        name={'Bleaching'}
+        tags={bleachingTags}
+        onTagsChange={setBleachingTags}
+      />
+      <ImageTagsInput
+        name={'Drying'}
+        tags={dryingTags}
+        onTagsChange={setDryingTags}
+      />
+      <ImageTagsInput
+        name={'Ironing'}
+        tags={ironingTags}
+        onTagsChange={setIroningTags}
+      />
+      <ImageTagsInput
+        name={'Professional Textile Care'}
+        tags={professionalTextileCareTags}
+        onTagsChange={setProfessionalTextileCareTags}
       />
 
       <View style={clothingToEdit ? styles.buttonContainer : styles.singleButtonContainer}>

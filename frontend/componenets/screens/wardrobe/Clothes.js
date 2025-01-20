@@ -30,15 +30,18 @@ export default function Clothes() {
   };
 
   const applyFilters = () => {
+    console.log(activeFilters);
     if (Object.keys(activeFilters).length === 0) {
       setFilteredClothes(clothes);
       return;
     }
 
     const filtered = clothes.filter((item) => {
+        console.log(item);
       return Object.keys(activeFilters).every((category) => {
         const categoryTags = activeFilters[category];
-        return categoryTags.every((tag) => item[`${category.toLowerCase()}Tags`]?.includes(tag));
+        const itemTags = item.tags[`${category.charAt(0).toLowerCase()}${category.slice(1)}Tags`];
+        return categoryTags.every((tag) => itemTags?.includes(tag));
       });
     });
 
@@ -49,12 +52,19 @@ export default function Clothes() {
     navigation.navigate('ClothingForm', { clothingToEdit: clothing });
   };
 
+  const deleteClothing = async () => {
+    if (clothingToEdit) {
+      await removeClothing(clothingToEdit.id);
+      navigation.goBack();
+    }
+  };
+
   const handleLongPress = (clothing) => {
     Alert.alert(
       'What do you want to do?',
       '',
       [
-        { text: 'Delete', onPress: () => removeClothing(clothing.id) },
+        { text: 'Delete', onPress: () => deleteClothing() },
         { text: 'Edit', onPress: () => navigateToClothingForm(clothing) },
         { text: 'Cancel', style: 'cancel' },
       ],
@@ -76,7 +86,7 @@ export default function Clothes() {
             <Image source={{ uri: item.image }} style={[styles.image, { width: imageWidth, height: imageHeight }]} />
           </TouchableOpacity>
         )}
-        LListEmptyComponent={
+        ListEmptyComponent={
           <Text style={styles.emptyText}>
             {Object.keys(activeFilters).length > 0 
               ? "You don't have any clothes with these filters..." 

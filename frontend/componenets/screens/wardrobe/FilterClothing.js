@@ -62,6 +62,7 @@ export default function FilterClothing() {
           <Text style={styles.categoryName}>{category}</Text>
           <View style={styles.tagContainer}>
             {clothingTagValues[category].map((value) => (
+                value = value.label ? value.label : value, 
               <TouchableOpacity
                 key={value}
                 style={[
