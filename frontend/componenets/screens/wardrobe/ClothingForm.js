@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Platform } from 'react-native';
 import { useClothing } from '../../../contexts/ClothingContext';
 import { useClothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
 import TagsInput from '../../TagsInput';
+import ImageTagsInput from '../../ImageTagsInput'; // Import ImageTagsInput
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -18,26 +20,39 @@ export default function ClothingForm({ route, navigation }) {
   const [typeTags, setTypeTags] = useState(clothingToEdit ? clothingToEdit.weatherTags : []);
   const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.materialTags : []);
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
-  const [size, setSize] = useState(clothingToEdit ? clothingToEdit.size : null);
+  const [sizeTags, setSizeTags] = useState(clothingToEdit ? clothingToEdit.sizeTags : []);
   const [open, setOpen] = useState(false);
   const clothingTagValues = useClothingTagValues(); 
   const [items, setItems] = useState(clothingTagValues.Size.map(size => ({ label: size, value: size })));
 
+  const [washingTags, setWashingTags] = useState(clothingToEdit?.tags?.washingTags || []);
+  const [bleachingTags, setBleachingTags] = useState(clothingToEdit?.tags?.bleachingTags || []);
+  const [dryingTags, setDryingTags] = useState(clothingToEdit?.tags?.dryingTags || []);
+  const [ironingTags, setIroningTags] = useState(clothingToEdit?.tags?.ironingTags || []);
+  const [professionalTextileCareTags, setProfessionalTextileCareTags] = useState(clothingToEdit?.tags?.professionalTextileCareTags || []);
+
   const selectImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Permission to access gallery is required!');
-      return;
-    }
+    try {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        console.log('Permission status:', status);
+        if (status !== 'granted') {
+          alert('Permission to access gallery is required!');
+          return;
+        }
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);  
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 1,
+      });
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setImage(result.assets[0].uri);
+        console.log('Image URI:', result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error selecting image:', error);
     }
   };
 
@@ -46,11 +61,18 @@ export default function ClothingForm({ route, navigation }) {
       const clothingData = { 
         image, 
         description, 
-        colorTags, 
-        typeTags,
-        materialTags,
-        statusTags,
-        size
+        tags:{
+          washingTags,
+          bleachingTags,
+          dryingTags,
+          ironingTags,
+          professionalTextileCareTags,
+          colorTags, 
+          typeTags,
+          materialTags,
+          statusTags,
+          sizeTags,
+        }
       };
 
       if (clothingToEdit) {
@@ -83,12 +105,25 @@ export default function ClothingForm({ route, navigation }) {
         )}
       </TouchableOpacity>
 
+      <DropDownPicker
+        open={open}
+        value={sizeTags}
+        items={items}
+        setOpen={setOpen}
+        setValue={setSizeTags}
+        setItems={setItems}
+        placeholder="Select a size"
+        containerStyle={{ marginBottom: 20 }}
+        zIndex={6000}
+      />
+
       <TextInput
         style={styles.input}
         placeholder="Description"
         value={description}
         onChangeText={setDescription}
       />
+
       <TagsInput 
         name={'Type'}
         tags={typeTags}
@@ -114,16 +149,30 @@ export default function ClothingForm({ route, navigation }) {
         onTagsChange={setStatusTags}
       />
 
-      <DropDownPicker
-        open={open}
-        value={size}
-        items={items}
-        setOpen={setOpen}
-        setValue={setSize}
-        setItems={setItems}
-        placeholder="Select a size"
-        containerStyle={{ marginBottom: 20 }}
-        zIndex={5000}
+      <ImageTagsInput
+        name={'Washing'}
+        tags={washingTags}
+        onTagsChange={setWashingTags}
+      />
+      <ImageTagsInput
+        name={'Bleaching'}
+        tags={bleachingTags}
+        onTagsChange={setBleachingTags}
+      />
+      <ImageTagsInput
+        name={'Drying'}
+        tags={dryingTags}
+        onTagsChange={setDryingTags}
+      />
+      <ImageTagsInput
+        name={'Ironing'}
+        tags={ironingTags}
+        onTagsChange={setIroningTags}
+      />
+      <ImageTagsInput
+        name={'Professional Textile Care'}
+        tags={professionalTextileCareTags}
+        onTagsChange={setProfessionalTextileCareTags}
       />
 
       <View style={clothingToEdit ? styles.buttonContainer : styles.singleButtonContainer}>

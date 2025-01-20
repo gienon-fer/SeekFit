@@ -30,15 +30,18 @@ export default function Clothes() {
   };
 
   const applyFilters = () => {
+    console.log(activeFilters);
     if (Object.keys(activeFilters).length === 0) {
       setFilteredClothes(clothes);
       return;
     }
 
     const filtered = clothes.filter((item) => {
+        console.log(item);
       return Object.keys(activeFilters).every((category) => {
         const categoryTags = activeFilters[category];
-        return categoryTags.every((tag) => item[`${category.toLowerCase()}Tags`]?.includes(tag));
+        const itemTags = item.tags[`${category.charAt(0).toLowerCase()}${category.slice(1)}Tags`];
+        return categoryTags.every((tag) => itemTags?.includes(tag));
       });
     });
 

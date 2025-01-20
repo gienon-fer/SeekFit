@@ -12,7 +12,6 @@ export default function OutfitForm({ route, navigation }) {
   const { addOutfit, editOutfit, removeOutfit } = useOutfit();
   const { clothes } = useClothing();
   const { outfitToEdit } = route.params || {};
-
   const [image, setImage] = useState(outfitToEdit ? outfitToEdit.image : null);
   const [description, setDescription] = useState(outfitToEdit ? outfitToEdit.description : '');
   const [styleTags, setStyleTags] = useState(outfitToEdit ? outfitToEdit.tags.style : []);
@@ -22,7 +21,6 @@ export default function OutfitForm({ route, navigation }) {
   const [selectedClothing, setSelectedClothing] = useState(outfitToEdit ? outfitToEdit.clothing : []);
   const [showClothingSelector, setShowClothingSelector] = useState(false);
   const [tempSelectedClothing, setTempSelectedClothing] = useState([...selectedClothing]);
-  const [initialAnimation, setInitialAnimation] = useState(true);
 
   const outfitTagValues = useOutfitTagValues();
   const numColumns = 5;
@@ -70,7 +68,8 @@ export default function OutfitForm({ route, navigation }) {
   };
 
   const saveOutfit = async () => {
-    if (image) {
+
+    if (image) { 
       const outfitData = {
         image,
         description,
@@ -82,15 +81,13 @@ export default function OutfitForm({ route, navigation }) {
         },
         clothing: selectedClothing,
       };
-
       if (outfitToEdit) {
         await editOutfit(outfitToEdit.id, outfitData);
       } else {
         const newOutfit = { id: new Date().toString(), ...outfitData };
         await addOutfit(newOutfit);
       }
-
-      navigation.popToTop();
+      navigation.goBack();
     } else {
       alert('Please add an image.');
     }
@@ -99,7 +96,7 @@ export default function OutfitForm({ route, navigation }) {
   const deleteOutfit = async () => {
     if (outfitToEdit) {
       await removeOutfit(outfitToEdit.id);
-      navigation.popToTop();
+      navigation.goBack();
     }
   };
 
@@ -125,7 +122,6 @@ export default function OutfitForm({ route, navigation }) {
       animationOutTiming={0.00001}
       onRequestClose={() => {
         setShowClothingSelector(false);
-        setInitialAnimation(false);
       }}
     >
       <View style={styles.clothingSelectorContainer}>
@@ -153,7 +149,6 @@ export default function OutfitForm({ route, navigation }) {
             onPress={() => {
               setSelectedClothing(tempSelectedClothing);
               setShowClothingSelector(false);
-              setInitialAnimation(true);
             }}
           >
             <Text style={styles.saveButtonText}>Save</Text>
@@ -163,7 +158,6 @@ export default function OutfitForm({ route, navigation }) {
             onPress={() => {
               setTempSelectedClothing([...selectedClothing]);
               setShowClothingSelector(false);
-              setInitialAnimation(true);
             }}
           >
             <Text style={styles.discardButtonText}>Discard</Text>
