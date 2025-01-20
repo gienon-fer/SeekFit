@@ -7,8 +7,8 @@ import { useOutfitTagValues } from '../../../contexts/OutfitTagValuesContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import ImageSelectionModal from '../../ImageSelectionModal';
-import ImagePicker from 'react-native-image-crop-picker';
+//import ImageSelectionModal from '../../ImageSelectionModal';
+//import ImagePicker from 'react-native-image-crop-picker';
 
 export default function OutfitForm({ route, navigation }) {
   const { addOutfit, editOutfit, removeOutfit } = useOutfit();
@@ -55,6 +55,31 @@ export default function OutfitForm({ route, navigation }) {
   const handleImageSelected = (selectedImage) => {
     setImage(selectedImage);
   };
+
+  const selectImage = async () => {
+      try {
+
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        console.log('Permission status:', status);
+        if (status !== 'granted') {
+        alert('Permission to access gallery is required!');
+        return;
+        }
+
+  
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: false,
+          quality: 1,
+        });
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+          setImage(result.assets[0].uri);
+          console.log('Image URI:', result.assets[0].uri);
+        }
+      } catch (error) {
+        console.error('Error selecting image:', error);
+      }
+    };
 
   const handleCropImage = async () => {
     if (!image) {
@@ -183,28 +208,22 @@ export default function OutfitForm({ route, navigation }) {
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity 
         style={styles.imagePicker} 
-        onPress={() => setIsImageModalVisible(true)}
+        onPress={() => selectImage()}
       >
         {image ? (
           <>
             <Image source={{ uri: image }} style={styles.image} />
-            <TouchableOpacity
-              style={styles.cropButton} 
-              onPress={handleCropImage}
-            >
-              <Text style={styles.cropButtonText}>Crop</Text>
-            </TouchableOpacity>  
           </>
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
         )}  
       </TouchableOpacity>
       
-      <ImageSelectionModal
+      {/* <ImageSelectionModal
         visible={isImageModalVisible}
         onClose={() => setIsImageModalVisible(false)}
         onImageSelected={handleImageSelected}
-      />
+      /> */}
 
       <TextInput
         style={styles.input}

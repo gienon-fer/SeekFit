@@ -8,9 +8,9 @@ import TagsInput from '../../TagsInput';
 import ImageTagsInput from '../../ImageTagsInput'; // Import ImageTagsInput
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
-import ImageSelectionModal from '../../ImageSelectionModal';
-import * as ImageManipulator from 'expo-image-manipulator';
-import ImagePicker from 'react-native-image-crop-picker';
+//import ImageSelectionModal from '../../ImageSelectionModal';
+//import * as ImageManipulator from 'expo-image-manipulator';
+//import ImagePicker from 'react-native-image-crop-picker';
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -97,21 +97,35 @@ export default function ClothingForm({ route, navigation }) {
     }
   };
 
+    // image crop
+    // <TouchableOpacity 
+    //     style={styles.imagePicker} 
+    //     onPress={() => setIsImageModalVisible(true)}
+    //   >
+    //     {image ? (
+    //       <>
+    //         <Image source={{ uri: image }} style={styles.image} />
+    //         <TouchableOpacity 
+    //           style={styles.cropButton} 
+    //           onPress={handleCropImage}
+    //         >
+    //           <Text style={styles.cropButtonText}>Crop</Text>
+    //         </TouchableOpacity>
+    //       </>
+    //     ) : (
+    //       <Text style={styles.imagePickerText}>Add Picture +</Text>
+    //     )}
+    // </TouchableOpacity>
+    
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity 
         style={styles.imagePicker} 
-        onPress={() => setIsImageModalVisible(true)}
+        onPress={() => selectImage()}
       >
         {image ? (
           <>
             <Image source={{ uri: image }} style={styles.image} />
-            <TouchableOpacity 
-              style={styles.cropButton} 
-              onPress={handleCropImage}
-            >
-              <Text style={styles.cropButtonText}>Crop</Text>
-            </TouchableOpacity>
           </>
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
