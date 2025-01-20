@@ -247,10 +247,10 @@ const PlannerScreen = () => {
               <Text
                 style={{
                   position: 'absolute',
-                  top: 3,
+                  top: 5,
                   left: 5,
                   color: state === 'disabled' ? '#d9e1e8' : '#2d4150',
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: 'bold',
                 }}
               >
@@ -373,21 +373,21 @@ const styles = StyleSheet.create({
   calendarCell: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 60, // Ensure consistent width
-    height: 80, // Ensure consistent height
+    width: 80, // Increased from 60
+    height: 100, // Increased from 80
   },
   outfitContainer: {
     marginTop: 5,
-    width: 60,
-    height: 80, // Keep cell size consistent even if no image is present
+    width: 75,  // Increase width
+    height: 95, // Increase height
     justifyContent: 'center',
     alignItems: 'center',
   },
   outfitImage: {
-    width: '100%',
-    height: '100%',
+    width: '90%',  // Increase width
+    height: '90%', // Increase height
     borderRadius: 5,
-  },
+  },  
   emptyOutfitPlaceholder: {
     width: '100%',
     height: '100%',
