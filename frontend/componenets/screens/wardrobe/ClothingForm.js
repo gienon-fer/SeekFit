@@ -1,4 +1,3 @@
-// screens/wardrobe/EditClothing.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -9,6 +8,9 @@ import TagsInput from '../../TagsInput';
 import ImageTagsInput from '../../ImageTagsInput'; // Import ImageTagsInput
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
+import ImageSelectionModal from '../../ImageSelectionModal';
+import * as ImageManipulator from 'expo-image-manipulator';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -97,9 +99,20 @@ export default function ClothingForm({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity style={styles.imagePicker} onPress={selectImage}>
+      <TouchableOpacity 
+        style={styles.imagePicker} 
+        onPress={() => setIsImageModalVisible(true)}
+      >
         {image ? (
-          <Image source={{ uri: image }} style={styles.image} />
+          <>
+            <Image source={{ uri: image }} style={styles.image} />
+            <TouchableOpacity 
+              style={styles.cropButton} 
+              onPress={handleCropImage}
+            >
+              <Text style={styles.cropButtonText}>Crop</Text>
+            </TouchableOpacity>
+          </>
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
         )}
@@ -148,7 +161,6 @@ export default function ClothingForm({ route, navigation }) {
         values={clothingTagValues.Status}
         onTagsChange={setStatusTags}
       />
-
       <ImageTagsInput
         name={'Washing'}
         tags={washingTags}
@@ -176,7 +188,10 @@ export default function ClothingForm({ route, navigation }) {
       />
 
       <View style={clothingToEdit ? styles.buttonContainer : styles.singleButtonContainer}>
-        <TouchableOpacity style={clothingToEdit ? styles.saveButton : styles.fullWidthSaveButton} onPress={saveClothing}>
+        <TouchableOpacity 
+          style={clothingToEdit ? styles.saveButton : styles.fullWidthSaveButton} 
+          onPress={saveClothing}
+        >
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
 
@@ -194,12 +209,27 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
+  cropButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'rgba(33, 150, 243, 0.9)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  cropButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+  },
   imagePicker: {
     height: 600,
     backgroundColor: '#ddd',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    borderRadius: 10,
   },
   imagePickerText: {
     fontSize: 16,
@@ -215,6 +245,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 10,
     marginBottom: 20,
+    borderRadius: 5,
   },
   saveButton: {
     backgroundColor: '#28a745',

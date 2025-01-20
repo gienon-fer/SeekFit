@@ -1,0 +1,60 @@
+---
+spring:
+  main:
+    web-application-type: REACTIVE
+  webflux:
+    base-path: /social-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/social_management_db
+    username: postgres
+    password: postgres
+#    liquibase:
+#      enabled: true
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: health,info,mappings
+  health:
+    defaults:
+      enabled: true
+  info:
+    defaults:
+      enabled: false
+    env:
+      enabled: true
+    git:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    version: '@projectVersion@'
+
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
+  enabled: true
+  show-actuator: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui/index.html
+    urlsPrimaryName: social-management
+
+logging:
+  level:
+    root: INFO
+
+axon:
+  eventhandling:
+    processors:
+      validationEventProcessor:
+        mode: subscribing
+      readModelEventProcessor:
+        mode: tracking
+  serializer:
+    general: jackson
+    events: jackson
+    messages: jackson
