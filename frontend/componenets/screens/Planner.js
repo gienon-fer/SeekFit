@@ -202,7 +202,7 @@ const PlannerScreen = () => {
           <TouchableOpacity 
             key={day.date} 
             style={styles.forecastDay}
-            onPress={() => handleDayPress({ dateString: day.date })}
+            onPress={() => {}}
           >
             <Text style={styles.dateText}>
               {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
