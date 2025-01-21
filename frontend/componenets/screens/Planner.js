@@ -134,20 +134,29 @@ const PlannerScreen = () => {
   };
 
   const handleDayPress = (date) => {
+    setSelectedDate(date); // Set the selected date immediately
+    
     if (calendarOutfits[date]) {
-      // If an outfit already exists, show management options
       Alert.alert(
         'Manage Outfit',
         `Options for ${date}`,
         [
-          { text: 'Change Outfit', onPress: () => setShowOutfitPicker(true) },
-          { text: 'Delete Outfit', onPress: () => handleOutfitDelete(date) },
+          { 
+            text: 'Change Outfit', 
+            onPress: () => {
+              setSelectedDate(date); // Ensure date is set before showing picker
+              setShowOutfitPicker(true);
+            }
+          },
+          { 
+            text: 'Delete Outfit', 
+            onPress: () => handleOutfitDelete(date) 
+          },
           { text: 'Cancel', style: 'cancel' },
         ],
         { cancelable: true }
       );
     } else {
-      // If no outfit exists, ask about the weather
       Alert.alert(
         'Take into account weather forecast for the day?',
         '',
@@ -156,7 +165,6 @@ const PlannerScreen = () => {
             text: 'No',
             onPress: () => {
               setFilteredOutfits(outfits);
-              setSelectedDate(date);
               setShowOutfitPicker(true);
             }
           },
@@ -169,7 +177,6 @@ const PlannerScreen = () => {
                 const temperatureTag = getTemperatureTag(forecast.temp);
                 const weatherTags = getWeatherTag(forecast.description);
   
-                // Apply filtering only if there's at least one matching tag
                 const applicableFilters = {
                   weather: weatherTags,
                   temperature: [temperatureTag],
@@ -180,7 +187,6 @@ const PlannerScreen = () => {
                 setFilteredOutfits(outfits);
               }
   
-              setSelectedDate(date);
               setShowOutfitPicker(true);
             }
           },
@@ -200,12 +206,15 @@ const PlannerScreen = () => {
   };
 
   const handleOutfitSelect = (outfit) => {
-    setCalendarOutfits((prev) => ({
-      ...prev,
-      [selectedDate]: outfit, // Save the outfit for this date
-    }));
+    setCalendarOutfits(prev => {
+      // Create a new object to ensure state update
+      const updated = { ...prev };
+      // Use the selectedDate that was set in handleDayPress
+      updated[selectedDate] = outfit;
+      return updated;
+    });
   
-    setShowOutfitPicker(false); // Close modal after selection
+    setShowOutfitPicker(false);
   };
 
   const handleOutfitLongPress = (outfit) => {
