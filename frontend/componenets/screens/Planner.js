@@ -46,6 +46,38 @@ const PlannerScreen = () => {
     applyFilters();
   }, [outfits, activeFilters]);
 
+  const getWeatherTag = (description) => {
+    // Normalize the description to handle various possible responses
+    const normalizedDescription = description.toLowerCase();
+    
+    let weatherTags = [];
+    
+    if (normalizedDescription.includes("rain") || normalizedDescription.includes("drizzle")) {
+      weatherTags.push("Rain");
+    }
+    if (normalizedDescription.includes("snow")) {
+      weatherTags.push("Snow");
+    }
+    if (normalizedDescription.includes("wind")) {
+      weatherTags.push("Wind");
+    }
+    if (normalizedDescription.includes("clouds")) {
+      weatherTags.push("Cloudy");
+    }
+  
+    return weatherTags;
+  };
+  
+  const getTemperatureTag = (temp) => {
+    if (temp < 0) return 'Below 0°C (Freezing)';
+    if (temp >= 0 && temp < 10) return '0°C to 10°C (Cold)';
+    if (temp >= 10 && temp < 15) return '10°C to 15°C (Cool)';
+    if (temp >= 15 && temp < 20) return '15°C to 20°C (Mild)';
+    if (temp >= 20 && temp < 25) return '20°C to 25°C (Warm)';
+    if (temp >= 25 && temp < 30) return '25°C to 30°C (Hot)';
+    return 'Above 30°C (Very Hot)';
+  };
+
   // Filter outfits based on active filters
   const applyFilters = () => {
     if (Object.keys(activeFilters).length === 0) {
@@ -103,7 +135,7 @@ const PlannerScreen = () => {
 
   const handleDayPress = (date) => {
     if (calendarOutfits[date]) {
-      // If an outfit exists, show the menu
+      // If an outfit already exists, show management options
       Alert.alert(
         'Manage Outfit',
         `Options for ${date}`,
@@ -115,9 +147,47 @@ const PlannerScreen = () => {
         { cancelable: true }
       );
     } else {
-      // If no outfit, directly open outfit picker
-      setSelectedDate(date);
-      setShowOutfitPicker(true);
+      // If no outfit exists, ask about the weather
+      Alert.alert(
+        'Take into account weather forecast for the day?',
+        '',
+        [
+          {
+            text: 'No',
+            onPress: () => {
+              setFilteredOutfits(outfits);
+              setSelectedDate(date);
+              setShowOutfitPicker(true);
+            }
+          },
+          {
+            text: 'Yes',
+            onPress: () => {
+              const forecast = sixDayForecast.find(day => day.date === date);
+  
+              if (forecast) {
+                const temperatureTag = getTemperatureTag(forecast.temp);
+                const weatherTags = getWeatherTag(forecast.description);
+  
+                // Apply filtering only if there's at least one matching tag
+                const applicableFilters = {
+                  weather: weatherTags,
+                  temperature: [temperatureTag],
+                };
+  
+                setFilteredOutfits(applicableFilters);
+              } else {
+                setFilteredOutfits(outfits);
+              }
+  
+              setSelectedDate(date);
+              setShowOutfitPicker(true);
+            }
+          },
+          { text: 'Cancel', style: 'cancel' }
+        ],
+        { cancelable: true }
+      );
     }
   };
 
