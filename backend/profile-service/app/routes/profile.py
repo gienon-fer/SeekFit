@@ -47,15 +47,21 @@ def create_profile(user: UserCreate, user_id: str = Depends(verify_token), db: S
     logger.info(f"Profile created for user: {user_id}")
     return new_user
 
+from fastapi import Request
+
 @router.put("/profile", response_model=User)
-def update_profile(user: UserUpdate, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
+async def update_profile(request: Request, user: UserUpdate, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
     logger.info(f"Updating profile for user_id: {user_id}")
+    logger.info(f"Incoming request data: {await request.json()}")
     db_user = db.query(UserModel).filter(UserModel.google_id == user_id).first()
     if db_user is None:
         logger.error(f"User not found for user_id: {user_id}")
         raise HTTPException(status_code=404, detail="User not found")
-    for key, value in user.dict().items():
-        setattr(db_user, key, value)
+    for key, value in user.dict(exclude_unset=True).items():
+        if value == "":
+            value = None
+        if hasattr(db_user, key):
+            setattr(db_user, key, value)
     db.commit()
     db.refresh(db_user)
     logger.info(f"Profile updated for user_id: {user_id}")
