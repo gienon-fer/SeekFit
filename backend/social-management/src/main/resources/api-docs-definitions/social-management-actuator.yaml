@@ -1,0 +1,6 @@
+---
+title: "Social Management Actuator API V1"
+version: "1.0.0"
+extensions:
+  x-change-log:
+    "1.0.0": "Configured Application API"
