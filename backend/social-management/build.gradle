@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'war'
     id("io.freefair.lombok") version "$lombokPluginVersion"
     id 'org.springframework.boot' version "$springBootPluginVersion"
     id 'org.springdoc.openapi-gradle-plugin' version "${openapiPluginVersion}"
@@ -60,4 +61,12 @@ openApi {
 
 test {
     useJUnitPlatform()
+}
+
+bootWar {
+    archiveBaseName = 'social-management'
+}
+
+war {
+    enabled = false
 }

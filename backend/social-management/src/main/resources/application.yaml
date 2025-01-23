@@ -4,12 +4,19 @@ spring:
     web-application-type: REACTIVE
   webflux:
     base-path: /social-management
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/social_management_db
-    username: postgres
-    password: postgres
-#    liquibase:
-#      enabled: true
+    # Read from environment variables if provided, otherwise use defaults
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/social_management_db}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    # liquibase:
+    #   enabled: true
+
 management:
   endpoints:
     enabled-by-default: true

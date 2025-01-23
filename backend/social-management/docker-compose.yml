@@ -1,0 +1,40 @@
+version: '3.8'
+
+networks:
+  social-network:
+    driver: bridge
+
+services:
+  # Postgres DB service
+  postgres:
+    image: postgres:15
+    container_name: social-management-postgres
+    environment:
+      POSTGRES_DB: social_management_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"    # Host port 5433 -> Container port 5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - social-network
+
+  # Social Management Service
+  social-management:
+    image: social-management:latest
+    container_name: social-management
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/social_management_db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - social-network
+
+volumes:
+  db-data:
+    driver: local
