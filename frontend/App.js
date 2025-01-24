@@ -17,6 +17,7 @@ import { OutfitTagValuesProvider } from './contexts/OutfitTagValuesContext';
 import { OutfitFilterProvider } from './contexts/OutfitFilterContext'; 
 
 import Profile from "./componenets/screens/Profile";
+import Friends from "./componenets/screens/Friends";
 import Planner from "./componenets/screens/Planner";
 import Clothes from './componenets/screens/wardrobe/Clothes';
 import ClothingForm from './componenets/screens/wardrobe/ClothingForm';
@@ -151,7 +152,7 @@ export default function App() {
                         />
                         <Tab.Screen
                           name="Friends"
-                          component={ComingSoon}
+                          component={Friends}
                           options={{
                             tabBarLabel: 'Friends',
                             tabBarIcon: ({ color, size }) => (
