@@ -84,7 +84,7 @@ All functional requirements (essential and additional) can be read [here](https:
 |-----------------------|----------------------|
 |**Mobile Development Framework**|[React Native](https://reactnative.dev/docs/getting-started) [4], [Expo](https://docs.expo.dev/guides/overview/) [5]|
 |**Mobile Development IDE**|[Android Studio](https://developer.android.com/develop) [3]|
-|**Database**|[PostgreSQL](https://www.postgresql.org/) [15] for structured data and [MongoDB](https://www.mongodb.com/) [14] for unstructured|
+|**Database**|[PostgreSQL](https://www.postgresql.org/) [15] |
 |**Image Storage**|local file system|
 |**User Authentication**|[OAuth](https://developers.google.com/identity/protocols/oauth2) [7]|
 |**Push Notifications**|[Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging) [12]|
@@ -93,7 +93,8 @@ All functional requirements (essential and additional) can be read [here](https:
 |**Scheduling & Calendar Interface**|[React Native Calendar](https://www.npmjs.com/package/react-native-calendars) [17]|
 |**Deployment**|[Kubernetes](https://kubernetes.io/docs/home/) [8] and [DigitalOcean](https://www.digitalocean.com/) [18]|
 
-#Installation
+# Installation
+Detailed instructions on installation, configuration, and administration of the project are available on the Wiki [here](https://github.com/TeaWhoYou/SeekFit/wiki/9.-Installation,-Configuration,-and-Administration).
 
 # Team members
 - Tia Rapo
