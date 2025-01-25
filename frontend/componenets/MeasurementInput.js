@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 
 const MeasurementInput = ({ label, value, onChangeValue, min, max, unit }) => {
   const [input, setInput] = useState(value);
+
+  useEffect(() => {
+    setInput(value);
+  }, [value]);
 
   const handleEndEditing = () => {
     const num = parseFloat(input);
@@ -26,7 +30,7 @@ const MeasurementInput = ({ label, value, onChangeValue, min, max, unit }) => {
           style={styles.input}
           placeholder={`Enter ${label.toLowerCase()}`}
           keyboardType="numeric"
-          value={input}
+          value={input.toString()}
           onChangeText={setInput}
           onEndEditing={handleEndEditing}
         />
