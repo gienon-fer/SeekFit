@@ -21,7 +21,7 @@ const ImageTagsInput = ({ name, tags, onTagsChange }) => {
   };
 
   const screenWidth = Dimensions.get('window').width;
-  const imageSize = screenWidth / 5 - 10; // 5 pictograms in a row with some margin
+  const imageSize = screenWidth / 5 - 20; // 5 pictograms in a row with some margin
 
   const sanitizedCategoryName = name.replace(/\s+/g, '');
 
@@ -38,7 +38,10 @@ const ImageTagsInput = ({ name, tags, onTagsChange }) => {
               source={tag.image}
               style={[
                 styles.imageTag,
-                { width: imageSize, height: imageSize },
+                { 
+                  width: tag.width > tag.height ? imageSize : (imageSize * tag.width) / tag.height,
+                  height: tag.height > tag.width ? imageSize : (imageSize * tag.height) / tag.width
+                },
                 selectedTags.includes(tag.label) && styles.selectedImageTag,
               ]}
             />

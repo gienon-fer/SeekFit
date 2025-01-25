@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useClothing } from '../../../contexts/ClothingContext';
+import { useWardrobe } from '../../../contexts/WardrobeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useActiveClothingFilters, useSetActiveClothingFilters } from '../../../contexts/ClothingFilterContext'; // Import clothing filter context
 import { useUser } from '../../../contexts/UserContext'; // Import UserContext
 
 export default function Clothes() {
-  const { clothes, removeClothing } = useClothing();
+  const { clothes, removeClothing } = useWardrobe();
   const { googleId } = useUser(); // Get googleId from UserContext
   const navigation = useNavigation();
   const numColumns = 4;

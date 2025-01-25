@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native';
-import { useClothing } from '../../../contexts/ClothingContext';
+import { useWardrobe } from '../../../contexts/WardrobeContext';
 import { useClothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
 import TagsInput from '../../TagsInput';
 import ImageTagsInput from '../../ImageTagsInput'; // Import ImageTagsInput
@@ -13,7 +13,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 //import ImagePicker from 'react-native-image-crop-picker';
 
 export default function ClothingForm({ route, navigation }) {
-  const { addClothing, editClothing, removeClothing } = useClothing();
+  const { addClothing, editClothing, removeClothing } = useWardrobe();
   const { clothingToEdit } = route.params || {};
 
   const [image, setImage] = useState(clothingToEdit ? clothingToEdit.image : null);

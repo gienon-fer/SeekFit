@@ -39,10 +39,11 @@ export const clothingTagValues = {
     { label: "Dry flat", image: require('../assets/icon.png') },
   ],
   Ironing: [
-    { label: "Iron", image: require('../assets/ironing_iron.png') },
-    { label: "Iron at low temperature", image: require('../assets/ironing_iron1.png') },
-    { label: "Iron at medium temperature", image: require('../assets/ironing_iron2.png') },
-    { label: "Iron at high temperature", image: require('../assets/ironing_iron3.png') },
+    { labe: "Don't iron", image: require('../assets/noironing.png'), width: 110, height: 80 },
+    { label: "Iron", image: require('../assets/ironing0.png'), width: 110, height: 80 },
+    { label: "Iron at low temperature", image: require('../assets/ironing1.png'), width: 110, height: 80 },
+    { label: "Iron at medium temperature", image: require('../assets/ironing2.png'), width: 110, height: 80 },
+    { label: "Iron at high temperature", image: require('../assets/ironing3.png'), width: 110, height: 80 },
   ],
   ProfessionalTextileCare: [
     { label: "Professional dry clean", image: require('../assets/icon.png') },

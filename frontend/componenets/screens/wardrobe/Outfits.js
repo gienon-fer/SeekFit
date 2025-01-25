@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useOutfit } from '../../../contexts/OutfitContext';
+import { useWardrobe } from '../../../contexts/WardrobeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useActiveOutfitFilters, useSetActiveOutfitFilters } from '../../../contexts/OutfitFilterContext'; // Import outfit filter context
 
 export default function Outfits() {
-  const { outfits, removeOutfit } = useOutfit();
+  const { outfits, removeOutfit } = useWardrobe();
   const navigation = useNavigation();
   const numColumns = 4;
 

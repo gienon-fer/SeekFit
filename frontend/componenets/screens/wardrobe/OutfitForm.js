@@ -1,8 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView, Modal, FlatList, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useOutfit } from '../../../contexts/OutfitContext';
-import { useClothing } from '../../../contexts/ClothingContext';
+import { useWardrobe } from '../../../contexts/WardrobeContext';
 import { useOutfitTagValues } from '../../../contexts/OutfitTagValuesContext';
 import TagsInput from '../../TagsInput';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,8 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 //import ImagePicker from 'react-native-image-crop-picker';
 
 export default function OutfitForm({ route, navigation }) {
-  const { addOutfit, editOutfit, removeOutfit } = useOutfit();
-  const { clothes } = useClothing();
+  const { addOutfit, editOutfit, removeOutfit, clothes } = useWardrobe();
   const { outfitToEdit } = route.params || {};
   const [image, setImage] = useState(outfitToEdit ? outfitToEdit.image : null);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);

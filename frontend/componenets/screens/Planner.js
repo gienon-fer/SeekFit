@@ -15,12 +15,12 @@ import { Calendar } from 'react-native-calendars';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { fetchWeatherForecast } from '../WeatherLocationService';
 import { useNavigation } from '@react-navigation/native';
-import { useOutfit } from '../../contexts/OutfitContext';
+import { useWardrobe } from '../../contexts/WardrobeContext';
 import { useActiveOutfitFilters } from '../../contexts/OutfitFilterContext';
 
 const PlannerScreen = () => {
   const navigation = useNavigation();
-  const { outfits, addOutfit, removeOutfit } = useOutfit();
+  const { outfits, addOutfit, removeOutfit } = useWardrobe();
   const activeFilters = useActiveOutfitFilters();
   
   const [weatherData, setWeatherData] = useState(null);
