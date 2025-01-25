@@ -4,18 +4,20 @@ import { useNavigation } from '@react-navigation/native';
 import { useClothing } from '../../../contexts/ClothingContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useActiveClothingFilters, useSetActiveClothingFilters } from '../../../contexts/ClothingFilterContext'; // Import clothing filter context
+import { useUser } from '../../../contexts/UserContext'; // Import UserContext
 
 export default function Clothes() {
   const { clothes, removeClothing } = useClothing();
+  const { googleId } = useUser(); // Get googleId from UserContext
   const navigation = useNavigation();
   const numColumns = 4;
 
   const activeFilters = useActiveClothingFilters();
-  const [filteredClothes, setFilteredClothes] = useState(clothes);
+  const [filteredClothes, setFilteredClothes] = useState([]);
 
   useEffect(() => {
     applyFilters();
-  }, [clothes, activeFilters]);
+  }, [clothes, activeFilters, googleId]);
 
   const screenWidth = Dimensions.get('window').width;
   const imageWidth = screenWidth / numColumns;
@@ -30,14 +32,14 @@ export default function Clothes() {
   };
 
   const applyFilters = () => {
-    console.log(activeFilters);
+    const userClothes = clothes.filter(item => item.owner === googleId); // Filter clothes by owner
+    //console.log('clothes for', googleId);
     if (Object.keys(activeFilters).length === 0) {
-      setFilteredClothes(clothes);
+      setFilteredClothes(userClothes);
       return;
     }
 
-    const filtered = clothes.filter((item) => {
-        console.log(item);
+    const filtered = userClothes.filter((item) => {
       return Object.keys(activeFilters).every((category) => {
         const categoryTags = activeFilters[category];
         const itemTags = item.tags[`${category.charAt(0).toLowerCase()}${category.slice(1)}Tags`];

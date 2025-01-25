@@ -18,14 +18,14 @@ export default function ClothingForm({ route, navigation }) {
 
   const [image, setImage] = useState(clothingToEdit ? clothingToEdit.image : null);
   const [description, setDescription] = useState(clothingToEdit ? clothingToEdit.description : '');
-  const [colorTags, setColorTags] = useState(clothingToEdit ? clothingToEdit.colorTags : []);
-  const [typeTags, setTypeTags] = useState(clothingToEdit ? clothingToEdit.weatherTags : []);
-  const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.materialTags : []);
-  const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
-  const [sizeTags, setSizeTags] = useState(clothingToEdit ? clothingToEdit.sizeTags : []);
+  const [colorTags, setColorTags] = useState(clothingToEdit ? clothingToEdit.tags.colorTags : []);
+  const [typeTags, setTypeTags] = useState(clothingToEdit ? clothingToEdit.tags.typeTags : []);
+  const [materialTags, setMaterialTags] = useState(clothingToEdit ? clothingToEdit.tags.materialTags : []);
+  const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.tags.statusTags : []);
+  const [sizeTags, setSizeTags] = useState(clothingToEdit ? (Array.isArray(clothingToEdit.tags.sizeTags) ? clothingToEdit.tags.sizeTags[0] : clothingToEdit.tags.sizeTags) : undefined);
   const [open, setOpen] = useState(false);
   const clothingTagValues = useClothingTagValues(); 
-  const [items, setItems] = useState(clothingTagValues.Size.map(size => ({ label: size, value: size })));
+  const [items, setItems] = useState(clothingTagValues.Size.map(size => ({ label: size, value: size })) || []);
 
   const [washingTags, setWashingTags] = useState(clothingToEdit?.tags?.washingTags || []);
   const [bleachingTags, setBleachingTags] = useState(clothingToEdit?.tags?.bleachingTags || []);
@@ -37,7 +37,7 @@ export default function ClothingForm({ route, navigation }) {
     try {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        console.log('Permission status:', status);
+        //console.log('Permission status:', status);
         if (status !== 'granted') {
           alert('Permission to access gallery is required!');
           return;
@@ -51,7 +51,7 @@ export default function ClothingForm({ route, navigation }) {
       });
       if (!result.canceled && result.assets && result.assets.length > 0) {
         setImage(result.assets[0].uri);
-        console.log('Image URI:', result.assets[0].uri);
+        //console.log('Image URI:', result.assets[0].uri);
       }
     } catch (error) {
       console.error('Error selecting image:', error);
@@ -63,7 +63,7 @@ export default function ClothingForm({ route, navigation }) {
       const clothingData = { 
         image, 
         description, 
-        tags:{
+        tags: {
           washingTags,
           bleachingTags,
           dryingTags,
@@ -80,8 +80,7 @@ export default function ClothingForm({ route, navigation }) {
       if (clothingToEdit) {
         await editClothing(clothingToEdit.id, clothingData);
       } else {
-        const newClothing = { id: new Date().toString(), ...clothingData };
-        await addClothing(newClothing);
+        await addClothing(clothingData); // Call addClothing which triggers the POST action
       }
 
       navigation.goBack();
