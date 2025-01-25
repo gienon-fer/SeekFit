@@ -35,6 +35,7 @@ export default function OutfitForm({ route, navigation }) {
   useFocusEffect(
     useCallback(() => {
       if (outfitToEdit) {
+        //console.log('Outfit to edit:', outfitToEdit);
         setImage(outfitToEdit.image);
         setDescription(outfitToEdit.description);
         setStyleTags(outfitToEdit.tags.style);
@@ -60,7 +61,7 @@ export default function OutfitForm({ route, navigation }) {
       try {
 
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        console.log('Permission status:', status);
+        //console.log('Permission status:', status);
         if (status !== 'granted') {
         alert('Permission to access gallery is required!');
         return;
@@ -74,7 +75,7 @@ export default function OutfitForm({ route, navigation }) {
         });
         if (!result.canceled && result.assets && result.assets.length > 0) {
           setImage(result.assets[0].uri);
-          console.log('Image URI:', result.assets[0].uri);
+          //console.log('Image URI:', result.assets[0].uri);
         }
       } catch (error) {
         console.error('Error selecting image:', error);
@@ -122,6 +123,7 @@ export default function OutfitForm({ route, navigation }) {
         await editOutfit(outfitToEdit.id, outfitData);
       } else {
         const newOutfit = { id: new Date().toString(), ...outfitData };
+        console.log(JSON.stringify(newOutfit));
         await addOutfit(newOutfit);
       }
       navigation.goBack();
