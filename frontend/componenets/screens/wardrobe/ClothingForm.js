@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native';
 import { useClothing } from '../../../contexts/ClothingContext';
 import { useClothingTagValues } from '../../../contexts/ClothingTagValuesContext'; 
 import TagsInput from '../../TagsInput';
-import ImageTagsInput from '../../ImageTagsInput'; // Import ImageTagsInput
+import ImageTagsInput from '../../ImageTagsInput';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
-//import ImageSelectionModal from '../../ImageSelectionModal';
-//import * as ImageManipulator from 'expo-image-manipulator';
-//import ImagePicker from 'react-native-image-crop-picker';
+import ImageSelectionModal from '../../ImageSelectionModal';
+import * as ImageManipulator from 'expo-image-manipulator';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function ClothingForm({ route, navigation }) {
   const { addClothing, editClothing, removeClothing } = useClothing();
@@ -24,6 +23,7 @@ export default function ClothingForm({ route, navigation }) {
   const [statusTags, setStatusTags] = useState(clothingToEdit ? clothingToEdit.statusTags : []);
   const [sizeTags, setSizeTags] = useState(clothingToEdit ? clothingToEdit.sizeTags : []);
   const [open, setOpen] = useState(false);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const clothingTagValues = useClothingTagValues(); 
   const [items, setItems] = useState(clothingTagValues.Size.map(size => ({ label: size, value: size })));
 
@@ -33,28 +33,28 @@ export default function ClothingForm({ route, navigation }) {
   const [ironingTags, setIroningTags] = useState(clothingToEdit?.tags?.ironingTags || []);
   const [professionalTextileCareTags, setProfessionalTextileCareTags] = useState(clothingToEdit?.tags?.professionalTextileCareTags || []);
 
-  const selectImage = async () => {
-    try {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        console.log('Permission status:', status);
-        if (status !== 'granted') {
-          alert('Permission to access gallery is required!');
-          return;
-        }
-      }
+  const handleImageSelected = (imageUri) => {
+    setImage(imageUri);
+  };
 
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 1,
+  const handleCropImage = async () => {
+    if (!image) {
+      alert('No image selected to crop.');
+      return;
+    }
+  
+    try {
+      const croppedImage = await ImagePicker.openCropper({
+        path: image,  // The image URI
+        width: 500,   // Cropped image width
+        height: 500,  // Cropped image height
+        cropping: true,
       });
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        setImage(result.assets[0].uri);
-        console.log('Image URI:', result.assets[0].uri);
-      }
+  
+      setImage(croppedImage.path);
     } catch (error) {
-      console.error('Error selecting image:', error);
+      console.error('Error cropping image:', error);
+      alert('Failed to crop image.');
     }
   };
 
@@ -96,41 +96,33 @@ export default function ClothingForm({ route, navigation }) {
       navigation.goBack();
     }
   };
-
-    // image crop
-    // <TouchableOpacity 
-    //     style={styles.imagePicker} 
-    //     onPress={() => setIsImageModalVisible(true)}
-    //   >
-    //     {image ? (
-    //       <>
-    //         <Image source={{ uri: image }} style={styles.image} />
-    //         <TouchableOpacity 
-    //           style={styles.cropButton} 
-    //           onPress={handleCropImage}
-    //         >
-    //           <Text style={styles.cropButtonText}>Crop</Text>
-    //         </TouchableOpacity>
-    //       </>
-    //     ) : (
-    //       <Text style={styles.imagePickerText}>Add Picture +</Text>
-    //     )}
-    // </TouchableOpacity>
     
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity 
         style={styles.imagePicker} 
-        onPress={() => selectImage()}
+        onPress={() => setIsImageModalVisible(true)}
       >
         {image ? (
           <>
             <Image source={{ uri: image }} style={styles.image} />
+            <TouchableOpacity 
+              style={styles.cropButton} 
+              onPress={handleCropImage}
+            >
+              <Text style={styles.cropButtonText}>Crop</Text>
+            </TouchableOpacity>
           </>
         ) : (
           <Text style={styles.imagePickerText}>Add Picture +</Text>
         )}
       </TouchableOpacity>
+
+      <ImageSelectionModal
+        visible={isImageModalVisible}
+        onClose={() => setIsImageModalVisible(false)}
+        onImageSelected={handleImageSelected}
+      />
 
       <DropDownPicker
         open={open}
