@@ -153,7 +153,7 @@ function AppContent() {
                 />
                 <Tab.Screen
                     name="Friends"
-                    component={ComingSoon}
+                    component={Friends}
                     options={{
                         tabBarLabel: 'Friends',
                         tabBarIcon: ({ color, size }) => (
