@@ -34,7 +34,9 @@ The application is currently available for manual download as an APK file. Users
 
 
 ### Installation Instructions
-1. **Download the APK File:**
+0. **Uninstall any previous version if present**
+   
+2. **Download the APK File:**
    - Use the link provided above to download the APK file.
    - Transfer the APK file to your Android device.
 
