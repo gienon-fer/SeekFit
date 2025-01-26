@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,12 +11,11 @@ import { useUser } from '../../contexts/UserContext';
 import MeasurementInput from '../MeasurementInput';
 
 const UserProfileScreen = () => {
-  const { user, signOutUser } = useUser();
-  const [height, setHeight] = useState('');
-  const [shoeSize, setShoeSize] = useState('');
-  const [chest, setChest] = useState('');
-  const [waist, setWaist] = useState('');
-  const [hips, setHips] = useState('');
+  const { user, signOutUser, measurements, updateMeasurements } = useUser();
+
+  useEffect(() => {
+    //console.log('UserProfileScreen: Measurements updated:', measurements);
+  }, [measurements]);
 
   return (
     <View style={styles.container}>
@@ -31,7 +30,10 @@ const UserProfileScreen = () => {
 
       <View style={styles.buttonContainer}>
         {user ? (
-          <Button title="Sign Out" onPress={signOutUser} />
+          <Button title="Sign Out" onPress={() => {
+            console.log('Sign out button pressed.');
+            signOutUser();
+          }} />
         ) : (
           <Auth />
         )}
@@ -42,44 +44,65 @@ const UserProfileScreen = () => {
 
         <MeasurementInput
           label="Height"
-          value={height}
-          onChangeValue={setHeight}
+          value={measurements.height}
+          onChangeValue={(value) => {
+            console.log('Height changed:', value);
+            updateMeasurements({ ...measurements, height: value });
+          }}
           min={50}
           max={250}
           unit="cm"
         />
         <MeasurementInput
           label="Shoe Size"
-          value={shoeSize}
-          onChangeValue={setShoeSize}
+          value={measurements.shoe_size}
+          onChangeValue={(value) => {
+            console.log('Shoe Size changed:', value);
+            updateMeasurements({ ...measurements, shoe_size: value });
+          }}
           min={1}
           max={50}
           unit="EU size"
         />
         <MeasurementInput
           label="Chest"
-          value={chest}
-          onChangeValue={setChest}
+          value={measurements.chest}
+          onChangeValue={(value) => {
+            console.log('Chest changed:', value);
+            updateMeasurements({ ...measurements, chest: value });
+          }}
           min={70}
           max={170}
           unit="cm"
         />
         <MeasurementInput
           label="Waist"
-          value={waist}
-          onChangeValue={setWaist}
+          value={measurements.waist}
+          onChangeValue={(value) => {
+            console.log('Waist changed:', value);
+            updateMeasurements({ ...measurements, waist: value });
+          }}
           min={50}
           max={125}
           unit="cm"
         />
         <MeasurementInput
           label="Hips"
-          value={hips}
-          onChangeValue={setHips}
+          value={measurements.hips}
+          onChangeValue={(value) => {
+            console.log('Hips changed:', value);
+            updateMeasurements({ ...measurements, hips: value });
+          }}
           min={70}
           max={150}
           unit="cm"
         />
+        {!user && (
+            <Text style={{ textAlign: 'center', color: 'red', marginTop: 20 }}>
+                Log in to store measurements, {"\n"}
+                clothes, and outfits permanently!
+            </Text>
+        )}
       </View>
     </View>
   );

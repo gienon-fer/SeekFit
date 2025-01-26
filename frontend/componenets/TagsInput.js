@@ -1,14 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import SelectTagView from './screens/SelectTagView.js';
 
 const TagsInput = ({ name, tags, values = [], onTagsChange }) => {
   const [showSelectTagView, setShowSelectTagView] = useState(false);
   const [currentTags, setCurrentTags] = useState(tags || []);
+  const prevTagsRef = useRef(tags);
+
+//   useEffect(() => {
+//     setCurrentTags(tags || []);
+//   }, [tags]);
 
   useEffect(() => {
-    onTagsChange(currentTags);
-  }, [currentTags]);
+    if (prevTagsRef.current !== currentTags) {
+      onTagsChange(currentTags);
+      prevTagsRef.current = currentTags;
+    }
+  }, [currentTags, onTagsChange]);
 
   const availableValues = values.filter(value => !currentTags.includes(value));
 

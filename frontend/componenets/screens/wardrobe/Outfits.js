@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useOutfit } from '../../../contexts/OutfitContext';
+import { useWardrobe } from '../../../contexts/WardrobeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useActiveOutfitFilters, useSetActiveOutfitFilters } from '../../../contexts/OutfitFilterContext'; // Import outfit filter context
+import { useUser } from '../../../contexts/UserContext'; // Import UserContext
+const fallbackImage = require('../../../assets/no_photo.jpg'); // Add fallback image
 
 export default function Outfits() {
-  const { outfits, removeOutfit } = useOutfit();
+  const { outfits, removeOutfit } = useWardrobe();
+    const { googleId } = useUser(); 
   const navigation = useNavigation();
   const numColumns = 4;
 
@@ -16,7 +19,7 @@ export default function Outfits() {
 
   useEffect(() => {
     applyFilters();
-  }, [outfits, activeFilters]);
+  }, [outfits, activeFilters, googleId]);
 
   const screenWidth = Dimensions.get('window').width;
   const imageWidth = screenWidth / numColumns;
@@ -31,8 +34,9 @@ export default function Outfits() {
   };
 
   const applyFilters = () => {
+    const userOutfits = outfits.filter(item => item.owner === googleId);
     if (Object.keys(activeFilters).length === 0) {
-      setFilteredOutfits(outfits);
+      setFilteredOutfits(userOutfits);
       return;
     }
 
@@ -81,7 +85,10 @@ export default function Outfits() {
             onPress={() => handlePress(item)}
             onLongPress={() => handleLongPress(item)}
           >
-            <Image source={{ uri: item.image }} style={[styles.image, { width: imageWidth, height: imageHeight }]} />
+            <Image 
+              source={{ uri: item.image || fallbackImage }} 
+              style={[styles.image, { width: imageWidth, height: imageHeight }]} 
+            />
           </TouchableOpacity>
         )}
         ListEmptyComponent={

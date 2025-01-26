@@ -3,14 +3,14 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import { useOutfitTagValues } from '../../../contexts/OutfitTagValuesContext'; // Import useOutfitTagValues
 import { useActiveOutfitFilters, useSetActiveOutfitFilters } from '../../../contexts/OutfitFilterContext'; // Import outfit filter context
-import { useClothing } from '../../../contexts/ClothingContext'; // Import useClothing
+import { useWardrobe } from '../../../contexts/WardrobeContext'; // Import useClothing
 
 export default function FilterOutfit() {
   const navigation = useNavigation();
   const outfitTagValues = useOutfitTagValues(); // Use the hook to get tag values
   const activeFilters = useActiveOutfitFilters(); // Use the hook to get active filters
   const setActiveFilters = useSetActiveOutfitFilters(); // Use the hook to set active filters
-  const { clothes } = useClothing(); // Use the hook to get clothing items
+  const { clothes } = useWardrobe(); // Use the hook to get clothing items
   const [selectedTags, setSelectedTags] = useState(activeFilters || {});
   const [selectedClothing, setSelectedClothing] = useState(activeFilters.clothing || []);
 
