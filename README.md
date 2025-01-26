@@ -23,10 +23,12 @@ In summary, SeekFit is a comprehensive solution for managing wardrobes, planning
 The application is currently available for manual download as an APK file. Users can download the file and install it on their Android devices following the provided instructions below. Please note that the app is not hosted on the Google Play Store, so installation requires enabling installations from unknown sources.
 
 ### Current Version
-- **Version:** 0.5.0
-- **Release Date:** 8.12.2024
+- **Version:** 1.0.0
+- **Release Date:** 25.01.2025
 
 - [**APK File Download**](https://drive.google.com/drive/folders/1Cm97XrsjIjmAP6FocAjH0pViXGJXNnIm?usp=sharing)
+  - SHA256: 206cf68fa241b1ee7f3a8429ed4b76533d926e0eba36c9c8f9e7a171b484942a  seekfit-1.0.apk  
+  - SHA256: a446fd37a11aee0fc3d9860a7f9e162505b828e36ce27f3a8c3dea80cc1ddbf2   seekfit-1.0.zip  
   - SHA1: 500261b610fd88d2bc38845f636f5c7e9e3470aa  seekfit-0.5.apk
   - SHA1: 07c1b267f9176cf3e62a090fc8068facebc668df  seekfit-0.5.zip
 
