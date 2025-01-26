@@ -99,7 +99,8 @@ const UserProfileScreen = () => {
         />
         {!user && (
             <Text style={{ textAlign: 'center', color: 'red', marginTop: 20 }}>
-                Log in to store measurements permanently!
+                Log in to store measurements, {"\n"}
+                clothes, and outfits permanently!
             </Text>
         )}
       </View>

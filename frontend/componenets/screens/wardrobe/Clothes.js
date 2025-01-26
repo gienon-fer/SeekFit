@@ -6,9 +6,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useActiveClothingFilters, useSetActiveClothingFilters } from '../../../contexts/ClothingFilterContext'; // Import clothing filter context
 import { useUser } from '../../../contexts/UserContext'; // Import UserContext
 
+const fallbackImage = require('../../../assets/no_photo.jpg'); // Add fallback image
+
 export default function Clothes() {
   const { clothes, removeClothing } = useWardrobe();
-  const { googleId } = useUser(); // Get googleId from UserContext
+  const { googleId } = useUser(); 
   const navigation = useNavigation();
   const numColumns = 4;
 
@@ -85,7 +87,10 @@ export default function Clothes() {
             onPress={() => handlePress(item)}
             onLongPress={() => handleLongPress(item)}
           >
-            <Image source={{ uri: item.image }} style={[styles.image, { width: imageWidth, height: imageHeight }]} />
+            <Image 
+              source={{ uri: item.image || fallbackImage }} 
+              style={[styles.image, { width: imageWidth, height: imageHeight }]} 
+            />
           </TouchableOpacity>
         )}
         ListEmptyComponent={

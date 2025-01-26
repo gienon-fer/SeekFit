@@ -116,7 +116,6 @@ export const UserProvider = ({ children }) => {
 };
 
 const updateMeasurements = async (newMeasurements) => {
-    checkTokenValidity();
     //console.log('updateMeasurements, token:' , idToken != null);
   setMeasurements(newMeasurements);
   if (user) {
@@ -132,6 +131,9 @@ const updateMeasurements = async (newMeasurements) => {
 };
 
 const refreshGoogleToken = async () => {
+    if (idToken == null) {
+        return;
+    }
     if (isRefreshingToken) {
       console.log('Token refresh already in progress');
       return;
@@ -185,7 +187,7 @@ const checkTokenValidity = async () => {
 };
 
 const updateMeasurementsOnServer = async (newMeasurements) => {
-    checkTokenValidity(); // Check token validity before making the request
+   checkTokenValidity(); // Check token validity before making the request
 
   if (!user || !idToken) return;
   const request = {

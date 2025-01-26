@@ -10,12 +10,14 @@ const MeasurementInput = ({ label, value, onChangeValue, min, max, unit }) => {
 
   const handleEndEditing = () => {
     const num = parseFloat(input);
-
-    if (isNaN(num) || num < min || num > max) {
-      Alert.alert(
-        'Invalid Input',
-        `${label} value should be between ${min} ${unit} and ${max} ${unit}.`
-      );
+    console.log(input);
+    if (input === null || isNaN(num) || num < min || num > max) {
+      if (input !== null) {
+        Alert.alert(
+          'Invalid Input',
+          `${label} value should be between ${min} ${unit} and ${max} ${unit}.`
+        );
+      }
       setInput(value); 
     } else {
       onChangeValue(input); 

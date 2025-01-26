@@ -98,6 +98,7 @@ function AppContent() {
         const checkFirstLaunch = async () => {
             const isFirstLaunch = await AsyncStorage.getItem('isFirstLaunch');
             if (isFirstLaunch === null) {
+                await AsyncStorage.clear(); // Clear all AsyncStorage
                 await resetClothing();
                 await resetOutfits();
                 await AsyncStorage.setItem('isFirstLaunch', 'false');
