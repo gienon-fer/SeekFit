@@ -46,6 +46,46 @@ const PlannerScreen = () => {
     applyFilters();
   }, [outfits, activeFilters]);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Only show the picker if we were previously showing it
+      if (selectedDate) {
+        setShowOutfitPicker(true);
+      }
+    });
+  
+    return unsubscribe;
+  }, [navigation, selectedDate]);
+
+  useEffect(() => {
+    if (Object.keys(activeFilters).length === 0) {
+      setFilteredOutfits(outfits);
+      return;
+    }
+  
+    const filtered = outfits.filter((item) => {
+      // Check for tag matches
+      const matchesTags = Object.keys(activeFilters).every((category) => {
+        if (category === 'clothing') return true; // Skip clothing here, handle separately
+        const categoryTags = activeFilters[category];
+        return categoryTags.every((tag) => 
+          item.tags[category.toLowerCase()]?.includes(tag)
+        );
+      });
+  
+      // Check for clothing matches if clothing filters exist
+      const matchesClothing = activeFilters.clothing?.length > 0 
+        ? activeFilters.clothing.every((filterClothing) =>
+            item.clothing.some((outfitClothing) => outfitClothing.id === filterClothing.id)
+          )
+        : true;
+  
+      return matchesTags && matchesClothing;
+    });
+  
+    setFilteredOutfits(filtered);
+  }, [outfits, activeFilters]);
+
   const getWeatherTag = (description) => {
     // Normalize the description to handle various possible responses
     const normalizedDescription = description.toLowerCase();
@@ -134,20 +174,29 @@ const PlannerScreen = () => {
   };
 
   const handleDayPress = (date) => {
+    setSelectedDate(date); // Set the selected date immediately
+    
     if (calendarOutfits[date]) {
-      // If an outfit already exists, show management options
       Alert.alert(
         'Manage Outfit',
         `Options for ${date}`,
         [
-          { text: 'Change Outfit', onPress: () => setShowOutfitPicker(true) },
-          { text: 'Delete Outfit', onPress: () => handleOutfitDelete(date) },
+          { 
+            text: 'Change Outfit', 
+            onPress: () => {
+              setSelectedDate(date); // Ensure date is set before showing picker
+              setShowOutfitPicker(true);
+            }
+          },
+          { 
+            text: 'Delete Outfit', 
+            onPress: () => handleOutfitDelete(date) 
+          },
           { text: 'Cancel', style: 'cancel' },
         ],
         { cancelable: true }
       );
     } else {
-      // If no outfit exists, ask about the weather
       Alert.alert(
         'Take into account weather forecast for the day?',
         '',
@@ -156,7 +205,6 @@ const PlannerScreen = () => {
             text: 'No',
             onPress: () => {
               setFilteredOutfits(outfits);
-              setSelectedDate(date);
               setShowOutfitPicker(true);
             }
           },
@@ -169,18 +217,19 @@ const PlannerScreen = () => {
                 const temperatureTag = getTemperatureTag(forecast.temp);
                 const weatherTags = getWeatherTag(forecast.description);
   
-                // Apply filtering only if there's at least one matching tag
-                const applicableFilters = {
-                  weather: weatherTags,
-                  temperature: [temperatureTag],
-                };
+                const filtered = outfits.filter((item) => {
+                  const matchesTemperature = item.tags.temperature?.includes(temperatureTag);
+                  const matchesWeather = weatherTags.every(tag => 
+                    item.tags.weather?.includes(tag)
+                  );
+                  return matchesTemperature && matchesWeather;
+                });
   
-                setFilteredOutfits(applicableFilters);
+                setFilteredOutfits(filtered);
               } else {
                 setFilteredOutfits(outfits);
               }
   
-              setSelectedDate(date);
               setShowOutfitPicker(true);
             }
           },
@@ -200,12 +249,15 @@ const PlannerScreen = () => {
   };
 
   const handleOutfitSelect = (outfit) => {
-    setCalendarOutfits((prev) => ({
-      ...prev,
-      [selectedDate]: outfit, // Save the outfit for this date
-    }));
+    setCalendarOutfits(prev => {
+      // Create a new object to ensure state update
+      const updated = { ...prev };
+      // Use the selectedDate that was set in handleDayPress
+      updated[selectedDate] = outfit;
+      return updated;
+    });
   
-    setShowOutfitPicker(false); // Close modal after selection
+    setShowOutfitPicker(false);
   };
 
   const handleOutfitLongPress = (outfit) => {
@@ -221,7 +273,6 @@ const PlannerScreen = () => {
     );
   };
 
-  // Outfit picker modal
   const OutfitPickerModal = () => (
     <Modal
       visible={showOutfitPicker}
@@ -231,12 +282,28 @@ const PlannerScreen = () => {
       <View style={styles.modalContainer}>
         <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>Select Outfit for {selectedDate}</Text>
-          <TouchableOpacity
-            onPress={() => setShowOutfitPicker(false)}
-            style={styles.closeButton}
-          >
-            <Text style={styles.closeButtonText}>×</Text>
-          </TouchableOpacity>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity
+              style={[
+                styles.filterButton,
+                Object.keys(activeFilters).length > 0 && styles.activeFilterButton
+              ]}
+              onPress={() => {
+                setShowOutfitPicker(false);
+                setTimeout(() => {
+                  navigation.navigate('FilterOutfit');
+                }, 100);
+              }}
+            >
+              <Ionicons name="filter" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowOutfitPicker(false)}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>×</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <FlatList
           data={filteredOutfits}
@@ -244,8 +311,8 @@ const PlannerScreen = () => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => handleOutfitSelect(item)} // Select the outfit
-              onLongPress={() => handleOutfitLongPress(item)} // Edit or delete outfit
+              onPress={() => handleOutfitSelect(item)}
+              onLongPress={() => handleOutfitLongPress(item)}
             >
               <Image 
                 source={{ uri: item.image }} 
@@ -255,7 +322,9 @@ const PlannerScreen = () => {
           )}
           ListEmptyComponent={
             <Text style={styles.emptyText}>
-              No outfits available. Add some in your wardrobe!
+              {Object.keys(activeFilters).length > 0 
+                ? "No outfits match the current filters..." 
+                : "No outfits available. Add some in your wardrobe!"}
             </Text>
           }
         />
@@ -462,6 +531,22 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'transparent', // Keep it invisible but maintaining spacing
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterButton: {
+    backgroundColor: 'blue',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  activeFilterButton: {
+    backgroundColor: 'darkblue',
   },
 });
 
