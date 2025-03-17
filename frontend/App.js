@@ -17,9 +17,10 @@ import { OutfitTagValuesProvider } from './contexts/OutfitTagValuesContext';
 import { OutfitFilterProvider } from './contexts/OutfitFilterContext';
 
 import Profile from "./componenets/screens/Profile";
-import Friends from "./componenets/screens/Friends";
+
 import Planner from "./componenets/screens/Planner";
 import Clothes from './componenets/screens/wardrobe/Clothes';
+import Stores from "./componenets/screens/Stores";
 import ClothingForm from './componenets/screens/wardrobe/ClothingForm';
 import Outfits from './componenets/screens/wardrobe/Outfits';
 import OutfitForm from './componenets/screens/wardrobe/OutfitForm';
@@ -152,12 +153,12 @@ function AppContent() {
                     }}
                 />
                 <Tab.Screen
-                    name="Friends"
-                    component={Friends}
+                    name="Stores"
+                    component={Stores}
                     options={{
-                        tabBarLabel: 'Friends',
+                        tabBarLabel: 'Stores',
                         tabBarIcon: ({ color, size }) => (
-                            <MaterialIcons name="group" color={color} size={size} />
+                            <MaterialIcons name="store" color={color} size={size} />
                         ),
                     }}
                 />

@@ -8,7 +8,7 @@ import {
 import { useUser } from '../contexts/UserContext'; 
 
 const Auth = () => {
-  const { signInUser } = useUser();
+  const { signInUser, synchronizeUserData } = useUser();
 
   GoogleSignin.configure({
     scopes: ['email', 'profile'], 
@@ -24,6 +24,7 @@ const Auth = () => {
       const {scopes, serverAuthCode, idToken, user} = data;
       const {email, familyName, givenName, id, name, photo} = user;
       await signInUser({ id, name, email, photo });
+      synchronizeUserData(idToken, email);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log("ERROR: Sign in cancelled.");

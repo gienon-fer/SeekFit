@@ -142,7 +142,7 @@ const refreshGoogleToken = async () => {
     try {
         GoogleSignin.configure({
             scopes: ['email', 'profile'], 
-            webClientId: '292694167327-ho7su5mm59m6flj45i4hge1m9h0n73b4.apps.googleusercontent.com', 
+            webClientId: GOOGLE_WEB_CLIENT_ID, 
           });
           
         await GoogleSignin.hasPlayServices();
