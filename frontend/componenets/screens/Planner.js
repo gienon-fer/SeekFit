@@ -355,14 +355,21 @@ const PlannerScreen = () => {
           <Ionicons name={expandedView ? "contract-outline" : "expand-outline"} size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled={expandedView}
+        snapToInterval={expandedView ? screenWidth - 35 : undefined}
+        decelerationRate={expandedView ? 'fast' : 'normal'}
+        contentContainerStyle={expandedView ? { paddingRight: 10 } : null}
+      >
         {sixDayForecast.map((day) => (
           <TouchableOpacity 
             key={day.date} 
             style={[
               styles.forecastDay,
               expandedView && {
-                width: screenWidth - 40,
+                width: screenWidth - 50,
                 padding: 20,
                 marginRight: 15
               }
@@ -458,149 +465,150 @@ const PlannerScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  calendar: {
-    marginBottom: 10,
-    borderRadius: 10,
-    elevation: 4,
-    margin: 10,
-  },
-  forecastContainer: {
-    padding: 15,
-    backgroundColor: '#f5f5f5',
-    margin: 10,
-    borderRadius: 10,
-  },
-  forecastHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  forecastTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  forecastDay: {
-    backgroundColor: '#ffffff',
-    padding: 15,
-    borderRadius: 10,
-    marginRight: 10,
-    minWidth: 120,
-    elevation: 3,
-    transition: '0.3s',
-  },
-  expandedDetails: {
-    marginTop: 15,
-    paddingTop: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  detailTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  closeButton: {
-    padding: 10,
-  },
-  closeButtonText: {
-    fontSize: 24,
-    color: '#666',
-  },
-  outfitImage: {
-    marginBottom: 0,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: 'gray',
-    marginTop: 30,
-    fontSize: 16,
-  },
-  dateText: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 5,
-  },
-  tempText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  weatherDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 5,
-  },
-  weatherDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 5,
-  },
-  calendarContainer: {
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-  calendarTile: {
-    position: 'relative',
-    borderWidth: 1,
-    borderColor: 'gray',
-    // Width and height are set dynamically in the component
-  },
-  outfitImageTile: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  dateOverlay: {
-    position: 'absolute',
-    top: 2,
-    right: 8,
-    color: 'black',
-  },
-  outfitContainer: {
-    marginTop: 5,
-    width: 75,  // Increase width
-    height: 95, // Increase height
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  filterButton: {
-    backgroundColor: 'blue',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  activeFilterButton: {
-    backgroundColor: 'darkblue',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    calendar: {
+        marginBottom: 10,
+        borderRadius: 10,
+        // elevation: 4, // Removed shadow
+        margin: 10,
+    },
+    forecastContainer: {
+        padding: 15,
+        backgroundColor: '#f5f5f5',
+        margin: 10,
+        borderRadius: 10,
+        // No shadow
+    },
+    forecastHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    forecastTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 15,
+    },
+    forecastDay: {
+        backgroundColor: '#ffffff',
+        padding: 15,
+        borderRadius: 10,
+        marginRight: 10,
+        minWidth: 120,
+        // elevation: 3, // Removed shadow
+        // transition: '0.3s', // Not supported in React Native styles
+    },
+    expandedDetails: {
+        marginTop: 15,
+        paddingTop: 15,
+        borderTopWidth: 1,
+        borderTopColor: '#eee',
+    },
+    detailTitle: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginBottom: 10,
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    closeButton: {
+        padding: 10,
+    },
+    closeButtonText: {
+        fontSize: 24,
+        color: '#666',
+    },
+    outfitImage: {
+        marginBottom: 0,
+    },
+    emptyText: {
+        textAlign: 'center',
+        color: 'gray',
+        marginTop: 30,
+        fontSize: 16,
+    },
+    dateText: {
+        fontSize: 14,
+        fontWeight: '500',
+        marginBottom: 5,
+    },
+    tempText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    weatherDescription: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 5,
+    },
+    weatherDetails: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 5,
+    },
+    calendarContainer: {
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    calendarTile: {
+        position: 'relative',
+        borderWidth: 1,
+        borderColor: 'gray',
+        // Width and height are set dynamically in the component
+    },
+    outfitImageTile: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    dateOverlay: {
+        position: 'absolute',
+        top: 2,
+        right: 8,
+        color: 'black',
+    },
+    outfitContainer: {
+        marginTop: 5,
+        width: 75,  // Increase width
+        height: 95, // Increase height
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    headerButtons: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    filterButton: {
+        backgroundColor: 'blue',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 10,
+    },
+    activeFilterButton: {
+        backgroundColor: 'darkblue',
+    },
 });
 
 export default PlannerScreen;
