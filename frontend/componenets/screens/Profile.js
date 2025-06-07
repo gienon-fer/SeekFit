@@ -44,7 +44,8 @@ const UserProfileScreen = () => {
 
         <MeasurementInput
           label="Height"
-          value={measurements.height}
+          value={user ? measurements.height : ''}
+          placeholder="Login to set height"
           onChangeValue={(value) => {
             console.log('Height changed:', value);
             updateMeasurements({ ...measurements, height: value });
@@ -52,10 +53,12 @@ const UserProfileScreen = () => {
           min={50}
           max={250}
           unit="cm"
+          disabled={!user}
         />
         <MeasurementInput
           label="Shoe Size"
-          value={measurements.shoe_size}
+          value={user ? measurements.shoe_size : ''}
+          placeholder="Login to set shoe size"
           onChangeValue={(value) => {
             console.log('Shoe Size changed:', value);
             updateMeasurements({ ...measurements, shoe_size: value });
@@ -63,10 +66,12 @@ const UserProfileScreen = () => {
           min={1}
           max={50}
           unit="EU size"
+          disabled={!user}
         />
         <MeasurementInput
           label="Chest"
-          value={measurements.chest}
+          value={user ? measurements.chest : ''}
+          placeholder="Login to set chest size"
           onChangeValue={(value) => {
             console.log('Chest changed:', value);
             updateMeasurements({ ...measurements, chest: value });
@@ -74,10 +79,12 @@ const UserProfileScreen = () => {
           min={70}
           max={170}
           unit="cm"
+          disabled={!user}
         />
         <MeasurementInput
           label="Waist"
-          value={measurements.waist}
+          value={user ? measurements.waist : ''}
+          placeholder="Login to set waist size"
           onChangeValue={(value) => {
             console.log('Waist changed:', value);
             updateMeasurements({ ...measurements, waist: value });
@@ -85,10 +92,12 @@ const UserProfileScreen = () => {
           min={50}
           max={125}
           unit="cm"
+          disabled={!user}
         />
         <MeasurementInput
           label="Hips"
-          value={measurements.hips}
+          value={user ? measurements.hips : ''}
+          placeholder="Login to set hips size"
           onChangeValue={(value) => {
             console.log('Hips changed:', value);
             updateMeasurements({ ...measurements, hips: value });
@@ -96,6 +105,7 @@ const UserProfileScreen = () => {
           min={70}
           max={150}
           unit="cm"
+          disabled={!user}
         />
         {!user && (
             <Text style={{ textAlign: 'center', color: 'red', marginTop: 20 }}>

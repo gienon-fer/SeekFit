@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 
-const MeasurementInput = ({ label, value, onChangeValue, min, max, unit }) => {
+const MeasurementInput = ({ label, value, onChangeValue, min, max, unit, disabled, placeholder }) => {
   const [input, setInput] = useState(value);
 
   useEffect(() => {
@@ -9,6 +9,8 @@ const MeasurementInput = ({ label, value, onChangeValue, min, max, unit }) => {
   }, [value]);
 
   const handleEndEditing = () => {
+    if (disabled) return;
+    
     const num = parseFloat(input);
     console.log(input);
     if (input === null || isNaN(num) || num < min || num > max) {
@@ -27,16 +29,21 @@ const MeasurementInput = ({ label, value, onChangeValue, min, max, unit }) => {
   return (
     <View style={styles.row}>
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.inputContainer}>
+      <View style={[
+        styles.inputContainer, 
+        disabled && styles.disabledContainer
+      ]}>
         <TextInput
-          style={styles.input}
-          placeholder={`Enter ${label.toLowerCase()}`}
+          style={[styles.input, disabled && styles.disabledInput]}
+          placeholder={disabled ? placeholder : `Enter ${label.toLowerCase()}`}
+          placeholderTextColor={disabled ? "#999" : "#aaa"}
           keyboardType="numeric"
-          value={input.toString()}
+          value={input ? input.toString() : ''}
           onChangeText={setInput}
           onEndEditing={handleEndEditing}
+          editable={!disabled}
         />
-        <Text style={styles.unit}>{unit}</Text>
+        <Text style={[styles.unit, disabled && styles.disabledText]}>{unit}</Text>
       </View>
     </View>
   );
@@ -63,14 +70,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     backgroundColor: '#fff',
   },
+  disabledContainer: {
+    backgroundColor: '#f0f0f0',
+    borderColor: '#ddd',
+  },
   input: {
     flex: 1,
     height: 40,
+  },
+  disabledInput: {
+    color: '#999',
   },
   unit: {
     marginLeft: 8,
     fontSize: 16,
     color: '#555',
+  },
+  disabledText: {
+    color: '#999',
   },
 });
 
