@@ -31,6 +31,8 @@ const PlannerScreen = () => {
   const [showOutfitPicker, setShowOutfitPicker] = useState(false);
   const [calendarOutfits, setCalendarOutfits] = useState({});
   const [filteredOutfits, setFilteredOutfits] = useState(outfits);
+  const [expandedDay, setExpandedDay] = useState(null);
+  const [expandedView, setExpandedView] = useState(false);
 
   // Screen dimensions for outfit grid
   const numColumns = 4;
@@ -273,6 +275,18 @@ const PlannerScreen = () => {
     );
   };
 
+  const handleForecastPress = (date) => {
+    if (expandedDay === date) {
+      setExpandedDay(null); // Collapse if already expanded
+    } else {
+      setExpandedDay(date); // Expand this day
+    }
+  };
+
+  const toggleExpandedView = () => {
+    setExpandedView(!expandedView);
+  };
+
   const OutfitPickerModal = () => (
     <Modal
       visible={showOutfitPicker}
@@ -333,32 +347,66 @@ const PlannerScreen = () => {
   );
 
   // Render weather forecast
-const renderWeatherForecast = () => (
-    <View style={[styles.forecastContainer, { paddingVertical: 8 }]}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {sixDayForecast.map((day) => (
-                <TouchableOpacity 
-                    key={day.date} 
-                    style={[styles.forecastDay, { padding: 8, minWidth: 90 }]}
-                    onPress={() => {}}
-                >
-                    <Text style={[styles.dateText, { marginBottom: 2, fontSize: 13 }]}>
-                        {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                    </Text>
-                    <Text style={[styles.tempText, { fontSize: 16, marginBottom: 2 }]}>{day.temp}°C</Text>
-                    <Text style={[styles.weatherDescription, { fontSize: 12, marginBottom: 2 }]} numberOfLines={1}>
-                        {day.description}
-                    </Text>
-                    <View style={[styles.weatherDetails, { marginTop: 2 }]}>
-                        <Text style={{ fontSize: 11 }}>💧 {day.humidity}% </Text>
-                        <Text style={{ fontSize: 11 }}>💨 {day.windSpeed} m/s</Text>
-                    </View>
-                </TouchableOpacity>
-            ))}
-        </ScrollView>
+  const renderWeatherForecast = () => (
+    <View style={styles.forecastContainer}>
+      <View style={styles.forecastHeader}>
+        <Text style={styles.forecastTitle}>6-Day Forecast</Text>
+        <TouchableOpacity onPress={toggleExpandedView}>
+          <Ionicons name={expandedView ? "contract-outline" : "expand-outline"} size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {sixDayForecast.map((day) => (
+          <TouchableOpacity 
+            key={day.date} 
+            style={[
+              styles.forecastDay,
+              expandedView && {
+                width: screenWidth - 40,
+                padding: 20,
+                marginRight: 15
+              }
+            ]}
+            onPress={() => {}}
+          >
+            <Text style={[
+              styles.dateText, 
+              expandedView && {fontSize: 18, marginBottom: 10}
+            ]}>
+              {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+            </Text>
+            <Text style={[
+              styles.tempText, 
+              expandedView && {fontSize: 32, marginBottom: 15}
+            ]}>
+              {day.temp}°C
+            </Text>
+            <Text style={[
+              styles.weatherDescription, 
+              expandedView && {fontSize: 20, marginBottom: 15}
+            ]}>
+              {day.description}
+            </Text>
+            <View style={styles.weatherDetails}>
+              <Text style={expandedView ? {fontSize: 18} : {fontSize: 11}}>
+                💧 {day.humidity}%
+              </Text>
+              <Text style={expandedView ? {fontSize: 18} : {fontSize: 11}}>
+                💨 {day.windSpeed} m/s
+              </Text>
+            </View>
+            
+            {expandedView && (
+              <Text style={{marginTop: 20, fontSize: 16}}>
+                Based on this weather, we recommend outfits suitable for {getTemperatureTag(day.temp)}.
+              </Text>
+            )}
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
-);
-
+  );
+  
   const renderCalendar = () => {
     const todayString = new Date().toISOString().split('T')[0];
     
@@ -426,6 +474,12 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
   },
+  forecastHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   forecastTitle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -438,6 +492,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
     minWidth: 120,
     elevation: 3,
+    transition: '0.3s',
+  },
+  expandedDetails: {
+    marginTop: 15,
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  detailTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 10,
   },
   modalContainer: {
     flex: 1,
