@@ -426,13 +426,39 @@ const PlannerScreen = () => {
     return (
       <View style={styles.calendarContainer}>
         <Calendar
+          firstDay={1}
           onDayPress={(day) => handleDayPress(day.dateString)}
+          theme={{
+            'stylesheet.calendar.main': {
+              week: {
+                margin: 0,
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                marginTop: -5, // Reduce vertical spacing between weeks
+                paddingVertical: 0,
+              }
+            },
+            'stylesheet.day.basic': {
+              base: {
+                width: tileWidth,
+                height: tileHeight,
+                marginVertical: -4, // Reduce vertical space between tiles
+              }
+            }
+          }}
           dayComponent={({ date }) => {
             const isToday = date.dateString === todayString;
             const assignedOutfit = calendarOutfits[date.dateString];
             return (
               <TouchableOpacity 
-                style={[styles.calendarTile, { width: tileWidth, height: tileHeight }]} 
+                style={[
+                  styles.calendarTile, 
+                  { 
+                    width: tileWidth, 
+                    height: tileHeight,
+                    marginVertical: -6.5, // Match the negative margin from theme
+                  }
+                ]} 
                 onPress={() => handleDayPress(date.dateString)}
               >
                 {assignedOutfit && (
@@ -568,6 +594,7 @@ const styles = StyleSheet.create({
     calendarContainer: {
         paddingHorizontal: 10,
         marginBottom: 10,
+        overflow: 'hidden',
     },
     calendarTile: {
         position: 'relative',
@@ -582,8 +609,8 @@ const styles = StyleSheet.create({
     },
     dateOverlay: {
         position: 'absolute',
-        top: 2,
-        right: 8,
+        top: 1,
+        right: 5,
         color: 'black',
     },
     outfitContainer: {
