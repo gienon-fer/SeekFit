@@ -11,12 +11,12 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
-import { Calendar } from 'react-native-calendars';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { fetchWeatherForecast } from '../WeatherLocationService';
 import { useNavigation } from '@react-navigation/native';
 import { useWardrobe } from '../../contexts/WardrobeContext';
 import { useActiveOutfitFilters } from '../../contexts/OutfitFilterContext';
+import { Calendar } from 'react-native-calendars';
 
 const PlannerScreen = () => {
   const navigation = useNavigation();
@@ -333,87 +333,69 @@ const PlannerScreen = () => {
   );
 
   // Render weather forecast
-  const renderWeatherForecast = () => (
-    <View style={styles.forecastContainer}>
-      <Text style={styles.forecastTitle}>6-Day Forecast</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {sixDayForecast.map((day) => (
-          <TouchableOpacity 
-            key={day.date} 
-            style={styles.forecastDay}
-            onPress={() => {}}
-          >
-            <Text style={styles.dateText}>
-              {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-            </Text>
-            <Text style={styles.tempText}>{day.temp}°C</Text>
-            <Text style={styles.weatherDescription}>{day.description}</Text>
-            <View style={styles.weatherDetails}>
-              <Text>💧 {day.humidity}%</Text>
-              <Text>💨 {day.windSpeed} m/s</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+const renderWeatherForecast = () => (
+    <View style={[styles.forecastContainer, { paddingVertical: 8 }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {sixDayForecast.map((day) => (
+                <TouchableOpacity 
+                    key={day.date} 
+                    style={[styles.forecastDay, { padding: 8, minWidth: 90 }]}
+                    onPress={() => {}}
+                >
+                    <Text style={[styles.dateText, { marginBottom: 2, fontSize: 13 }]}>
+                        {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                    </Text>
+                    <Text style={[styles.tempText, { fontSize: 16, marginBottom: 2 }]}>{day.temp}°C</Text>
+                    <Text style={[styles.weatherDescription, { fontSize: 12, marginBottom: 2 }]} numberOfLines={1}>
+                        {day.description}
+                    </Text>
+                    <View style={[styles.weatherDetails, { marginTop: 2 }]}>
+                        <Text style={{ fontSize: 11 }}>💧 {day.humidity}% </Text>
+                        <Text style={{ fontSize: 11 }}>💨 {day.windSpeed} m/s</Text>
+                    </View>
+                </TouchableOpacity>
+            ))}
+        </ScrollView>
     </View>
-  );
+);
 
-  const renderCalendar = () => (
-    <Calendar
-      style={styles.calendar}
-      theme={{
-        backgroundColor: '#ffffff',
-        calendarBackground: '#ffffff',
-        textSectionTitleColor: '#b6c1cd',
-        selectedDayBackgroundColor: '#00adf5',
-        selectedDayTextColor: '#ffffff',
-        todayTextColor: '#00adf5',
-        dayTextColor: '#2d4150',
-        textDisabledColor: '#d9e1e8',
-        arrowColor: '#00adf5',
-        monthTextColor: '#2d4150',
-        textDayFontSize: 16,
-        textMonthFontSize: 16,
-        textDayHeaderFontSize: 16,
-      }}
-      dayComponent={({ date, state }) => {
-        const outfit = calendarOutfits[date.dateString];
-  
-        return (
-          <TouchableOpacity onPress={() => handleDayPress(date.dateString)}>
-            <View style={styles.calendarCell}>
-              {/* Date number positioned at top-left */}
-              <Text
-                style={{
-                  position: 'absolute',
-                  top: 5,
-                  left: 5,
-                  color: state === 'disabled' ? '#d9e1e8' : '#2d4150',
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                }}
+  const renderCalendar = () => {
+    const todayString = new Date().toISOString().split('T')[0];
+    
+    // Calculate tile size based on screen width
+    const screenWidth = Dimensions.get('window').width;
+    const calendarPadding = 20; // 10px padding on each side
+    const tileWidth = (screenWidth - (calendarPadding * 2)) / 7; // 7 days per week
+    const tileHeight = tileWidth * 1.45; // Make height 1.45 times the width
+    
+    return (
+      <View style={styles.calendarContainer}>
+        <Calendar
+          onDayPress={(day) => handleDayPress(day.dateString)}
+          dayComponent={({ date }) => {
+            const isToday = date.dateString === todayString;
+            const assignedOutfit = calendarOutfits[date.dateString];
+            return (
+              <TouchableOpacity 
+                style={[styles.calendarTile, { width: tileWidth, height: tileHeight }]} 
+                onPress={() => handleDayPress(date.dateString)}
               >
-                {date.day}
-              </Text>
-  
-              {/* Image placeholder to maintain spacing */}
-              <View style={styles.outfitContainer}>
-                {outfit ? (
+                {assignedOutfit && (
                   <Image
-                    source={{ uri: outfit.image }}
-                    style={styles.outfitImage}
-                    resizeMode="cover"
+                    source={{ uri: assignedOutfit.image }}
+                    style={styles.outfitImageTile}
                   />
-                ) : (
-                  <View style={styles.emptyOutfitPlaceholder} />
                 )}
-              </View>
-            </View>
-          </TouchableOpacity>
-        );
-      }}
-    />
-  );
+                <Text style={[styles.dateOverlay, isToday ? { fontWeight: 'bold' } : {}]}>
+                  {date.day}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
+    );
+  };
   
   
   return (
@@ -509,11 +491,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 5,
   },
-  calendarCell: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 80, // Increased from 60
-    height: 100, // Increased from 80
+  calendarContainer: {
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  calendarTile: {
+    position: 'relative',
+    borderWidth: 1,
+    borderColor: 'gray',
+    // Width and height are set dynamically in the component
+  },
+  outfitImageTile: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  dateOverlay: {
+    position: 'absolute',
+    top: 2,
+    right: 8,
+    color: 'black',
   },
   outfitContainer: {
     marginTop: 5,
@@ -521,16 +518,6 @@ const styles = StyleSheet.create({
     height: 95, // Increase height
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  outfitImage: {
-    width: '90%',  // Increase width
-    height: '90%', // Increase height
-    borderRadius: 5,
-  },  
-  emptyOutfitPlaceholder: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'transparent', // Keep it invisible but maintaining spacing
   },
   headerButtons: {
     flexDirection: 'row',
