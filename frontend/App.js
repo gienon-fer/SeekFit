@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Image, StyleSheet, StatusBar } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -46,8 +46,13 @@ const SplashScreen = ({ onFinish }) => {
     }, [onFinish]);
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
-            <Text style={{ fontSize: 24, fontWeight: 'bold' }}> SeekFit </Text>
+        <View style={styles.splashContainer}>
+            <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
+            <Text style={styles.splashText}>SeekFit</Text>
+            <Image
+                source={require('./assets/logo.png')}
+                style={styles.logo}
+            />
         </View>
     );
 };
@@ -153,7 +158,7 @@ function AppContent() {
                     }}
                 />
                 <Tab.Screen
-                    name="Stores"
+                    name="Second Hand Stores"
                     component={Stores}
                     options={{
                         tabBarLabel: 'Stores',
@@ -180,25 +185,45 @@ function AppContent() {
 export default function App() {
     const [showSplash, setShowSplash] = useState(true);
 
-    if (showSplash) {
-        return <SplashScreen onFinish={() => setShowSplash(false)} />;
-    }
-
     return (
         <SafeAreaProvider>
-            <UserProvider>
-                <WardrobeProvider>
-                    <ClothingTagValuesProvider>
-                        <ClothingFilterProvider>
-                            <OutfitTagValuesProvider>
-                                <OutfitFilterProvider>
-                                    <AppContent />
-                                </OutfitFilterProvider>
-                            </OutfitTagValuesProvider>
-                        </ClothingFilterProvider>
-                    </ClothingTagValuesProvider>
-                </WardrobeProvider>
-            </UserProvider>
+            <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true} />
+            {showSplash ? (
+                <SplashScreen onFinish={() => setShowSplash(false)} />
+            ) : (
+                <UserProvider>
+                    <WardrobeProvider>
+                        <ClothingTagValuesProvider>
+                            <ClothingFilterProvider>
+                                <OutfitTagValuesProvider>
+                                    <OutfitFilterProvider>
+                                        <AppContent />
+                                    </OutfitFilterProvider>
+                                </OutfitTagValuesProvider>
+                            </ClothingFilterProvider>
+                        </ClothingTagValuesProvider>
+                    </WardrobeProvider>
+                </UserProvider>
+            )}
         </SafeAreaProvider>
     );
 }
+
+const styles = StyleSheet.create({
+    splashContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+    splashText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10
+    },
+    logo: {
+        width: 150,
+        height: 150,
+        resizeMode: 'contain'
+    },
+});
