@@ -4,26 +4,75 @@ import {
   Text,
   StyleSheet,
   Button,
-  Image
+  Image,
+  Alert,
+  TouchableOpacity,
+  Modal
 } from 'react-native';
 import Auth from "../Auth";
 import { useUser } from '../../contexts/UserContext';
 import MeasurementInput from '../MeasurementInput';
+import { useWardrobe } from '../../contexts/WardrobeContext';
 
 const UserProfileScreen = () => {
   const { user, signOutUser, measurements, updateMeasurements } = useUser();
+  const { resetAllWardrobeData } = useWardrobe();
+  const [isResetting, setIsResetting] = useState(false);
+  const [profileClickCount, setProfileClickCount] = useState(0);
+  const [resetModalVisible, setResetModalVisible] = useState(false);
 
   useEffect(() => {
     //console.log('UserProfileScreen: Measurements updated:', measurements);
   }, [measurements]);
 
+  const handleResetData = () => {
+    Alert.alert(
+      "Reset App Data",
+      "This will delete all clothing and outfit data. Are you sure you want to continue?",
+      [
+        { 
+          text: "Cancel", 
+          style: "cancel" 
+        },
+        { 
+          text: "Reset", 
+          style: "destructive", 
+          onPress: async () => {
+            setIsResetting(true);
+            try {
+              await resetAllWardrobeData();
+              Alert.alert("Success", "All wardrobe data has been cleared successfully.");
+            } catch (error) {
+              Alert.alert("Error", "Failed to reset data. Please try again.");
+            } finally {
+              setIsResetting(false);
+              setResetModalVisible(false);
+            }
+          } 
+        }
+      ]
+    );
+  };
+
+  const handleProfileClick = () => {
+    const newCount = profileClickCount + 1;
+    setProfileClickCount(newCount);
+    
+    if (newCount >= 5) {
+      setResetModalVisible(true);
+      setProfileClickCount(0); // Reset count after showing modal
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image
-          source={user?.photo ? { uri: user.photo } : require('../../assets/guest_icon.png')}
-          style={styles.profileImage}
-        />
+        <TouchableOpacity onPress={handleProfileClick}>
+          <Image
+            source={user?.photo ? { uri: user.photo } : require('../../assets/guest_icon.png')}
+            style={styles.profileImage}
+          />
+        </TouchableOpacity>
         <Text style={styles.username}>{user ? user.name : 'Guest User'}</Text>
       </View>
       <View style={styles.divider} />
@@ -38,6 +87,38 @@ const UserProfileScreen = () => {
           <Auth />
         )}
       </View>
+
+      {/* Reset Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={resetModalVisible}
+        onRequestClose={() => setResetModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.resetSection}>
+            <Text style={styles.sectionTitle}>Data Management</Text>
+            <Text style={styles.description}>
+              If you're experiencing issues with missing images or incorrect data, you can reset the app data.
+            </Text>
+            <TouchableOpacity 
+              style={styles.resetButton} 
+              onPress={handleResetData}
+              disabled={isResetting}
+            >
+              <Text style={styles.resetButtonText}>
+                {isResetting ? "Resetting..." : "Reset App Data"}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.closeButton} 
+              onPress={() => setResetModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <View style={styles.measurementsContainer}>
         <Text style={styles.sectionTitle}>My Measurements</Text>
@@ -179,6 +260,57 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     backgroundColor: '#fff',
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  resetSection: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  closeButton: {
+    marginTop: 15,
+    backgroundColor: '#007BFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  description: {
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#666',
+  },
+  resetButton: {
+    backgroundColor: '#ff5252',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    width: '100%',
+    alignItems: 'center',
+  },
+  resetButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  }
 });
 
 export default UserProfileScreen;
