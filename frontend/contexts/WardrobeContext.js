@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NetInfo from '@react-native-community/netinfo';
+// import NetInfo from '@react-native-community/netinfo';
 import { useUser } from './UserContext';
 
 const WardrobeContext = createContext();
@@ -11,16 +11,22 @@ export function useWardrobe() {
 
 export function WardrobeProvider({ children }) {
     const [outfits, setOutfits] = useState([]);
-    const [requestQueue, setRequestQueue] = useState([]);
-    const { idToken, checkTokenValidity, refreshGoogleToken, googleId } = useUser();
+    // const [requestQueue, setRequestQueue] = useState([]);
+    const { idToken, checkTokenValidity, refreshGoogleToken, googleId, user } = useUser();
     const [clothes, setClothes] = useState([]);
 
+    // Load outfits from AsyncStorage based on current user
     useEffect(() => {
         const loadOutfits = async () => {
             try {
                 const storedOutfits = await AsyncStorage.getItem('outfits');
                 if (storedOutfits) {
-                    setOutfits(JSON.parse(storedOutfits));
+                    const parsedOutfits = JSON.parse(storedOutfits);
+                    // Filter outfits that belong to current user or show all if no user
+                    const userOutfits = googleId 
+                        ? parsedOutfits.filter(item => item.owner === googleId)
+                        : parsedOutfits;
+                    setOutfits(userOutfits);
                 }
             } catch (err) {
                 console.error('Error loading outfits from AsyncStorage:', err);
@@ -28,8 +34,31 @@ export function WardrobeProvider({ children }) {
         };
 
         loadOutfits();
-    }, []);
+    }, [googleId]);
 
+    // Load clothes from AsyncStorage based on current user
+    useEffect(() => {
+        const loadClothes = async () => {
+            try {
+                const storedClothes = await AsyncStorage.getItem('clothes');
+                if (storedClothes) {
+                    const parsedClothes = JSON.parse(storedClothes);
+                    // Filter clothes that belong to current user or show all if no user
+                    const userClothes = googleId 
+                        ? parsedClothes.filter(item => item.owner === googleId) 
+                        : parsedClothes;
+                    setClothes(userClothes);
+                }
+            } catch (err) {
+                console.error('Error loading clothes from AsyncStorage:', err);
+            }
+        };
+
+        loadClothes();
+    }, [googleId]);
+
+    // Comment out all NetInfo and requestQueue related code
+    /*
     useEffect(() => {
         const sendQueuedRequests = async () => {
             if (requestQueue.length > 0) {
@@ -74,21 +103,6 @@ export function WardrobeProvider({ children }) {
     }, [googleId]);
 
     useEffect(() => {
-        const loadClothes = async () => {
-            try {
-                const storedClothes = await AsyncStorage.getItem('clothes');
-                if (storedClothes) {
-                    setClothes(JSON.parse(storedClothes));
-                }
-            } catch (err) {
-                console.error('Error loading clothes from AsyncStorage:', err);
-            }
-        };
-
-        loadClothes();
-    }, []);
-
-    useEffect(() => {
         const sendQueuedRequests = async () => {
             if (requestQueue.length > 0) {
                 for (const { request, id } of requestQueue) {
@@ -130,22 +144,46 @@ export function WardrobeProvider({ children }) {
             synchronizeClothingOnServer();
         }
     }, [googleId]);
+    */
 
     const extractServerId = (clothingList) => {
         return clothingList.map(item => item.serverId);
     };
 
     const addOutfit = async (newOutfit) => {
-        const id_ = Date.now().toString();
-        const updatedOutfits = [...outfits, { ...newOutfit, id: id_, owner: googleId }];
-        await AsyncStorage.setItem('outfits', JSON.stringify(updatedOutfits));
-        setOutfits(updatedOutfits);
-
+        try {
+            const id_ = Date.now().toString();
+            // Get all existing outfits first
+            const storedOutfits = await AsyncStorage.getItem('outfits');
+            const allOutfits = storedOutfits ? JSON.parse(storedOutfits) : [];
+            
+            // Add new outfit with owner ID
+            const outfitWithOwner = { 
+                ...newOutfit, 
+                id: id_,
+                owner: googleId || 'guest' // Use googleId if available, otherwise 'guest'
+            };
+            
+            // Update state with only the user's outfits
+            const updatedUserOutfits = [...outfits, outfitWithOwner];
+            setOutfits(updatedUserOutfits);
+            
+            // Store all outfits (existing + new) in AsyncStorage
+            const updatedAllOutfits = [...allOutfits, outfitWithOwner];
+            await AsyncStorage.setItem('outfits', JSON.stringify(updatedAllOutfits));
+        } catch (error) {
+            console.error('Error saving outfit to AsyncStorage:', error);
+        }
+        
+        // Comment out server synchronization
+        /*
         if (googleId) {
             await addOutfitOnServer(newOutfit, id_, updatedOutfits);
         }
+        */
     };
 
+    /*
     const addOutfitOnServer = async (newOutfit, id_, updatedOutfits) => {
         await checkTokenValidity(); // Check token validity before making the request
         const originalClothing = newOutfit.clothing; // Remember the original clothing list
@@ -207,19 +245,36 @@ export function WardrobeProvider({ children }) {
 
         await sendRequest();
     };
+    */
 
     const removeOutfit = async (id) => {
-        const updatedOutfits = outfits.filter((item) => item.id !== id);
-        await AsyncStorage.setItem('outfits', JSON.stringify(updatedOutfits));
-        setOutfits(updatedOutfits);
-
+        try {
+            // Get all stored outfits
+            const storedOutfits = await AsyncStorage.getItem('outfits');
+            const allOutfits = storedOutfits ? JSON.parse(storedOutfits) : [];
+            
+            // Filter out the outfit to remove from all outfits
+            const updatedAllOutfits = allOutfits.filter(item => item.id !== id);
+            await AsyncStorage.setItem('outfits', JSON.stringify(updatedAllOutfits));
+            
+            // Update state with filtered user outfits
+            const updatedUserOutfits = outfits.filter(item => item.id !== id);
+            setOutfits(updatedUserOutfits);
+        } catch (error) {
+            console.error('Error removing outfit from AsyncStorage:', error);
+        }
+        
+        // Comment out server synchronization
+        /*
         const serverId_ = outfits.find((item) => item.id === id)?.serverId;
 
         if (googleId && serverId_) {
             await removeOutfitOnServer(id, serverId_);
         }
+        */
     };
 
+    /*
     const removeOutfitOnServer = async (id, serverId_) => {
         await checkTokenValidity();
 
@@ -262,19 +317,38 @@ export function WardrobeProvider({ children }) {
 
         await sendRequest();
     };
+    */
 
     const editOutfit = async (id, updatedOutfit) => {
-        const updatedOutfits = outfits.map((item) =>
-            item.id === id ? { ...item, ...updatedOutfit } : item
-        );
-        await AsyncStorage.setItem('outfits', JSON.stringify(updatedOutfits));
-        setOutfits(updatedOutfits);
-
+        try {
+            // Get all stored outfits
+            const storedOutfits = await AsyncStorage.getItem('outfits');
+            const allOutfits = storedOutfits ? JSON.parse(storedOutfits) : [];
+            
+            // Update the outfit in all outfits
+            const updatedAllOutfits = allOutfits.map(item => 
+                item.id === id ? { ...item, ...updatedOutfit } : item
+            );
+            await AsyncStorage.setItem('outfits', JSON.stringify(updatedAllOutfits));
+            
+            // Update state with user's outfits
+            const updatedUserOutfits = outfits.map(item => 
+                item.id === id ? { ...item, ...updatedOutfit } : item
+            );
+            setOutfits(updatedUserOutfits);
+        } catch (error) {
+            console.error('Error editing outfit in AsyncStorage:', error);
+        }
+        
+        // Comment out server synchronization
+        /*
         if (googleId) {
             await editOutfitOnServer(id, updatedOutfit, updatedOutfits);
         }
+        */
     };
 
+    /*
     const editOutfitOnServer = async (id, updatedOutfit, updatedOutfits) => {
         await checkTokenValidity(); // Check token validity before making the request
 
@@ -328,13 +402,26 @@ export function WardrobeProvider({ children }) {
             setRequestQueue([...requestQueue, { request, id }]);
         }
     };
+    */
 
     const synchronizeOutfits = async () => {
-        if (googleId) {
-            await synchronizeOutfitsOnServer();
+        // Simply reload outfits from AsyncStorage
+        try {
+            const storedOutfits = await AsyncStorage.getItem('outfits');
+            if (storedOutfits) {
+                const parsedOutfits = JSON.parse(storedOutfits);
+                // Filter outfits that belong to current user
+                const userOutfits = googleId
+                    ? parsedOutfits.filter(item => item.owner === googleId)
+                    : parsedOutfits;
+                setOutfits(userOutfits);
+            }
+        } catch (err) {
+            console.error('Error loading outfits from AsyncStorage:', err);
         }
     };
 
+    /*
     const synchronizeOutfitsOnServer = async () => {
         await checkTokenValidity(); // Check token validity before making the request
 
@@ -368,10 +455,27 @@ export function WardrobeProvider({ children }) {
             console.error('Error fetching outfits from database:', error);
         }
     };
+    */
 
     const resetOutfits = async () => {
+        // Keep outfits for other users, only remove current user's outfits
         try {
-            await AsyncStorage.removeItem('outfits');
+            const storedOutfits = await AsyncStorage.getItem('outfits');
+            if (storedOutfits) {
+                const allOutfits = JSON.parse(storedOutfits);
+                
+                if (googleId) {
+                    // Filter out outfits of current user
+                    const otherUsersOutfits = allOutfits.filter(item => item.owner !== googleId);
+                    await AsyncStorage.setItem('outfits', JSON.stringify(otherUsersOutfits));
+                } else {
+                    // If no user logged in, remove all guest outfits
+                    const loggedInUserOutfits = allOutfits.filter(item => item.owner !== 'guest');
+                    await AsyncStorage.setItem('outfits', JSON.stringify(loggedInUserOutfits));
+                }
+            }
+            
+            // Clear state
             setOutfits([]);
         } catch (err) {
             console.error('Error resetting outfits in AsyncStorage:', err);
@@ -379,16 +483,40 @@ export function WardrobeProvider({ children }) {
     };
 
     const addClothing = async (newClothing) => {
-        const id_ = Date.now().toString();
-        const updatedClothes = [...clothes, { ...newClothing, id: id_, owner: googleId }];
-        await AsyncStorage.setItem('clothes', JSON.stringify(updatedClothes));
-        setClothes(updatedClothes);
-
+        try {
+            const id_ = Date.now().toString();
+            
+            // Get all existing clothes
+            const storedClothes = await AsyncStorage.getItem('clothes');
+            const allClothes = storedClothes ? JSON.parse(storedClothes) : [];
+            
+            // Add new clothing with owner ID
+            const clothingWithOwner = { 
+                ...newClothing, 
+                id: id_,
+                owner: googleId || 'guest' // Use googleId if available, otherwise 'guest'
+            };
+            
+            // Update state with only the user's clothes
+            const updatedUserClothes = [...clothes, clothingWithOwner];
+            setClothes(updatedUserClothes);
+            
+            // Store all clothes (existing + new) in AsyncStorage
+            const updatedAllClothes = [...allClothes, clothingWithOwner];
+            await AsyncStorage.setItem('clothes', JSON.stringify(updatedAllClothes));
+        } catch (error) {
+            console.error('Error saving clothing to AsyncStorage:', error);
+        }
+        
+        // Comment out server synchronization
+        /*
         if (googleId) {
             await addClothingOnServer(newClothing, id_, updatedClothes);
         }
+        */
     };
 
+    /*
     const addClothingOnServer = async (newClothing, id_, updatedClothes) => {
         await checkTokenValidity(); // Check token validity before making the request
 
@@ -441,12 +569,62 @@ export function WardrobeProvider({ children }) {
 
         await sendRequest();
     };
+    */
 
     const removeClothing = async (id) => {
-        const updatedClothing = clothes.filter((item) => item.id !== id);
-        await AsyncStorage.setItem('clothes', JSON.stringify(updatedClothing));
-        setClothes(updatedClothing);
-
+        try {
+            // Get all stored clothes
+            const storedClothes = await AsyncStorage.getItem('clothes');
+            const allClothes = storedClothes ? JSON.parse(storedClothes) : [];
+            
+            // Filter out the clothing to remove from all clothes
+            const updatedAllClothes = allClothes.filter(item => item.id !== id);
+            await AsyncStorage.setItem('clothes', JSON.stringify(updatedAllClothes));
+            
+            // Update state with filtered user clothes
+            const updatedUserClothes = clothes.filter(item => item.id !== id);
+            setClothes(updatedUserClothes);
+            
+            // Also update outfits to remove this clothing item
+            const storedOutfits = await AsyncStorage.getItem('outfits');
+            if (storedOutfits) {
+                const allOutfits = JSON.parse(storedOutfits);
+                let outfitsUpdated = false;
+                
+                const updatedAllOutfits = allOutfits.map(outfit => {
+                    if (outfit.clothing && outfit.clothing.some(clothingItem => clothingItem.id === id)) {
+                        outfitsUpdated = true;
+                        return {
+                            ...outfit,
+                            clothing: outfit.clothing.filter(clothingItem => clothingItem.id !== id)
+                        };
+                    }
+                    return outfit;
+                });
+                
+                if (outfitsUpdated) {
+                    await AsyncStorage.setItem('outfits', JSON.stringify(updatedAllOutfits));
+                    
+                    // Update outfits state as well if needed
+                    setOutfits(prevOutfits => 
+                        prevOutfits.map(outfit => {
+                            if (outfit.clothing && outfit.clothing.some(clothingItem => clothingItem.id === id)) {
+                                return {
+                                    ...outfit,
+                                    clothing: outfit.clothing.filter(clothingItem => clothingItem.id !== id)
+                                };
+                            }
+                            return outfit;
+                        })
+                    );
+                }
+            }
+        } catch (error) {
+            console.error('Error removing clothing from AsyncStorage:', error);
+        }
+        
+        // Comment out server synchronization
+        /*
         const serverId_ = clothes.find((item) => item.id === id)?.serverId;
 
         if (googleId && serverId_) {
@@ -459,9 +637,10 @@ export function WardrobeProvider({ children }) {
                 }
             });
         }
-
+        */
     };
 
+    /*
     const removeClothingOnServer = async (id, serverId_) => {
         await checkTokenValidity();
 
@@ -513,19 +692,77 @@ export function WardrobeProvider({ children }) {
 
         await sendRequest();
     };
+    */
 
     const editClothing = async (id, updatedClothing) => {
-        const updatedClothes = clothes.map((item) =>
-            item.id === id ? { ...item, ...updatedClothing } : item
-        );
-        await AsyncStorage.setItem('clothes', JSON.stringify(updatedClothes));
-        setClothes(updatedClothes);
-
+        try {
+            // Get all stored clothes
+            const storedClothes = await AsyncStorage.getItem('clothes');
+            const allClothes = storedClothes ? JSON.parse(storedClothes) : [];
+            
+            // Update the clothing in all clothes
+            const updatedAllClothes = allClothes.map(item => 
+                item.id === id ? { ...item, ...updatedClothing } : item
+            );
+            await AsyncStorage.setItem('clothes', JSON.stringify(updatedAllClothes));
+            
+            // Update state with user's clothes
+            const updatedUserClothes = clothes.map(item => 
+                item.id === id ? { ...item, ...updatedClothing } : item
+            );
+            setClothes(updatedUserClothes);
+            
+            // Also update this clothing item in outfits if needed
+            const storedOutfits = await AsyncStorage.getItem('outfits');
+            if (storedOutfits) {
+                const allOutfits = JSON.parse(storedOutfits);
+                let outfitsUpdated = false;
+                
+                const updatedAllOutfits = allOutfits.map(outfit => {
+                    if (outfit.clothing && outfit.clothing.some(clothingItem => clothingItem.id === id)) {
+                        outfitsUpdated = true;
+                        return {
+                            ...outfit,
+                            clothing: outfit.clothing.map(clothingItem => 
+                                clothingItem.id === id ? { ...clothingItem, ...updatedClothing } : clothingItem
+                            )
+                        };
+                    }
+                    return outfit;
+                });
+                
+                if (outfitsUpdated) {
+                    await AsyncStorage.setItem('outfits', JSON.stringify(updatedAllOutfits));
+                    
+                    // Update outfits state as well
+                    setOutfits(prevOutfits => 
+                        prevOutfits.map(outfit => {
+                            if (outfit.clothing && outfit.clothing.some(clothingItem => clothingItem.id === id)) {
+                                return {
+                                    ...outfit,
+                                    clothing: outfit.clothing.map(clothingItem => 
+                                        clothingItem.id === id ? { ...clothingItem, ...updatedClothing } : clothingItem
+                                    )
+                                };
+                            }
+                            return outfit;
+                        })
+                    );
+                }
+            }
+        } catch (error) {
+            console.error('Error editing clothing in AsyncStorage:', error);
+        }
+        
+        // Comment out server synchronization
+        /*
         if (googleId) {
             await editClothingOnServer(id, updatedClothing, updatedClothes);
         }
+        */
     };
 
+    /*
     const editClothingOnServer = async (id, updatedClothing, updatedClothes) => {
         await checkTokenValidity(); // Check token validity before making the request
 
@@ -573,13 +810,26 @@ export function WardrobeProvider({ children }) {
             setRequestQueue([...requestQueue, { request, id }]);
         }
     };
+    */
 
     const synchronizeClothing = async () => {
-        if (googleId) {
-            await synchronizeClothingOnServer();
+        // Simply reload clothes from AsyncStorage
+        try {
+            const storedClothes = await AsyncStorage.getItem('clothes');
+            if (storedClothes) {
+                const parsedClothes = JSON.parse(storedClothes);
+                // Filter clothes that belong to current user
+                const userClothes = googleId
+                    ? parsedClothes.filter(item => item.owner === googleId)
+                    : parsedClothes;
+                setClothes(userClothes);
+            }
+        } catch (err) {
+            console.error('Error loading clothes from AsyncStorage:', err);
         }
     };
 
+    /*
     const synchronizeClothingOnServer = async () => {
         await checkTokenValidity(); // Check token validity before making the request
 
@@ -616,24 +866,55 @@ export function WardrobeProvider({ children }) {
             console.error('Error fetching clothing from database:', error);
         }
     };
+    */
 
     const resetClothing = async () => {
+        // Keep clothes for other users, only remove current user's clothes
         try {
-            await AsyncStorage.removeItem('clothes');
+            const storedClothes = await AsyncStorage.getItem('clothes');
+            if (storedClothes) {
+                const allClothes = JSON.parse(storedClothes);
+                
+                if (googleId) {
+                    // Filter out clothes of current user
+                    const otherUsersClothes = allClothes.filter(item => item.owner !== googleId);
+                    await AsyncStorage.setItem('clothes', JSON.stringify(otherUsersClothes));
+                } else {
+                    // If no user logged in, remove all guest clothes
+                    const loggedInUserClothes = allClothes.filter(item => item.owner !== 'guest');
+                    await AsyncStorage.setItem('clothes', JSON.stringify(loggedInUserClothes));
+                }
+            }
+            
+            // Clear state
             setClothes([]);
-        } catch (err) {
-            console.error('Error resetting clothes in AsyncStorage:', err);
+        } catch (error) {
+            console.error('Failed to clear clothing data:', error);
+            return false;
         }
+        return true;
     };
 
-    const getClothingByServerIds = (serverIds, clothes) => {
-        return clothes.filter(clothing => serverIds.includes(clothing.serverId));
+    const resetAllWardrobeData = async () => {
+        const clothingResult = await resetClothing();
+        const outfitsResult = await resetOutfits();
+        return clothingResult && outfitsResult;
+    };
+    
+    // Helper function to get clothing items by their IDs
+    const getClothingByServerIds = (clothingIds, availableClothing) => {
+        if (!clothingIds || !Array.isArray(clothingIds)) return [];
+        
+        return clothingIds
+            .map(id => availableClothing.find(item => item.serverId === id))
+            .filter(item => item !== undefined);
     };
 
     return (
         <WardrobeContext.Provider value={{
             outfits, addOutfit, removeOutfit, editOutfit, resetOutfits, synchronizeOutfits,
-            clothes, addClothing, removeClothing, editClothing, resetClothing, synchronizeClothing
+            clothes, addClothing, removeClothing, editClothing, resetClothing, synchronizeClothing,
+            resetAllWardrobeData
         }}>
             {children}
         </WardrobeContext.Provider>
