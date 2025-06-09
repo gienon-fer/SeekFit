@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Modal
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import Auth from "../Auth";
 import { useUser } from '../../contexts/UserContext';
 import MeasurementInput from '../MeasurementInput';
@@ -24,6 +25,13 @@ const UserProfileScreen = () => {
   useEffect(() => {
     //console.log('UserProfileScreen: Measurements updated:', measurements);
   }, [measurements]);
+
+  // Reset click count when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      setProfileClickCount(0);
+    }, [])
+  );
 
   const handleResetData = () => {
     Alert.alert(

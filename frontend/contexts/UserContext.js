@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import base64 from 'base-64';
 
+// Remove the circular import
+// import { useCalendar } from './CalendarContext';
+
 const UserContext = createContext();
 
 export const useUser = () => useContext(UserContext);
@@ -20,7 +23,8 @@ export const UserProvider = ({ children }) => {
   });
   // const [requestQueue, setRequestQueue] = useState([]);
   // const [isRefreshingToken, setIsRefreshingToken] = useState(false);
-  const [googleId, setGoogleId] = useState(null);
+  const [googleId, setGoogleId] = useState('guest'); // Initialize with 'guest' to avoid null rendering
+  const [onSignOut, setOnSignOut] = useState(null);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -40,9 +44,14 @@ export const UserProvider = ({ children }) => {
           
           // Set the googleId state from stored user
           setGoogleId(parsedUser.id);
+        } else {
+          // If no user is found, explicitly set googleId to 'guest'
+          setGoogleId('guest');
         }
       } catch (error) {
         console.error('Failed to load user from storage:', error);
+        // Fallback to guest user in case of error
+        setGoogleId('guest');
       }
     };
     loadUser();
@@ -71,41 +80,45 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  // Comment out NetInfo and request queue effects
-  /*
-  useEffect(() => {
-    const sendQueuedRequests = async () => {
-      if (requestQueue.length > 0) {
-        for (const request of requestQueue) {
-          try {
-            const response = await fetch(request.url, request.options);
-            const data = await response;
-            console.log('Queued request response:', data);
-          } catch (error) {
-            console.error('Failed to send queued request:', error);
-            return;
-          }
+  const clearGuestData = async () => {
+    try {
+      // Get all stored clothes
+      const storedClothes = await AsyncStorage.getItem('clothes');
+      if (storedClothes) {
+        const allClothes = JSON.parse(storedClothes);
+        // Filter out guest clothes
+        const nonGuestClothes = allClothes.filter(item => item.owner !== 'guest');
+        await AsyncStorage.setItem('clothes', JSON.stringify(nonGuestClothes));
+      }
+      
+      // Get all stored outfits
+      const storedOutfits = await AsyncStorage.getItem('outfits');
+      if (storedOutfits) {
+        const allOutfits = JSON.parse(storedOutfits);
+        // Filter out guest outfits
+        const nonGuestOutfits = allOutfits.filter(item => item.owner !== 'guest');
+        await AsyncStorage.setItem('outfits', JSON.stringify(nonGuestOutfits));
+      }
+      
+      // Clear guest calendar data
+      const storedCalendarData = await AsyncStorage.getItem('calendarOutfits');
+      if (storedCalendarData) {
+        const allCalendarData = JSON.parse(storedCalendarData);
+        if (allCalendarData['guest']) {
+          delete allCalendarData['guest'];
+          await AsyncStorage.setItem('calendarOutfits', JSON.stringify(allCalendarData));
         }
-        setRequestQueue([]);
       }
-    };
-
-    const handleConnectivityChange = (isConnected) => {
-      if (isConnected) {
-        sendQueuedRequests();
-      }
-    };
-
-    const unsubscribe = NetInfo.addEventListener(state => {
-      handleConnectivityChange(state.isConnected);
-    });
-
-    return () => unsubscribe();
-  }, [requestQueue]);
-  */
+    } catch (error) {
+      console.error('Failed to clear guest data:', error);
+    }
+  };
 
   const signInUser = async (userInfo) => {
     try {
+      // Before signing in, clear any guest data
+      await clearGuestData();
+      
       // Save the user info to AsyncStorage
       await AsyncStorage.setItem('user', JSON.stringify(userInfo));
       setUser(userInfo);
@@ -146,7 +159,14 @@ export const UserProvider = ({ children }) => {
         hips: ''
       });
       setIdToken(null); 
-      setGoogleId(null); 
+      
+      // Set to guest ID when signing out
+      setGoogleId('guest');
+      
+      // Call the onSignOut handler if it exists
+      if (onSignOut) {
+        onSignOut();
+      }
     } catch (error) {
         console.error('Failed to remove user from storage:', error);
     }
@@ -391,7 +411,9 @@ export const UserProvider = ({ children }) => {
       refreshGoogleToken, 
       googleId,
       loadUserMeasurements,
-      saveUserMeasurements
+      saveUserMeasurements,
+      setOnSignOut,
+      clearGuestData
     }}>
       {children}
     </UserContext.Provider>

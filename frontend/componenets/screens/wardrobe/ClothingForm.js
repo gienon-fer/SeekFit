@@ -34,15 +34,12 @@ export default function ClothingForm({ route, navigation }) {
 
     const selectImage = async () => {
         try {
-
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            //console.log('Permission status:', status);
             if (status !== 'granted') {
                 alert('Permission to access gallery is required!');
                 return;
             }
 
-
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: false,
@@ -50,63 +47,9 @@ export default function ClothingForm({ route, navigation }) {
             });
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 setImage(result.assets[0].uri);
-                //console.log('Image URI:', result.assets[0].uri);
             }
         } catch (error) {
             console.error('Error selecting image:', error);
-        }
-    };
-
-    const launchCamera = async () => {
-        try {
-            const result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: false,
-                quality: 1,
-            });
-            if (!result.canceled && result.assets && result.assets.length > 0) {
-                setImage(result.assets[0].uri);
-            }
-        } catch (error) {
-            console.error('Error launching camera:', error);
-        }
-    };
-
-    const launchImageLibrary = async () => {
-        try {
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: false,
-                quality: 1,
-            });
-            if (!result.canceled && result.assets && result.assets.length > 0) {
-                setImage(result.assets[0].uri);
-            }
-        } catch (error) {
-            console.error('Error launching image library:', error);
-        }
-    };
-
-    const handleCropImage = async () => {
-        if (!image) {
-            alert('Please select an image first.');
-            return;
-        }
-
-        try {
-            const croppedImage = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 1,
-            });
-
-            if (!croppedImage.canceled && croppedImage.assets && croppedImage.assets.length > 0) {
-                setImage(croppedImage.assets[0].uri);
-            }
-        } catch (error) {
-            console.log('Error cropping image:', error);
-            alert('Could not crop the image');
         }
     };
 
@@ -157,12 +100,6 @@ export default function ClothingForm({ route, navigation }) {
                 {image ? (
                     <>
                         <Image source={{ uri: image }} style={styles.image} />
-                        <TouchableOpacity
-                            style={styles.cropButton}
-                            onPress={selectImage}
-                        >
-                            <Text style={styles.cropButtonText}>Crop</Text>
-                        </TouchableOpacity>
                     </>
                 ) : (
                     <Text style={styles.imagePickerText}>Add Picture +</Text>

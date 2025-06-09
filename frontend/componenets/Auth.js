@@ -12,7 +12,7 @@ const Auth = () => {
 
   GoogleSignin.configure({
     scopes: ['email', 'profile'], 
-    webClientId: GOOGLE_WEB_CLIENT_ID, 
+    webClientId: '292694167327-ho7su5mm59m6flj45i4hge1m9h0n73b4.apps.googleusercontent.com', 
   });
 
   const handleSignIn = async () => {

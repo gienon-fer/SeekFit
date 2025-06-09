@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import NetInfo from '@react-native-community/netinfo';
 import { useUser } from './UserContext';
@@ -12,8 +12,25 @@ export function useWardrobe() {
 export function WardrobeProvider({ children }) {
     const [outfits, setOutfits] = useState([]);
     // const [requestQueue, setRequestQueue] = useState([]);
-    const { idToken, checkTokenValidity, refreshGoogleToken, googleId, user } = useUser();
+    const { idToken, checkTokenValidity, refreshGoogleToken, googleId, user, setOnSignOut } = useUser();
     const [clothes, setClothes] = useState([]);
+
+    // Register a callback for when a user signs out to clear the state, using useRef to avoid render issue
+    const isMountedRef = useRef(false);
+    
+    useEffect(() => {
+        // Only set the onSignOut callback after the initial render
+        if (!isMountedRef.current) {
+            isMountedRef.current = true;
+        } else if (setOnSignOut) {
+            // This will run after initial render to avoid the "Cannot update during render" error
+            setOnSignOut(() => {
+                // This will clear the current state when the user signs out
+                setClothes([]);
+                setOutfits([]);
+            });
+        }
+    }, [setOnSignOut]);
 
     // Load outfits from AsyncStorage based on current user
     useEffect(() => {
@@ -22,18 +39,25 @@ export function WardrobeProvider({ children }) {
                 const storedOutfits = await AsyncStorage.getItem('outfits');
                 if (storedOutfits) {
                     const parsedOutfits = JSON.parse(storedOutfits);
-                    // Filter outfits that belong to current user or show all if no user
-                    const userOutfits = googleId 
-                        ? parsedOutfits.filter(item => item.owner === googleId)
-                        : parsedOutfits;
+                    // Filter outfits that belong to current user
+                    const userOutfits = parsedOutfits.filter(item => item.owner === googleId);
                     setOutfits(userOutfits);
+                } else {
+                    // If no outfits in storage, set empty array
+                    setOutfits([]);
                 }
             } catch (err) {
                 console.error('Error loading outfits from AsyncStorage:', err);
+                setOutfits([]); // Ensure state is reset on error
             }
         };
 
-        loadOutfits();
+        if (googleId) {
+            loadOutfits();
+        } else {
+            // If no googleId (shouldn't happen), empty the outfits
+            setOutfits([]);
+        }
     }, [googleId]);
 
     // Load clothes from AsyncStorage based on current user
@@ -43,18 +67,25 @@ export function WardrobeProvider({ children }) {
                 const storedClothes = await AsyncStorage.getItem('clothes');
                 if (storedClothes) {
                     const parsedClothes = JSON.parse(storedClothes);
-                    // Filter clothes that belong to current user or show all if no user
-                    const userClothes = googleId 
-                        ? parsedClothes.filter(item => item.owner === googleId) 
-                        : parsedClothes;
+                    // Filter clothes that belong to current user
+                    const userClothes = parsedClothes.filter(item => item.owner === googleId);
                     setClothes(userClothes);
+                } else {
+                    // If no clothes in storage, set empty array
+                    setClothes([]);
                 }
             } catch (err) {
                 console.error('Error loading clothes from AsyncStorage:', err);
+                setClothes([]); // Ensure state is reset on error
             }
         };
 
-        loadClothes();
+        if (googleId) {
+            loadClothes();
+        } else {
+            // If no googleId (shouldn't happen), empty the clothes
+            setClothes([]);
+        }
     }, [googleId]);
 
     // Comment out all NetInfo and requestQueue related code
@@ -161,7 +192,7 @@ export function WardrobeProvider({ children }) {
             const outfitWithOwner = { 
                 ...newOutfit, 
                 id: id_,
-                owner: googleId || 'guest' // Use googleId if available, otherwise 'guest'
+                owner: googleId // Use current googleId (either user ID or 'guest')
             };
             
             // Update state with only the user's outfits
@@ -175,7 +206,7 @@ export function WardrobeProvider({ children }) {
             console.error('Error saving outfit to AsyncStorage:', error);
         }
         
-        // Comment out server synchronization
+        // Comment out server synchronization code
         /*
         if (googleId) {
             await addOutfitOnServer(newOutfit, id_, updatedOutfits);
@@ -494,7 +525,7 @@ export function WardrobeProvider({ children }) {
             const clothingWithOwner = { 
                 ...newClothing, 
                 id: id_,
-                owner: googleId || 'guest' // Use googleId if available, otherwise 'guest'
+                owner: googleId // Use current googleId (either user ID or 'guest')
             };
             
             // Update state with only the user's clothes
@@ -508,7 +539,7 @@ export function WardrobeProvider({ children }) {
             console.error('Error saving clothing to AsyncStorage:', error);
         }
         
-        // Comment out server synchronization
+        // Comment out server synchronization code
         /*
         if (googleId) {
             await addClothingOnServer(newClothing, id_, updatedClothes);

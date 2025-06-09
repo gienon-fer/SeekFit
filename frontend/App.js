@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { WardrobeProvider, useWardrobe } from './contexts/WardrobeContext';
 import { UserProvider } from './contexts/UserContext';
+import { CalendarProvider } from './contexts/CalendarContext'; // Import the new provider
 import { ClothingTagValuesProvider } from './contexts/ClothingTagValuesContext';
 import { ClothingFilterProvider } from './contexts/ClothingFilterContext';
 import { OutfitTagValuesProvider } from './contexts/OutfitTagValuesContext';
@@ -193,15 +194,17 @@ export default function App() {
             ) : (
                 <UserProvider>
                     <WardrobeProvider>
-                        <ClothingTagValuesProvider>
-                            <ClothingFilterProvider>
-                                <OutfitTagValuesProvider>
-                                    <OutfitFilterProvider>
-                                        <AppContent />
-                                    </OutfitFilterProvider>
-                                </OutfitTagValuesProvider>
-                            </ClothingFilterProvider>
-                        </ClothingTagValuesProvider>
+                        <CalendarProvider> {/* Add the CalendarProvider */}
+                            <ClothingTagValuesProvider>
+                                <ClothingFilterProvider>
+                                    <OutfitTagValuesProvider>
+                                        <OutfitFilterProvider>
+                                            <AppContent />
+                                        </OutfitFilterProvider>
+                                    </OutfitTagValuesProvider>
+                                </ClothingFilterProvider>
+                            </ClothingTagValuesProvider>
+                        </CalendarProvider>
                     </WardrobeProvider>
                 </UserProvider>
             )}

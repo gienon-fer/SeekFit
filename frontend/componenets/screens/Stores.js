@@ -19,7 +19,7 @@ const StoresScreen = () => {
     const type = 'store';
 
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=${type}&keyword=${encodeURIComponent(keyword)}&key=GOOGLE_MAPS_API_KEY`
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=${type}&keyword=${encodeURIComponent(keyword)}&key=AIzaSyD3fKTw39Z93ko7exv96f-6OlQSsTYtjgM`
     );
     const data = await response.json();
     //console.log(data);
@@ -83,7 +83,7 @@ const StoresScreen = () => {
             }}
             title={place.name}
             description={place.vicinity}
-            onPress={() => openInGoogleMaps(place.geometry.location.lat, place.geometry.location.lng)}
+            //onPress={() => openInGoogleMaps(place.geometry.location.lat, place.geometry.location.lng)}
           />
         ))}
       </MapView>

@@ -15,13 +15,17 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { fetchWeatherForecast } from '../WeatherLocationService';
 import { useNavigation } from '@react-navigation/native';
 import { useWardrobe } from '../../contexts/WardrobeContext';
+import { useCalendar } from '../../contexts/CalendarContext'; // Import the new context
 import { useActiveOutfitFilters } from '../../contexts/OutfitFilterContext';
+import { useUser } from '../../contexts/UserContext';  // Import UserContext to get the current user
 import { Calendar } from 'react-native-calendars';
 
 const PlannerScreen = () => {
   const navigation = useNavigation();
-  const { outfits, addOutfit, removeOutfit } = useWardrobe();
+  const { outfits } = useWardrobe();
+  const { calendarOutfits, addOutfitToDate, removeOutfitFromDate } = useCalendar(); // Use CalendarContext
   const activeFilters = useActiveOutfitFilters();
+  const { user, googleId } = useUser(); // Get current user info
   
   const [weatherData, setWeatherData] = useState(null);
   const [sixDayForecast, setSixDayForecast] = useState([]);
@@ -29,10 +33,13 @@ const PlannerScreen = () => {
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [showOutfitPicker, setShowOutfitPicker] = useState(false);
-  const [calendarOutfits, setCalendarOutfits] = useState({});
-  const [filteredOutfits, setFilteredOutfits] = useState(outfits);
+  const [filteredOutfits, setFilteredOutfits] = useState([]);
   const [expandedDay, setExpandedDay] = useState(null);
   const [expandedView, setExpandedView] = useState(false);
+  const [selectedOutfit, setSelectedOutfit] = useState(null);
+  const [showOutfitViewModal, setShowOutfitViewModal] = useState(false);
+  const [isExistingOutfit, setIsExistingOutfit] = useState(false);
+  const [weatherForDay, setWeatherForDay] = useState(null);
 
   // Screen dimensions for outfit grid
   const numColumns = 4;
@@ -45,27 +52,18 @@ const PlannerScreen = () => {
   }, []);
 
   useEffect(() => {
-    applyFilters();
-  }, [outfits, activeFilters]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      // Only show the picker if we were previously showing it
-      if (selectedDate) {
-        setShowOutfitPicker(true);
-      }
+    // Filter outfits to only show the current user's outfits
+    const userOutfits = outfits.filter(outfit => {
+      return googleId ? outfit.owner === googleId : outfit.owner === 'guest';
     });
-  
-    return unsubscribe;
-  }, [navigation, selectedDate]);
-
-  useEffect(() => {
+    
+    // Apply any active filters
     if (Object.keys(activeFilters).length === 0) {
-      setFilteredOutfits(outfits);
+      setFilteredOutfits(userOutfits);
       return;
     }
   
-    const filtered = outfits.filter((item) => {
+    const filtered = userOutfits.filter((item) => {
       // Check for tag matches
       const matchesTags = Object.keys(activeFilters).every((category) => {
         if (category === 'clothing') return true; // Skip clothing here, handle separately
@@ -86,7 +84,15 @@ const PlannerScreen = () => {
     });
   
     setFilteredOutfits(filtered);
-  }, [outfits, activeFilters]);
+  }, [outfits, activeFilters, googleId]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // No automatic reopening of modals
+    });
+  
+    return unsubscribe;
+  }, [navigation]);
 
   const getWeatherTag = (description) => {
     // Normalize the description to handle various possible responses
@@ -118,23 +124,6 @@ const PlannerScreen = () => {
     if (temp >= 20 && temp < 25) return '20°C to 25°C (Warm)';
     if (temp >= 25 && temp < 30) return '25°C to 30°C (Hot)';
     return 'Above 30°C (Very Hot)';
-  };
-
-  // Filter outfits based on active filters
-  const applyFilters = () => {
-    if (Object.keys(activeFilters).length === 0) {
-      setFilteredOutfits(outfits);
-      return;
-    }
-
-    const filtered = outfits.filter((item) => {
-      return Object.keys(activeFilters).every((category) => {
-        const categoryTags = activeFilters[category];
-        return categoryTags.every((tag) => item.tags[category.toLowerCase()]?.includes(tag));
-      });
-    });
-
-    setFilteredOutfits(filtered);
   };
 
   const loadWeatherData = async () => {
@@ -176,93 +165,50 @@ const PlannerScreen = () => {
   };
 
   const handleDayPress = (date) => {
-    setSelectedDate(date); // Set the selected date immediately
+    console.log("Day pressed:", date);
+    console.log("Current outfits in calendar:", calendarOutfits);
+    
+    setSelectedDate(date);
     
     if (calendarOutfits[date]) {
-      Alert.alert(
-        'Manage Outfit',
-        `Options for ${date}`,
-        [
-          { 
-            text: 'Change Outfit', 
-            onPress: () => {
-              setSelectedDate(date); // Ensure date is set before showing picker
-              setShowOutfitPicker(true);
-            }
-          },
-          { 
-            text: 'Delete Outfit', 
-            onPress: () => handleOutfitDelete(date) 
-          },
-          { text: 'Cancel', style: 'cancel' },
-        ],
-        { cancelable: true }
-      );
+      console.log("Found outfit for date:", calendarOutfits[date]);
+      setSelectedOutfit(calendarOutfits[date]);
+      setIsExistingOutfit(true);
+      setShowOutfitViewModal(true);
     } else {
-      Alert.alert(
-        'Take into account weather forecast for the day?',
-        '',
-        [
-          {
-            text: 'No',
-            onPress: () => {
-              setFilteredOutfits(outfits);
-              setShowOutfitPicker(true);
-            }
-          },
-          {
-            text: 'Yes',
-            onPress: () => {
-              const forecast = sixDayForecast.find(day => day.date === date);
-  
-              if (forecast) {
-                const temperatureTag = getTemperatureTag(forecast.temp);
-                const weatherTags = getWeatherTag(forecast.description);
-  
-                const filtered = outfits.filter((item) => {
-                  const matchesTemperature = item.tags.temperature?.includes(temperatureTag);
-                  const matchesWeather = weatherTags.every(tag => 
-                    item.tags.weather?.includes(tag)
-                  );
-                  return matchesTemperature && matchesWeather;
-                });
-  
-                setFilteredOutfits(filtered);
-              } else {
-                setFilteredOutfits(outfits);
-              }
-  
-              setShowOutfitPicker(true);
-            }
-          },
-          { text: 'Cancel', style: 'cancel' }
-        ],
-        { cancelable: true }
-      );
+      console.log("No outfit for this date");
+      const forecast = sixDayForecast.find(day => day.date === date);
+      setWeatherForDay(forecast);
+      setSelectedOutfit(null);
+      setIsExistingOutfit(false);
+      setShowOutfitViewModal(true);
     }
+
+    // Force modal to show as a fallback
+    setTimeout(() => {
+      setShowOutfitViewModal(true);
+    }, 100);
   };
 
   const handleOutfitDelete = (date) => {
-    setCalendarOutfits((prev) => {
-      const updated = { ...prev };
-      delete updated[date];
-      return updated;
-    });
+    // Use the context function to remove the outfit
+    removeOutfitFromDate(date);
+    setShowOutfitViewModal(false);
   };
 
   const handleOutfitSelect = (outfit) => {
-    setCalendarOutfits(prev => {
-      // Create a new object to ensure state update
-      const updated = { ...prev };
-      // Use the selectedDate that was set in handleDayPress
-      updated[selectedDate] = outfit;
-      return updated;
-    });
-  
+    // Use the context function to add the outfit to the date
+    addOutfitToDate(selectedDate, outfit);
     setShowOutfitPicker(false);
   };
 
   const handleOutfitLongPress = (outfit) => {
+    // Only allow users to modify their own outfits
+    if (outfit.owner !== googleId && outfit.owner !== 'guest') {
+      Alert.alert('Cannot modify', 'You can only modify your own outfits');
+      return;
+    }
+    
     Alert.alert(
       'What do you want to do?',
       '',
@@ -286,66 +232,135 @@ const PlannerScreen = () => {
   const toggleExpandedView = () => {
     setExpandedView(!expandedView);
   };
+  
+  const handleSelectOutfitPress = () => {
+    setShowOutfitViewModal(false);
+    setShowOutfitPicker(true);
+  };
+
+  // Format date to DD.MM.YYYY format
+  const formatDate = (isoDateString) => {
+    const date = new Date(isoDateString);
+    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+  };
 
   const OutfitPickerModal = () => (
     <Modal
-      visible={showOutfitPicker}
-      animationType="slide"
-      transparent={false}
+        visible={showOutfitPicker}
+        animationType="slide"
+        transparent={false}
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Select Outfit for {selectedDate}</Text>
-          <View style={styles.headerButtons}>
-            <TouchableOpacity
-              style={[
-                styles.filterButton,
-                Object.keys(activeFilters).length > 0 && styles.activeFilterButton
-              ]}
-              onPress={() => {
-                setShowOutfitPicker(false);
-                setTimeout(() => {
-                  navigation.navigate('FilterOutfit');
-                }, 100);
-              }}
-            >
-              <Ionicons name="filter" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setShowOutfitPicker(false)}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeButtonText}>×</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Outfit for {formatDate(selectedDate)}</Text>
+                <View style={styles.headerButtons}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setShowOutfitPicker(false);
+                        }}
+                        style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: 18,
+                            backgroundColor: '#e0e0e0',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginLeft: 10,
+                        }}
+                    >
+                        <Ionicons name="close" size={24} color="#757575" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <FlatList
+                data={filteredOutfits}
+                numColumns={numColumns}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        onPress={() => handleOutfitSelect(item)}
+                        onLongPress={() => handleOutfitLongPress(item)}
+                    >
+                        <Image 
+                            source={{ uri: item.image }} 
+                            style={[styles.outfitImage, { width: imageWidth, height: imageHeight }]} 
+                        />
+                    </TouchableOpacity>
+                )}
+                ListEmptyComponent={
+                    <Text style={styles.emptyText}>
+                        {Object.keys(activeFilters).length > 0 
+                            ? "No outfits match the current filters..." 
+                            : "No outfits available. Add some in your wardrobe!"}
+                    </Text>
+                }
+            />
         </View>
-        <FlatList
-          data={filteredOutfits}
-          numColumns={numColumns}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleOutfitSelect(item)}
-              onLongPress={() => handleOutfitLongPress(item)}
-            >
-              <Image 
-                source={{ uri: item.image }} 
-                style={[styles.outfitImage, { width: imageWidth, height: imageHeight }]} 
-              />
-            </TouchableOpacity>
-          )}
-          ListEmptyComponent={
-            <Text style={styles.emptyText}>
-              {Object.keys(activeFilters).length > 0 
-                ? "No outfits match the current filters..." 
-                : "No outfits available. Add some in your wardrobe!"}
-            </Text>
-          }
-        />
-      </View>
     </Modal>
   );
 
+  const OutfitViewModal = () => (
+    <Modal
+      visible={showOutfitViewModal}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setShowOutfitViewModal(false)}
+    >
+      <View style={styles.viewModalOverlay}>
+        <View style={styles.viewModalContent}>
+          <Text style={styles.viewModalTitle}>
+            {formatDate(selectedDate)}
+          </Text>
+          
+          {isExistingOutfit && selectedOutfit ? (
+            <Image 
+              source={{ uri: selectedOutfit.image }}
+              style={styles.viewModalImage}
+              resizeMode="contain"
+            />
+          ) : (
+            <View style={styles.emptyOutfitContainer}>
+              <Ionicons name="calendar-outline" size={80} color="#ccc" />
+              <Text style={styles.emptyOutfitText}>
+                No outfit planned for this day
+              </Text>
+              {weatherForDay && (
+                <Text style={styles.weatherInfoText}>
+                  Weather: {weatherForDay.temp}°C, {weatherForDay.description}
+                </Text>
+              )}
+            </View>
+          )}
+          
+          <View style={styles.viewModalButtons}>
+            <TouchableOpacity 
+              style={styles.viewModalButton} 
+              onPress={handleSelectOutfitPress}
+            >
+              <Text style={styles.viewModalButtonText}>Select</Text>
+            </TouchableOpacity>
+            
+            {isExistingOutfit && (
+              <TouchableOpacity 
+                style={[styles.viewModalButton, styles.deleteButton]} 
+                onPress={() => handleOutfitDelete(selectedDate)}
+              >
+                <Text style={styles.viewModalButtonText}>Delete</Text>
+              </TouchableOpacity>
+            )}
+            
+            <TouchableOpacity 
+              style={[styles.viewModalButton, styles.closeButton]} 
+              onPress={() => setShowOutfitViewModal(false)}
+            >
+              <Text style={styles.viewModalButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+  
   // Render weather forecast
   const renderWeatherForecast = () => (
     <View style={styles.forecastContainer}>
@@ -380,7 +395,7 @@ const PlannerScreen = () => {
               styles.dateText, 
               expandedView && {fontSize: 18, marginBottom: 10}
             ]}>
-              {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+              {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })}, {formatDate(day.date)}
             </Text>
             <Text style={[
               styles.tempText, 
@@ -434,7 +449,7 @@ const PlannerScreen = () => {
                 margin: 0,
                 flexDirection: 'row',
                 justifyContent: 'space-around',
-                marginTop: -5, // Reduce vertical spacing between weeks
+                marginTop: 14, // Reduce vertical spacing between weeks
                 paddingVertical: 0,
               }
             },
@@ -442,13 +457,17 @@ const PlannerScreen = () => {
               base: {
                 width: tileWidth,
                 height: tileHeight,
-                marginVertical: -4, // Reduce vertical space between tiles
+                marginVertical: 0, // Reduce vertical space between tiles
               }
             }
           }}
           dayComponent={({ date }) => {
             const isToday = date.dateString === todayString;
             const assignedOutfit = calendarOutfits[date.dateString];
+            
+            // Add check for days outside the current month
+            const isCurrentMonth = date.month === new Date().getMonth() + 1; // +1 because JS months are 0-indexed
+            
             return (
               <TouchableOpacity 
                 style={[
@@ -457,6 +476,10 @@ const PlannerScreen = () => {
                     width: tileWidth, 
                     height: tileHeight,
                     marginVertical: -6.5, // Match the negative margin from theme
+                  },
+                  isToday && {
+                    borderWidth: 2,
+                    borderColor: '#4287f5', // Blue outline
                   }
                 ]} 
                 onPress={() => handleDayPress(date.dateString)}
@@ -467,7 +490,14 @@ const PlannerScreen = () => {
                     style={styles.outfitImageTile}
                   />
                 )}
-                <Text style={[styles.dateOverlay, isToday ? { fontWeight: 'bold' } : {}]}>
+                <Text style={[
+                  styles.dateOverlay, 
+                  !isCurrentMonth ? { color: '#D3D3D3' } : {}, // Gray color for days not in current month
+                  isToday ? { 
+                    fontWeight: 'bold',
+                    color: '#4287f5', // Blue for today overrides the gray
+                  } : {}
+                ]}>
                   {date.day}
                 </Text>
               </TouchableOpacity>
@@ -486,6 +516,7 @@ const PlannerScreen = () => {
         {renderCalendar()}
       </ScrollView>
       <OutfitPickerModal />
+      <OutfitViewModal />
     </View>
   );
 };
@@ -593,13 +624,14 @@ const styles = StyleSheet.create({
     },
     calendarContainer: {
         paddingHorizontal: 10,
-        marginBottom: 10,
-        overflow: 'hidden',
+        paddingBottom: 15, // Added bottom padding to prevent border cutoff
+        marginBottom: 20, // Increased bottom margin
+        overflow: 'visible', // Changed from 'hidden' to show the complete borders
     },
     calendarTile: {
         position: 'relative',
         borderWidth: 1,
-        borderColor: 'gray',
+        borderColor: '#D3D3D3',
         // Width and height are set dynamically in the component
     },
     outfitImageTile: {
@@ -635,6 +667,73 @@ const styles = StyleSheet.create({
     },
     activeFilterButton: {
         backgroundColor: 'darkblue',
+    },
+    viewModalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    viewModalContent: {
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 20,
+      width: '90%',
+      maxHeight: '80%',
+    },
+    viewModalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+    viewModalImage: {
+      width: '100%',
+      height: 350,
+      borderRadius: 8,
+      marginBottom: 15,
+    },
+    viewModalButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    viewModalButton: {
+      padding: 12,
+      borderRadius: 8,
+      backgroundColor: '#4287f5',
+      flex: 1,
+      marginHorizontal: 5,
+      alignItems: 'center',
+    },
+    viewModalButtonText: {
+      color: 'white',
+      fontWeight: '500',
+    },
+    deleteButton: {
+      backgroundColor: '#ff5252',
+    },
+    closeButton: {
+      backgroundColor: '#757575',
+    },
+    emptyOutfitContainer: {
+      height: 300,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f9f9f9',
+      borderRadius: 8,
+      marginBottom: 15,
+    },
+    emptyOutfitText: {
+      fontSize: 18,
+      color: '#666',
+      marginTop: 10,
+    },
+    weatherInfoText: {
+      fontSize: 14,
+      color: '#888',
+      marginTop: 10,
+      textAlign: 'center',
     },
 });
 
