@@ -1,0 +1,10 @@
+# Exclude all image files from being processed by GitHub Copilot
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.webp
+*.tiff
+*.ico

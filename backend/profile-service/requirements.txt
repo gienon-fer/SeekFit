@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+firebase-admin
+pytest
+httpx
+alembic
+psycopg2-binary

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wardrobe-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wardrobe-service
+  template:
+    metadata:
+      labels:
+        app: wardrobe-service
+    spec:
+      containers:
+        - name: wardrobe-service
+          image: teawhoyou/wardrobe-service
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: CONNECTION_STRING
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wardrobe-service
+spec:
+  selector:
+    app: wardrobe-service
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wardrobe-service-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /outfits
+            pathType: Prefix
+            backend:
+              service:
+                name: wardrobe-service
+                port:
+                  number: 8000
+          - path: /clothing
+            pathType: Prefix
+            backend:
+              service:
+                name: wardrobe-service
+                port:
+                  number: 8000

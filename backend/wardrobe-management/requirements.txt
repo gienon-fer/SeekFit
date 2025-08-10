@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+google-auth
+pytest
+httpx
+alembic
+psycopg2-binary
+requests
